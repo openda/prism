@@ -13,6 +13,7 @@ use const prism\common\ERR_MSG;
 use prism\common\ErrCode;
 
 class  Response {
+    private static $_output = [];
     const HTTP_VERSION = "HTTP/1.1";
 
     /**
@@ -28,7 +29,9 @@ class  Response {
             'err_msg' => $msg,
             'data'    => $data
         ];
-        self::output($content);
+        if (empty(self::$_output)) {
+            self::output($content);
+        }
     }
 
     public static function sendException($code = ErrCode::SUCCESS, $msg = ERR_MSG[ErrCode::SUCCESS], $e = []) {
@@ -41,7 +44,7 @@ class  Response {
         exit();
     }
 
-    public static function sendError($code = ErrCode::SUCCESS, $msg = ERR_MSG[ErrCode::SUCCESS]){
+    public static function sendError($code = ErrCode::SUCCESS, $msg = ERR_MSG[ErrCode::SUCCESS]) {
         $content = [
             'err_no'  => $code,
             'err_msg' => $msg,
@@ -49,15 +52,17 @@ class  Response {
         self::output($content);
         exit();
     }
+
     /**
      * @param array $data
      *
      * 方便测试用的
      */
     public static function outputPage($data = []) {
-        $content = [
+        $content       = [
             'data' => $data
         ];
+        self::$_output = array_push(self::$_output, $data);
         //输出结果
         header("Content-Type: application/json");
         echo self::encodeJson($content);
@@ -117,5 +122,22 @@ class  Response {
         $html .= "</table>";
 
         return $html;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getOutput(): array {
+        return self::$_output;
+    }
+
+    /**
+     * @param array $output
+     */
+    public static function setOutput(array $output, $clear = 0) {
+        if ($clear == 1) {
+            self::$_output = [];
+        }
+        self::$_output = array_push(self::$_output, $output);
     }
 }

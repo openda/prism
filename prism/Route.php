@@ -38,15 +38,16 @@ class Route {
                 $uri  = $this->request->getUri();
                 $uris = explode('/', substr($uri, 1, strlen($uri) - 1));
                 if (!empty($uris)) {
-                    $this->route['app']        = $uris[1];
-                    $this->route['controller'] = $uris[2];
-                    $this->route['action']     = $uris[3];
+                    $this->route['app']        = $uris[0];
+                    $this->route['controller'] = $uris[1];
+                    $this->route['action']     = $uris[2];
                 } else {
-                    throw new ErrorException(ErrCode::ERR_REQUEST_ROUTE, ERR_MSG[ErrCode::ERR_REQUEST_ROUTE], __FILE__, __LINE__);
+                    Response::sendError(ErrCode::ERR_REQUEST_ROUTE, ERR_MSG[ErrCode::ERR_REQUEST_ROUTE]);
                 }
             }
         } else {
-            throw new ErrorException(ErrCode::ERR_REQUEST, ERR_MSG[ErrCode::ERR_REQUEST], __FILE__, __LINE__);
+            Response::sendError(ErrCode::ERR_REQUEST, ERR_MSG[ErrCode::ERR_REQUEST]);
+//            throw new ErrorException(ErrCode::ERR_REQUEST, ERR_MSG[ErrCode::ERR_REQUEST], __FILE__, __LINE__);
         }
     }
 

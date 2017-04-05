@@ -9,6 +9,7 @@
 
 namespace prism;
 
+use const prism\common\ERR_MSG;
 use prism\common\ErrCode;
 use prism\core\exception\ErrorException;
 
@@ -48,9 +49,10 @@ class App {
         } catch (ErrorException $e) {
 
         }
-        $response = new Response();
-
-        return $response;
+        Response::send(ErrCode::SUCCESS,ERR_MSG[ErrCode::SUCCESS]);
+//        $response = new Response();
+//
+//        return $response;
     }
 
     /**
