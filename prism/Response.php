@@ -13,7 +13,10 @@ use const prism\common\ERR_MSG;
 use prism\common\ErrCode;
 
 class  Response {
-    private static $_output = [];
+    private static $_output = []; // 随时打印所用
+
+    private static $_content;// 输出结果数据
+
     const HTTP_VERSION = "HTTP/1.1";
 
     /**
@@ -24,27 +27,33 @@ class  Response {
      * 返回结果
      */
     public static function send($code = ErrCode::SUCCESS, $msg = ERR_MSG[ErrCode::SUCCESS], $data = []) {
+        if (count(self::$_content) == 1 && is_array(self::$_content)) {
+            self::$_content = self::$_content[0];
+        }
         $content = [
             'err_no'  => $code,
             'err_msg' => $msg,
-            'data'    => $data
+            'data'    => empty($data) ? self::$_content : $data
         ];
-        if (empty(self::$_output)) {
-            self::output($content);
-        }
+        // 如果又随时打印数据，则不打印结果数据
+//        if (empty(self::$_output)) {
+        self::output($content);
+//        }
     }
 
-    public static function sendException($code = ErrCode::SUCCESS, $msg = ERR_MSG[ErrCode::SUCCESS], $e = []) {
-        $content = [
-            'err_no'  => $code,
-            'err_msg' => $msg,
-        ];
+    public
+    static function sendException($e = []) {
+//        $content = [
+//            'err_no'  => $code,
+//            'err_msg' => $msg,
+//        ];
         !APP_DEBUG ?: $content['exception'] = $e;
-        self::output($content);
+        self::output($e);
         exit();
     }
 
-    public static function sendError($code = ErrCode::SUCCESS, $msg = ERR_MSG[ErrCode::SUCCESS]) {
+    public
+    static function sendError($code = ErrCode::SUCCESS, $msg = ERR_MSG[ErrCode::SUCCESS]) {
         $content = [
             'err_no'  => $code,
             'err_msg' => $msg,
@@ -58,17 +67,19 @@ class  Response {
      *
      * 方便测试用的
      */
-    public static function outputPage($data = []) {
-        $content       = [
+    public
+    static function outputPage($data = []) {
+        $content         = [
             'data' => $data
         ];
-        self::$_output = array_push(self::$_output, $data);
+        self::$_output[] = $data;
         //输出结果
         header("Content-Type: application/json");
         echo self::encodeJson($content);
     }
 
-    public static function output($content = []) {
+    private
+    static function output($content = []) {
         //输出结果
         $content_type = 'application/json';
         //        $content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : 'application/json';
@@ -84,13 +95,15 @@ class  Response {
         }
     }
 
-    //json格式
-    private static function encodeJson($responseData) {
+//json格式
+    private
+    static function encodeJson($responseData) {
         return json_encode($responseData);
     }
 
-    //xml格式
-    private static function encodeXml($responseData) {
+//xml格式
+    private
+    static function encodeXml($responseData) {
         $xml = new \SimpleXMLElement('<?xml version="1.0"?><rest></rest>');
         foreach ($responseData as $key => $value) {
             if (is_array($value)) {
@@ -105,8 +118,9 @@ class  Response {
         return $xml->asXML();
     }
 
-    //html格式
-    private static function encodeHtml($responseData) {
+//html格式
+    private
+    static function encodeHtml($responseData) {
         $html = "<table border='1'>";
         foreach ($responseData as $key => $value) {
             $html .= "<tr>";
@@ -127,17 +141,38 @@ class  Response {
     /**
      * @return array
      */
-    public static function getOutput(): array {
+    public
+    static function getOutput(): array {
         return self::$_output;
     }
 
     /**
      * @param array $output
      */
-    public static function setOutput(array $output, $clear = 0) {
+    public
+    static function setOutput(array $output, $clear = 0) {
         if ($clear == 1) {
             self::$_output = [];
         }
-        self::$_output = array_push(self::$_output, $output);
+        self::$_output[] = $output;
+    }
+
+    /**
+     * @return array
+     */
+    public
+    static function getContent(): array {
+        return self::$_content;
+    }
+
+    /**
+     * @param array $content
+     */
+    public
+    static function setContent($content, $clear = 0) {
+        if ($clear == 1) {
+            self::$_content = [];
+        }
+        self::$_content[] = $content;
     }
 }

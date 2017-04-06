@@ -19,9 +19,11 @@ class Route {
     protected $request;
     //默认绑定的路由
     protected $default;
+    private   $inputs = [];
 
     public function __construct(Request $request) {
         $this->request = $request;
+        $this->inputs = $request->getInput();
     }
 
     /**
@@ -54,49 +56,57 @@ class Route {
     /**
      * @return Request
      */
-    public
-    function getRequest(): Request {
+    public function getRequest(): Request {
         return $this->request;
     }
 
     /**
      * @param Request $request
      */
-    public
-    function setRequest(Request $request) {
+    public function setRequest(Request $request) {
         $this->request = $request;
     }
 
     /**
      * @return array
      */
-    public
-    function getRoute(): array {
+    public function getRoute(): array {
         return $this->route;
     }
 
     /**
      * @param array $route
      */
-    public
-    function setRoute(array $route) {
+    public function setRoute(array $route) {
         $this->route = $route;
     }
 
     /**
      * @return mixed
      */
-    public
-    function getDefault() {
+    public function getDefault() {
         return $this->default;
     }
 
     /**
      * @param mixed $default
      */
-    public
-    function setDefault($default) {
+    public function setDefault($default) {
         $this->default = $default;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function getInputs() {
+        return $this->inputs;
+    }
+
+    /**
+     * @param array|mixed $inputs
+     */
+    public function setInputs($inputs) {
+        $this->inputs = $inputs;
     }
 
 }

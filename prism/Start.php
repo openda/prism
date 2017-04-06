@@ -43,7 +43,7 @@ defined('CONF_PARSE') or define('CONF_PARSE', '');    // 配置文件解析方�
 
 defined('DEFAULT_APP') or define('DEFAULT_APP', 'home');//默认的app
 // 环境常量
-//define('IS_CLI', PHP_SAPI == 'cli' ? true : false);
+define('IS_CLI', PHP_SAPI == 'cli' ? true : false);
 define('IS_WIN', strpos(PHP_OS, 'WIN') !== false);
 
 require_once PRISM_PATH . 'Loader.php';

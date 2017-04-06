@@ -12,6 +12,5 @@ namespace prism;
 
 class Controller {
     public function __construct() {
-        echo '控制器基类';
     }
 }
