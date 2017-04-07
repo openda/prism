@@ -47,6 +47,7 @@ return [
 
 
     public static function run($type = [], $check = [], $config = []) {
+        Logger::debug('REQUEST_PARAM_INEXIST',['sss']);
         if (in_array('runtime', $type)) {
             self::checkRuntime();
         }
@@ -96,7 +97,7 @@ return [
                 mkdir(DATA_PATH, Check::RUNTIME_AUTH);
                 mkdir(CACHE_PATH, Check::RUNTIME_AUTH);
             } catch (ErrorException $e) {
-                Response::sendException(ErrCode::ERR_CHECK_RUNTIME, ERR_MSG[ErrCode::ERR_CHECK_RUNTIME], $e);
+                Response::sendException($e);
             }
         }
         // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
@@ -149,17 +150,6 @@ return [
                     try {
                         $indexController = fopen(APP_PATH . "$app/controller/Index.php", 'w');
                         $code            = Check::DEFAULT_CONTROLLER;
-                        fwrite($indexController, $code);
-                        fclose($indexController);
-                    } catch (ErrorException $e) {
-                        Response::sendException($e);
-                    }
-                }
-                // 创建每个app的路由文件
-                if (!glob("$app/route.php")) {
-                    try {
-                        $indexController = fopen(APP_PATH . "$app/route.php", 'w');
-                        $code            = Check::DEFAULT_ROUTE;
                         fwrite($indexController, $code);
                         fclose($indexController);
                     } catch (ErrorException $e) {

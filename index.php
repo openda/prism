@@ -13,9 +13,6 @@ if (version_compare(PHP_VERSION, '5.6.0', "<")) die('require PHP > 5.6.0 !');
 // 开启调试模式，部署阶段可以设置成false
 define('APP_DEBUG', true);
 
-// 定义应用目录
-//define('APP_PATH','./app');
-
 // 定义数据库文件目录
 define('DB_PATH','./prism/db/prism.db');
 

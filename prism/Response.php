@@ -31,9 +31,9 @@ class  Response {
             self::$_content = self::$_content[0];
         }
         $content = [
-            'err_no'  => $code,
-            'err_msg' => $msg,
-            'data'    => empty($data) ? self::$_content : $data
+            'code' => $code,
+            'msg'  => $msg,
+            'data' => empty($data) ? self::$_content : $data
         ];
         // 如果又随时打印数据，则不打印结果数据
 //        if (empty(self::$_output)) {
@@ -44,8 +44,8 @@ class  Response {
     public
     static function sendException($e = []) {
 //        $content = [
-//            'err_no'  => $code,
-//            'err_msg' => $msg,
+//            'code'  => $code,
+//            'msg' => $msg,
 //        ];
         !APP_DEBUG ?: $content['exception'] = $e;
         self::output($e);
@@ -55,8 +55,8 @@ class  Response {
     public
     static function sendError($code = ErrCode::SUCCESS, $msg = ERR_MSG[ErrCode::SUCCESS]) {
         $content = [
-            'err_no'  => $code,
-            'err_msg' => $msg,
+            'code' => $code,
+            'msg'  => $msg,
         ];
         self::output($content);
         exit();
@@ -68,14 +68,15 @@ class  Response {
      * 方便测试用的
      */
     public
-    static function outputPage($data = []) {
-        $content         = [
-            'data' => $data
-        ];
+    static function outputPage($data = [], $exit = 0) {
+        $content         = ['data' => $data];
         self::$_output[] = $data;
         //输出结果
         header("Content-Type: application/json");
         echo self::encodeJson($content);
+        if ($exit) {
+            exit();
+        }
     }
 
     private

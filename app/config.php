@@ -19,4 +19,5 @@ return [
     // 默认action
     'default_action'     => 'index',
 
+    // 定义前端
 ];

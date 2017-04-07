@@ -29,7 +29,6 @@ class Loader {
     // 自动加载的文件
     private static $autoloadFiles = [];
 
-
     // 自动加载
     public static function autoload($class) {
         if ($file = self::findFile($class)) {

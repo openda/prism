@@ -70,8 +70,6 @@ class Error {
             self::appException($exception);
         }
 
-        // 写入日志
-        Log::save();
     }
 
     /**

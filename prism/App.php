@@ -50,7 +50,7 @@ class App {
             if (!empty($routes['inputs']) && !empty($routes['class']) && !empty($routes['action'])) {
                 Response::setContent(self::invoke($routes), 1);
             }
-            Response::send();
+//            Response::send();
         } catch (ErrorException $e) {
             Response::sendException($e);
         }
@@ -103,30 +103,6 @@ class App {
     }
 
     /**
-     * 调用反射执行类的方法 支持参数绑定
-     * @access public
-     *
-     * @param string|array $method 方法
-     * @param array        $vars 变量
-     *
-     * @return mixed
-     */
-    public static function invokeMethod($method, $vars = []) {
-        if (is_array($method)) {
-            $class   = is_object($method[0]) ? $method[0] : self::invokeClass($method[0]);
-            $reflect = new \ReflectionMethod($class, $method[1]);
-        } else {
-            // 静态方法
-            $reflect = new \ReflectionMethod($method);
-        }
-        $args = self::bindParams($reflect, $vars);
-
-        self::$debug && Log::record('[ RUN ] ' . $reflect->class . '->' . $reflect->name . '[ ' . $reflect->getFileName() . ' ]', 'info');
-
-        return $reflect->invokeArgs(isset($class) ? $class : null, $args);
-    }
-
-    /**
      * 调用反射执行类的实例化 支持依赖注入
      * @access public
      *
@@ -146,6 +122,9 @@ class App {
             }
             $instance = $class->newInstanceArgs($args);
             $method   = $class->getmethod($route['action']);
+            if ($method->isPrivate() || $method->isConstructor() || $method->isStatic() || $method->isDestructor()) {
+                Response::sendError(ErrCode::ERR_REQUEST_ACTION_TYPE, ERR_MSG[ErrCode::ERR_REQUEST_ACTION_TYPE]);
+            }
 
             return $method->invokeArgs($instance, $route['inputs']);
 

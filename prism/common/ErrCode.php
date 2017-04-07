@@ -38,6 +38,7 @@ class ErrCode {
     const ERR_REQUEST_PARAM_STRING = 70;//用户email格式不对
     const ERR_REQUEST_PARAM_OPTION = 71;//用户email格式不对
     const ERR_REQUEST_PARAM        = 72;//用户请求参数不对
+    const ERR_REQUEST_ACTION_TYPE  = 73;//请求方法类型出错
 
 }
 const ERR_MSG = array(
@@ -66,5 +67,6 @@ const ERR_MSG = array(
     ErrCode::ERR_REQUEST_PARAM_STRING => '字符串格式不对',
     ErrCode::ERR_REQUEST_PARAM_OPTION => '选项值格式不对',
     ErrCode::ERR_REQUEST_PARAM        => '用户请求参数不对',
+    ErrCode::ERR_REQUEST_ACTION_TYPE  => '请求方法类型出错',
 
 );
