@@ -23,7 +23,7 @@ class App {
     public static function run(Request $request = null) {
         is_null($request) && $request = Request::instance();
         try {
-            $config = self::init();
+            self::init();
             // APP检查
             Check::run(['app']);
 
@@ -35,6 +35,8 @@ class App {
 
                 return false;
             }
+            $config = Config::get();
+
             $route = new Route($request);
             $route->setDefault([
                 'app'        => empty($config['default_app']) ? 'index' : $config['default_app'],
@@ -44,15 +46,16 @@ class App {
             //路由解析
             $route->parse();
             // 路由检查
-            Check::run(['route'], $route);
-
+            $routes = Check::run(['route'], $route, $config['route']);
+            if (!empty($routes['inputs']) && !empty($routes['class']) && !empty($routes['action'])) {
+                Response::setContent(self::invoke($routes), 1);
+            }
+//            Response::send();
         } catch (ErrorException $e) {
-
+            Response::sendException($e);
         }
-        Response::send(ErrCode::SUCCESS,ERR_MSG[ErrCode::SUCCESS]);
-//        $response = new Response();
-//
-//        return $response;
+
+        return true;
     }
 
     /**
@@ -97,5 +100,91 @@ class App {
         }
 
         return Config::get();
+    }
+
+    /**
+     * 调用反射执行类的实例化 支持依赖注入
+     * @access public
+     *
+     * @param string $class 类名
+     * @param array  $vars 变量
+     *
+     * @return mixed
+     */
+    public static function invoke($route = []) {
+        try {
+            $class       = new \ReflectionClass($route['namespace']);
+            $constructor = $class->getConstructor();
+            if ($constructor) {
+                $args = self::bindParams($constructor, $route['inputs']);
+            } else {
+                $args = [];
+            }
+            $instance = $class->newInstanceArgs($args);
+            $method   = $class->getmethod($route['action']);
+            if ($method->isPrivate() || $method->isConstructor() || $method->isStatic() || $method->isDestructor()) {
+                Response::sendError(ErrCode::ERR_REQUEST_ACTION_TYPE, ERR_MSG[ErrCode::ERR_REQUEST_ACTION_TYPE]);
+            }
+
+            return $method->invokeArgs($instance, $route['inputs']);
+
+        } catch (\ReflectionException $e) {
+            Response::sendException($e);
+        }
+
+        return false;
+    }
+
+
+    /**
+     * 绑定参数
+     * @access public
+     *
+     * @param \ReflectionMethod|\ReflectionFunction $reflect 反射类
+     * @param array                                 $vars 变量
+     *
+     * @return array
+     */
+    private static function bindParams($reflect, $vars = []) {
+        if (empty($vars)) {
+            $vars = Request::instance()->getInput();
+        }
+        $args = [];
+        // 判断数组类型 数字数组时按顺序绑定参数
+        reset($vars);
+        $type = key($vars) === 0 ? 1 : 0;
+        if ($reflect->getNumberOfParameters() > 0) {
+            $params = $reflect->getParameters();
+            foreach ($params as $param) {
+                $name  = $param->getName();
+                $class = $param->getClass();
+                if ($class) {
+                    $className = $class->getName();
+                    $bind      = Request::instance()->$name;
+                    if ($bind instanceof $className) {
+                        $args[] = $bind;
+                    } else {
+                        if (method_exists($className, 'invoke')) {
+                            $method = new \ReflectionMethod($className, 'invoke');
+                            if ($method->isPublic() && $method->isStatic()) {
+                                $args[] = $className::invoke(Request::instance());
+                                continue;
+                            }
+                        }
+                        $args[] = method_exists($className, 'instance') ? $className::instance() : new $className;
+                    }
+                } elseif (1 == $type && !empty($vars)) {
+                    $args[] = array_shift($vars);
+                } elseif (0 == $type && isset($vars[$name])) {
+                    $args[] = $vars[$name];
+                } elseif ($param->isDefaultValueAvailable()) {
+                    $args[] = $param->getDefaultValue();
+                } else {
+                    Response::sendException(new \InvalidArgumentException('method param miss:' . $name));
+                }
+            }
+        }
+
+        return $args;
     }
 }

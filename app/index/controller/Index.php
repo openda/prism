@@ -1,11 +1,10 @@
 <?php 
-namespace prism;
+namespace app\index\controller;
 
-use const prism\common\ERR_MSG;
-use prism\common\ErrCode;
+use prism\Controller;
 
-class IndexController extends Controller{
-    public function index() {
-        Response::send(ErrCode::SUCCESS, ERR_MSG[ErrCode::SUCCESS]);
+class Index extends Controller{
+    public function show() {
+        return 'hello prism';
     }
 }

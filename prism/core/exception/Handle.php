@@ -12,7 +12,7 @@ namespace prism\core\exception;
 
 use Exception;
 use prism\App;
-use prism\Log;
+use prism\Logger;
 use prism\Response;
 
 class Handle
@@ -48,7 +48,7 @@ class Handle
                 $log = "[{$data['code']}]{$data['message']}";
             }
 
-            Log::record($log, 'error');
+            Logger::record($log, 'error');
         }
     }
 

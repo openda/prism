@@ -10,7 +10,10 @@
 namespace prism;
 
 
+use prism\core\exception\ErrorException;
+
 class Loader {
+    protected static $instance = [];
     // 类名映射
     protected static $map = [];
 
@@ -25,7 +28,6 @@ class Loader {
 
     // 自动加载的文件
     private static $autoloadFiles = [];
-
 
     // 自动加载
     public static function autoload($class) {
@@ -120,7 +122,7 @@ class Loader {
         }
     }
 
-    // 添加Ps0空间
+    // 添加Psr0空间
     private static function addPsr0($prefix, $paths, $prepend = false) {
         if (!$prefix) {
             if ($prepend) {
@@ -243,7 +245,7 @@ class Loader {
         spl_autoload_register($autoload ?: 'prism\\Loader::autoload', true, true);
         // 注册命名空间定义
         self::addNamespace([
-            'prism' => PRISM_PATH. DS,
+            'prism' => PRISM_PATH . DS,
         ]);
 //        // 加载类库映射文件
 //        if (is_file(RUNTIME_PATH . 'classmap' . EXT)) {
@@ -258,6 +260,15 @@ class Loader {
         // 自动加载extend目录
 //        self::$fallbackDirsPsr4[] = rtrim(EXTEND_PATH, DS);
     }
+
+    /**
+     * 初始化类的实例
+     * @return void
+     */
+    public static function clearInstance() {
+        self::$instance = [];
+    }
+
 }
 
 /**

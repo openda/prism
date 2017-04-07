@@ -41,9 +41,8 @@ defined('CACHE_PATH') or define('CACHE_PATH', RUNTIME_PATH . '/cache'); // 应�
 
 defined('CONF_PARSE') or define('CONF_PARSE', '');    // 配置文件解析方法
 
-defined('DEFAULT_APP') or define('DEFAULT_APP', 'home');//默认的app
 // 环境常量
-//define('IS_CLI', PHP_SAPI == 'cli' ? true : false);
+define('IS_CLI', PHP_SAPI == 'cli' ? true : false);
 define('IS_WIN', strpos(PHP_OS, 'WIN') !== false);
 
 require_once PRISM_PATH . 'Loader.php';
@@ -56,6 +55,9 @@ require_once PRISM_PATH . 'Loader.php';
 
 // 加载系统配置文件
 \prism\Config::set(include CONF_PATH . 'config.php');
+
+// 加载系统日志文件
+\prism\Config::set(include CONF_PATH . 'log.php', 'prism_log');
 
 // 系统检查
 \prism\Check::run(['runtime']);

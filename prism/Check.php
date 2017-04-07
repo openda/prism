@@ -31,14 +31,13 @@ class Check {
     const RUNTIME_AUTH       = 0775;
     const DEFAULT_CONTROLLER =
         "<?php 
-namespace prism;
+namespace app\\index\\controller;
 
-use const prism\\common\\ERR_MSG;
-use prism\\common\ErrCode;
+use prism\\Controller;
 
-class IndexController extends Controller{
-    public function index() {
-        Response::send(ErrCode::SUCCESS, ERR_MSG[ErrCode::SUCCESS]);
+class Index extends Controller{
+    public function show() {
+        return 'Hello Prism';
     }
 }";
     const DEFAULT_ROUTE      = '<?php 
@@ -47,7 +46,8 @@ return [
 ];';
 
 
-    public static function run($type = [], $check = null) {
+    public static function run($type = [], $check = [], $config = []) {
+        Logger::debug('REQUEST_PARAM_INEXIST',['sss']);
         if (in_array('runtime', $type)) {
             self::checkRuntime();
         }
@@ -57,8 +57,10 @@ return [
         }
         //路由检查
         if (in_array('route', $type)) {
-            self::checkRoute($check);
+            return self::checkRoute($check, $config);
         }
+
+        return true;
     }
 
     /**
@@ -95,7 +97,7 @@ return [
                 mkdir(DATA_PATH, Check::RUNTIME_AUTH);
                 mkdir(CACHE_PATH, Check::RUNTIME_AUTH);
             } catch (ErrorException $e) {
-                Response::sendException(ErrCode::ERR_CHECK_RUNTIME, ERR_MSG[ErrCode::ERR_CHECK_RUNTIME], $e);
+                Response::sendException($e);
             }
         }
         // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
@@ -117,7 +119,7 @@ return [
                     File::recursiveChmod(APP_PATH, Check::RUNTIME_AUTH, Check::RUNTIME_AUTH);
                 }
             } catch (ErrorException $e) {
-                Response::sendException(ErrCode::ERR_CHECK_APPS, ERR_MSG[ErrCode::ERR_CHECK_APPS], $e);
+                Response::sendException($e);
             }
         }
         // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
@@ -140,7 +142,7 @@ return [
                         mkdir(APP_PATH . "$app/service", Check::RUNTIME_AUTH);
                         mkdir(APP_PATH . "$app/model", Check::RUNTIME_AUTH);
                     } catch (ErrorException $e) {
-                        Response::sendException(ErrCode::ERR_CHECK_APPS, ERR_MSG[ErrCode::ERR_CHECK_APPS], $e);
+                        Response::sendException($e);
                     }
                 }
                 // 创建每个app的默认控制器Index,如果已经存在控制器则不创建默认的控制器
@@ -151,18 +153,7 @@ return [
                         fwrite($indexController, $code);
                         fclose($indexController);
                     } catch (ErrorException $e) {
-                        Response::sendException(ErrCode::ERR_CREATE_CONTROLLER, ERR_MSG[ErrCode::ERR_CREATE_CONTROLLER], $e);
-                    }
-                }
-                // 创建每个app的路由文件
-                if (!glob("$app/route.php")) {
-                    try {
-                        $indexController = fopen(APP_PATH . "$app/route.php", 'w');
-                        $code            = Check::DEFAULT_ROUTE;
-                        fwrite($indexController, $code);
-                        fclose($indexController);
-                    } catch (ErrorException $e) {
-                        Response::sendException(ErrCode::ERR_CREATE_ROUTE, ERR_MSG[ErrCode::ERR_CREATE_ROUTE], $e);
+                        Response::sendException($e);
                     }
                 }
             }
@@ -179,24 +170,25 @@ return [
      *
      * 检查路由
      */
-    private static function checkRoute(Route $route = null) {
+    private static function checkRoute(Route $route = null, $config = []) {
         if (!is_null($route)) {
             // 获取路由表
-            $routeConfig = Config::get('route');
-            $routeInfo   = $route->getRoute();
+            $class     = '';
+            $routeInfo = $route->getRoute();
+            $inputs    = $route->getInputs();
             if (!empty($routeInfo)) {
                 $routeTmp = trim($routeInfo['app'], '/') . '/' . trim($routeInfo['controller'], '/');
-                if (array_key_exists($routeTmp, $routeConfig)) {
-                    $routeConfig = $routeConfig["$routeTmp"];
+                if (array_key_exists($routeTmp, $config)) {
+                    $routeConfig = $config["$routeTmp"];
+                    $class       = $routeConfig[0];
                     // 判断请求方式是否出错
                     if (strpos(strtoupper($routeConfig[1]), strtoupper($route->getRequest()->getType())) === false) {
                         Response::sendError(ErrCode::ERR_REQUEST_METHOD, ERR_MSG[ErrCode::ERR_REQUEST_METHOD]);
                     }
                     // 校验请求参数
-                    $inputs = $route->getRequest()->getInput();
                     foreach ($routeConfig[2] as $param => $input) {
                         try {
-                            $validate = self::validate($inputs[$param], strtoupper($input[0]), !isset($input[2])?'':$input[2]);
+                            $validate = self::validate($inputs[$param], strtoupper($input[0]), !isset($input[2]) ? '' : $input[2]);
                             if ($input[1] == 1 && $validate != 0) {
                                 Response::sendError($validate, ERR_MSG[$validate]);
                             }
@@ -204,19 +196,21 @@ return [
                                 Response::sendError($validate, ERR_MSG[$validate]);
                             }
                         } catch (ErrorException $e) {
-                            Response::sendException(ErrCode::ERR_REQUEST_PARAM_INEXIST, ERR_MSG[ErrCode::ERR_REQUEST_PARAM_INEXIST], $e);
+                            Response::sendException($e);
                         }
                     }
                 }
             }
+            $routeInfo['class']     = $class;
+            $routeInfo['inputs']    = $inputs;
+            $routeInfo['namespace'] = join('\\', [Config::get('app_namespace'), $routeInfo['app'], 'controller', ucfirst($routeInfo['controller'])]);
 
-            return true;
+            return $routeInfo;
         } else {
             //TODO 添加http请求错误相关的异常和日志
             Response::sendError(ErrCode::ERR_REQUEST_ROUTE, ERR_MSG[ErrCode::ERR_REQUEST_ROUTE]);
         }
 
-        return true;
     }
 
     /**
@@ -224,7 +218,7 @@ return [
      * @param $type
      * @param $preg
      *
-     * @desc 单个校验器
+     * @desc 单个参数类型校验器
      */
     public static function validate($value, $type = Check::PARAM_STRING, $pattern = '', $errno = '') {
         if ($type == Check::PARAM_STRING) {
