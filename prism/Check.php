@@ -10,8 +10,8 @@
 namespace prism;
 
 
-use const prism\common\ERR_MSG;
-use prism\common\ErrCode;
+use const prism\common\PRISM_MSG;
+use prism\common\PrismCode;
 use prism\core\exception\ErrorException;
 
 class Check {
@@ -47,7 +47,7 @@ return [
 
 
     public static function run($type = [], $check = [], $config = []) {
-        Logger::debug('REQUEST_PARAM_INEXIST',['sss']);
+        Logger::debug('REQUEST_PARAM_INEXIST', ['sss']);
         if (in_array('runtime', $type)) {
             self::checkRuntime();
         }
@@ -83,7 +83,7 @@ return [
                     mkdir(CACHE_PATH, Check::RUNTIME_AUTH);
                 }
             } catch (ErrorException $e) {
-                Response::send(ErrCode::ERR_CHECK_RUNTIME, ERR_MSG[ErrCode::ERR_CHECK_RUNTIME], $e);
+                Response::send(PrismCode::ERR_CHECK_RUNTIME, PRISM_MSG[PrismCode::ERR_CHECK_RUNTIME], $e);
             }
         } else {
             try {
@@ -146,7 +146,7 @@ return [
                     }
                 }
                 // 创建每个app的默认控制器Index,如果已经存在控制器则不创建默认的控制器
-                if (!glob("$app/controller/*Controller.php")) {
+                if (!glob(APP_PATH . "$app/controller/Index.php")) {
                     try {
                         $indexController = fopen(APP_PATH . "$app/controller/Index.php", 'w');
                         $code            = Check::DEFAULT_CONTROLLER;
@@ -158,7 +158,7 @@ return [
                 }
             }
         } else {
-            throw new ErrorException(ErrCode::ERR_CONF_NO_APP, ERR_MSG[ErrCode::ERR_CONF_NO_APP], __FILE__, __LINE__);
+            throw new ErrorException(PrismCode::ERR_CONF_NO_APP, PRISM_MSG[PrismCode::ERR_CONF_NO_APP], __FILE__, __LINE__);
         }
     }
 
@@ -183,17 +183,17 @@ return [
                     $class       = $routeConfig[0];
                     // 判断请求方式是否出错
                     if (strpos(strtoupper($routeConfig[1]), strtoupper($route->getRequest()->getType())) === false) {
-                        Response::sendError(ErrCode::ERR_REQUEST_METHOD, ERR_MSG[ErrCode::ERR_REQUEST_METHOD]);
+                        Response::sendError(PrismCode::ERR_REQUEST_METHOD, PRISM_MSG[PrismCode::ERR_REQUEST_METHOD]);
                     }
                     // 校验请求参数
                     foreach ($routeConfig[2] as $param => $input) {
                         try {
                             $validate = self::validate($inputs[$param], strtoupper($input[0]), !isset($input[2]) ? '' : $input[2]);
                             if ($input[1] == 1 && $validate != 0) {
-                                Response::sendError($validate, ERR_MSG[$validate]);
+                                Response::sendError($validate, PRISM_MSG[$validate]);
                             }
                             if ($input[1] == 0 && $validate != 0 && (!empty($inputs[$param]) || !isset($inputs[$param]))) {
-                                Response::sendError($validate, ERR_MSG[$validate]);
+                                Response::sendError($validate, PRISM_MSG[$validate]);
                             }
                         } catch (ErrorException $e) {
                             Response::sendException($e);
@@ -208,7 +208,7 @@ return [
             return $routeInfo;
         } else {
             //TODO 添加http请求错误相关的异常和日志
-            Response::sendError(ErrCode::ERR_REQUEST_ROUTE, ERR_MSG[ErrCode::ERR_REQUEST_ROUTE]);
+            Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
         }
 
     }
@@ -224,11 +224,11 @@ return [
         if ($type == Check::PARAM_STRING) {
             if ($pattern != '' && $pattern != null) {
                 if (!preg_match($pattern, $value)) {
-                    return ErrCode::ERR_REQUEST_PARAM_STRING;
+                    return PrismCode::ERR_REQUEST_PARAM_STRING;
                 }
             } else {
                 if ($value == '' || $value == null) {
-                    return ErrCode::ERR_REQUEST_PARAM_STRING;
+                    return PrismCode::ERR_REQUEST_PARAM_STRING;
                 }
             }
         } else if ($type == Check::PARAM_TIME) {
@@ -236,47 +236,47 @@ return [
                 $pattern = Check::VALIDATE_TIME;
             }
             if (!preg_match($pattern, $value)) {
-                return ErrCode::ERR_REQUEST_PARAM_TIME;
+                return PrismCode::ERR_REQUEST_PARAM_TIME;
             }
 
         } else if ($type == Check::PARAM_PHONE) {
             if (!preg_match("/^1[34578]{1}\d{9}$/", $value)) {
-                return ErrCode::ERR_REQUEST_PARAM_PHONE;
+                return PrismCode::ERR_REQUEST_PARAM_PHONE;
             }
         } else if ($type == Check::PARAM_EMAIL) {
             if (filter_var($value, FILTER_VALIDATE_EMAIL) == false) {
-                return ErrCode::ERR_REQUEST_PARAM_EMAIL;
+                return PrismCode::ERR_REQUEST_PARAM_EMAIL;
             }
         } else if ($type == Check::PARAM_NUMBER) {
             if ($pattern != '' && $pattern != null) {
                 if (!preg_match($pattern, $value)) {
-                    return ErrCode::ERR_REQUEST_PARAM_NUMBER;
+                    return PrismCode::ERR_REQUEST_PARAM_NUMBER;
                 }
             }
             if (!is_numeric($value) || $value > 100000000000 || $value < 0 || strpos($value, '.')) {
-                return ErrCode::ERR_REQUEST_PARAM_NUMBER;
+                return PrismCode::ERR_REQUEST_PARAM_NUMBER;
             }
         } else if ($type == Check::PARAM_OPTION) {
             if (!is_array($pattern)) {
-                return ErrCode::ERR_REQUEST_PARAM;
+                return PrismCode::ERR_REQUEST_PARAM;
             }
             if (!in_array($value, $pattern)) {
-                return ErrCode::ERR_REQUEST_PARAM_OPTION;
+                return PrismCode::ERR_REQUEST_PARAM_OPTION;
             }
         } else if ($type == Check::PARAM_MD532) {
             if (!preg_match("/^[a-z0-9]{32}$/", $value)) {
-                return ErrCode::ERR_REQUEST_PARAM_MD532;
+                return PrismCode::ERR_REQUEST_PARAM_MD532;
             }
         } else {
             if ($pattern != '' && $pattern != null) {
                 if (!preg_match($pattern, $value)) {
-                    return ErrCode::ERR_REQUEST_PARAM;
+                    return PrismCode::ERR_REQUEST_PARAM;
                 }
             } else {
-                return ErrCode::ERR_REQUEST_PARAM;
+                return PrismCode::ERR_REQUEST_PARAM;
             }
         }
 
-        return ErrCode::SUCCESS;
+        return PrismCode::SUCCESS;
     }
 }

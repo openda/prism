@@ -9,8 +9,8 @@
 
 namespace prism;
 
-use const prism\common\ERR_MSG;
-use prism\common\ErrCode;
+use const prism\common\PRISM_MSG;
+use prism\common\PrismCode;
 use prism\core\exception\ErrorException;
 
 class App {
@@ -31,7 +31,7 @@ class App {
             if (is_file(APP_PATH . 'route.php')) {
                 Config::load(APP_PATH . 'route.php', 'route');
             } else {
-                Response::sendException(ErrCode::ERR_REQUEST_ROUTE);
+                Response::sendException(PrismCode::ERR_REQUEST_ROUTE);
 
                 return false;
             }
@@ -47,10 +47,11 @@ class App {
             $route->parse();
             // 路由检查
             $routes = Check::run(['route'], $route, $config['route']);
-            if (!empty($routes['inputs']) && !empty($routes['class']) && !empty($routes['action'])) {
-                Response::setContent(self::invoke($routes), 1);
+            if (!empty($routes['inputs']) && !empty($routes['class']) && !empty($routes['action']) && !empty($routes['app'])) {
+                Response::send(self::invoke($routes));
+            } else {
+                Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
             }
-//            Response::send();
         } catch (ErrorException $e) {
             Response::sendException($e);
         }
@@ -95,6 +96,8 @@ class App {
             } else {
                 // 加载app基础配置信息
                 Config::load(APP_CONF . 'config.php');
+                //加载app日志配置
+                Config::load(APP_CONF . 'log.php', 'app_log');
             }
             self::$init = true;
         }
@@ -123,7 +126,7 @@ class App {
             $instance = $class->newInstanceArgs($args);
             $method   = $class->getmethod($route['action']);
             if ($method->isPrivate() || $method->isConstructor() || $method->isStatic() || $method->isDestructor()) {
-                Response::sendError(ErrCode::ERR_REQUEST_ACTION_TYPE, ERR_MSG[ErrCode::ERR_REQUEST_ACTION_TYPE]);
+                Response::sendError(PrismCode::ERR_REQUEST_ACTION_TYPE, PRISM_MSG[PrismCode::ERR_REQUEST_ACTION_TYPE]);
             }
 
             return $method->invokeArgs($instance, $route['inputs']);

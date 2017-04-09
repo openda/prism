@@ -10,8 +10,8 @@
 
 namespace prism;
 
-use const prism\common\ERR_MSG;
-use prism\common\ErrCode;
+use const prism\common\PRISM_MSG;
+use prism\common\PrismCode;
 
 class File {
     public static function loadConfig($file, $parse = CONF_PARSE) {
@@ -33,7 +33,7 @@ class File {
                 } else {
                     //                    E('_NOT_SUPPORT_' . ':' . $ext);
                     // 没有相应的解析函数解析自定义的配置文件
-                    Response::send(ErrCode::ERR_CONF_PARSE, ERR_MSG[ErrCode::ERR_CONF_PARSE]);
+                    Response::send(PrismCode::ERR_CONF_PARSE, PRISM_MSG[PrismCode::ERR_CONF_PARSE]);
                     exit;
                 }
         }
