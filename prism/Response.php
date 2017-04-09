@@ -9,8 +9,8 @@
 
 namespace prism;
 
-use const prism\common\ERR_MSG;
-use prism\common\ErrCode;
+use const prism\common\PRISM_MSG;
+use prism\common\PrismCode;
 
 class  Response {
     private static $_output = []; // 随时打印所用
@@ -24,25 +24,24 @@ class  Response {
      * @param       $msg
      * @param array $data
      *
-     * 返回结果
+     * 返回结果（专门用于输出控制器结果）
      */
-    public static function send($code = ErrCode::SUCCESS, $msg = ERR_MSG[ErrCode::SUCCESS], $data = []) {
-        if (count(self::$_content) == 1 && is_array(self::$_content)) {
-            self::$_content = self::$_content[0];
-        }
-        $content = [
-            'code' => $code,
-            'msg'  => $msg,
-            'data' => empty($data) ? self::$_content : $data
-        ];
-        // 如果又随时打印数据，则不打印结果数据
-//        if (empty(self::$_output)) {
-        self::output($content);
+    public static function send($content = []) {
+//        if (count(self::$_content) == 1 && is_array(self::$_content)) {
+//            self::$_content = self::$_content[0];
 //        }
+//        $content = [
+//            'code' => $data['code'],
+//            'msg'  => $data['mag'],
+//            'data' => empty($data['data']) ? self::$_content : $data
+//        ];
+        // 如果又随时打印数据，则不打印结果数据
+        if (empty(self::$_output)) {
+            self::output($content);
+        }
     }
 
-    public
-    static function sendException($e = []) {
+    public static function sendException($e = []) {
 //        $content = [
 //            'code'  => $code,
 //            'msg' => $msg,
@@ -52,8 +51,7 @@ class  Response {
         exit();
     }
 
-    public
-    static function sendError($code = ErrCode::SUCCESS, $msg = ERR_MSG[ErrCode::SUCCESS]) {
+    public static function sendError($code = PrismCode::SUCCESS, $msg = PRISM_MSG[PrismCode::SUCCESS]) {
         $content = [
             'code' => $code,
             'msg'  => $msg,
@@ -67,8 +65,7 @@ class  Response {
      *
      * 方便测试用的
      */
-    public
-    static function outputPage($data = [], $exit = 0) {
+    public static function outputPage($data = [], $exit = 0) {
         $content         = ['data' => $data];
         self::$_output[] = $data;
         //输出结果
@@ -97,14 +94,12 @@ class  Response {
     }
 
 //json格式
-    private
-    static function encodeJson($responseData) {
+    private static function encodeJson($responseData) {
         return json_encode($responseData);
     }
 
 //xml格式
-    private
-    static function encodeXml($responseData) {
+    private static function encodeXml($responseData) {
         $xml = new \SimpleXMLElement('<?xml version="1.0"?><rest></rest>');
         foreach ($responseData as $key => $value) {
             if (is_array($value)) {
@@ -120,8 +115,7 @@ class  Response {
     }
 
 //html格式
-    private
-    static function encodeHtml($responseData) {
+    private static function encodeHtml($responseData) {
         $html = "<table border='1'>";
         foreach ($responseData as $key => $value) {
             $html .= "<tr>";
@@ -142,16 +136,14 @@ class  Response {
     /**
      * @return array
      */
-    public
-    static function getOutput(): array {
+    public static function getOutput(): array {
         return self::$_output;
     }
 
     /**
      * @param array $output
      */
-    public
-    static function setOutput(array $output, $clear = 0) {
+    public static function setOutput(array $output, $clear = 0) {
         if ($clear == 1) {
             self::$_output = [];
         }
@@ -161,16 +153,14 @@ class  Response {
     /**
      * @return array
      */
-    public
-    static function getContent(): array {
+    public static function getContent(): array {
         return self::$_content;
     }
 
     /**
      * @param array $content
      */
-    public
-    static function setContent($content, $clear = 0) {
+    public static function setContent($content, $clear = 0) {
         if ($clear == 1) {
             self::$_content = [];
         }

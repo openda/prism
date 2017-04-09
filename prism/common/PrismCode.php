@@ -4,13 +4,13 @@
  * User: wangxiaokang@iwaimai.baidu.com
  * Date: 17/3/29
  * Time: 下午10:54
- * Desc:
+ * Desc: 系统码
  */
 
 namespace prism\common;
 
 
-class ErrCode {
+class PrismCode {
     const SUCCESS = 0;
 
     // 内部错误区
@@ -41,32 +41,32 @@ class ErrCode {
     const ERR_REQUEST_ACTION_TYPE  = 73;//请求方法类型出错
 
 }
-const ERR_MSG = array(
-    ErrCode::SUCCESS => 'success',
+const PRISM_MSG = array(
+    PrismCode::SUCCESS => 'success',
 
-    ErrCode::ERR_CHECK_RUNTIME => '运行目录检查错误',
-    ErrCode::ERR_CHECK_APPS    => 'APP检查错误',
+    PrismCode::ERR_CHECK_RUNTIME => '运行目录检查错误',
+    PrismCode::ERR_CHECK_APPS    => 'APP检查错误',
 
-    ERRCODE::ERR_CONF_PARAM => '配置参数错误',
-    ErrCode::ERR_CONF_PARSE => '配置文件解析函数不存在',
+    PrismCode::ERR_CONF_PARAM => '配置参数错误',
+    PrismCode::ERR_CONF_PARSE => '配置文件解析函数不存在',
 
-    ErrCode::ERR_CREATE_CONTROLLER => '生成app默认控制器失败',
-    ErrCode::ERR_CREATE_ROUTE      => '生成app默认路由失败',
+    PrismCode::ERR_CREATE_CONTROLLER => '生成app默认控制器失败',
+    PrismCode::ERR_CREATE_ROUTE      => '生成app默认路由失败',
 
-    ErrCode::ERR_REQUEST               => '请求失败',
-    ErrCode::ERR_REQUEST_ROUTE         => '请求路由出错',
-    ErrCode::ERR_REQUEST_METHOD        => '请求方式出错',
-    ErrCode::ERR_REQUEST_PARAM_INEXIST => '请求参数缺失',
-    ErrCode::ERR_ROUTE_FILE            => '路由表不存在',
+    PrismCode::ERR_REQUEST               => '请求失败',
+    PrismCode::ERR_REQUEST_ROUTE         => '请求路由出错',
+    PrismCode::ERR_REQUEST_METHOD        => '请求方式出错',
+    PrismCode::ERR_REQUEST_PARAM_INEXIST => '请求参数缺失',
+    PrismCode::ERR_ROUTE_FILE            => '路由表不存在',
 
-    ErrCode::ERR_REQUEST_PARAM_EMAIL  => '邮箱格式不正确',
-    ErrCode::ERR_REQUEST_PARAM_PHONE  => '手机号码不正确',
-    ErrCode::ERR_REQUEST_PARAM_TIME   => '查询时间格式不正确',
-    ErrCode::ERR_REQUEST_PARAM_MD532  => 'MD5格式不对',
-    ErrCode::ERR_REQUEST_PARAM_NUMBER => '数字格式不对',
-    ErrCode::ERR_REQUEST_PARAM_STRING => '字符串格式不对',
-    ErrCode::ERR_REQUEST_PARAM_OPTION => '选项值格式不对',
-    ErrCode::ERR_REQUEST_PARAM        => '用户请求参数不对',
-    ErrCode::ERR_REQUEST_ACTION_TYPE  => '请求方法类型出错',
+    PrismCode::ERR_REQUEST_PARAM_EMAIL  => '邮箱格式不正确',
+    PrismCode::ERR_REQUEST_PARAM_PHONE  => '手机号码不正确',
+    PrismCode::ERR_REQUEST_PARAM_TIME   => '查询时间格式不正确',
+    PrismCode::ERR_REQUEST_PARAM_MD532  => 'MD5格式不对',
+    PrismCode::ERR_REQUEST_PARAM_NUMBER => '数字格式不对',
+    PrismCode::ERR_REQUEST_PARAM_STRING => '字符串格式不对',
+    PrismCode::ERR_REQUEST_PARAM_OPTION => '选项值格式不对',
+    PrismCode::ERR_REQUEST_PARAM        => '用户请求参数不对',
+    PrismCode::ERR_REQUEST_ACTION_TYPE  => '请求方法类型出错',
 
 );

@@ -10,8 +10,8 @@
 namespace prism;
 
 
-use const prism\common\ERR_MSG;
-use prism\common\ErrCode;
+use const prism\common\PRISM_MSG;
+use prism\common\PrismCode;
 use prism\core\exception\ErrorException;
 
 class Route {
@@ -44,12 +44,12 @@ class Route {
                     $this->route['controller'] = $uris[1];
                     $this->route['action']     = $uris[2];
                 } else {
-                    Response::sendError(ErrCode::ERR_REQUEST_ROUTE, ERR_MSG[ErrCode::ERR_REQUEST_ROUTE]);
+                    Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
                 }
             }
         } else {
-            Response::sendError(ErrCode::ERR_REQUEST, ERR_MSG[ErrCode::ERR_REQUEST]);
-//            throw new ErrorException(ErrCode::ERR_REQUEST, ERR_MSG[ErrCode::ERR_REQUEST], __FILE__, __LINE__);
+            Response::sendError(PrismCode::ERR_REQUEST, PRISM_MSG[PrismCode::ERR_REQUEST]);
+//            throw new ErrorException(PrismCode::ERR_REQUEST, PRISM_MSG[PrismCode::ERR_REQUEST], __FILE__, __LINE__);
         }
     }
 
