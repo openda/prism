@@ -20,7 +20,7 @@ define('EXT', '.php');
 define('DS', DIRECTORY_SEPARATOR);
 
 defined('APP_STATUS') or define('APP_STATUS', ''); // 应用状态 加载对应的配置文件
-defined('APP_DEBUG') or define('APP_DEBUG', false); // 是否调试模式
+defined('APP_DEBUG') or define('APP_DEBUG', true); // 是否调试模式
 defined('ROOT_PATH') or define('ROOT_PATH', str_replace('\\', '/', realpath(dirname(__FILE__) . '/../')) . DS);
 defined('PRISM_PATH') or define('PRISM_PATH', __DIR__ . '/');
 defined('APP_PATH') or define('APP_PATH', dirname($_SERVER['SCRIPT_FILENAME']) . '/app/');

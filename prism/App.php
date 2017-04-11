@@ -124,13 +124,19 @@ class App {
                 $args = [];
             }
             $instance = $class->newInstanceArgs($args);
-            $method   = $class->getmethod($route['action']);
-            if ($method->isPrivate() || $method->isConstructor() || $method->isStatic() || $method->isDestructor()) {
-                Response::sendError(PrismCode::ERR_REQUEST_ACTION_TYPE, PRISM_MSG[PrismCode::ERR_REQUEST_ACTION_TYPE]);
+            //TODO 判断action是否存在的处理机制需要改进
+            $methods = $class->getMethods();
+            foreach ($methods as $method) {
+                if ($method->getName() == $route['action']) {
+                    $method = $class->getmethod($route['action']);
+                    if ($method->isPrivate() || $method->isConstructor() || $method->isStatic() || $method->isDestructor()) {
+                        Response::sendError(PrismCode::ERR_REQUEST_ACTION_TYPE, PRISM_MSG[PrismCode::ERR_REQUEST_ACTION_TYPE]);
+                    }
+
+                    return $method->invokeArgs($instance, $route['inputs']);
+                }
             }
-
-            return $method->invokeArgs($instance, $route['inputs']);
-
+            Response::sendError(PrismCode::ERR_ROUTE_ACTION, PRISM_MSG[PrismCode::ERR_ROUTE_ACTION]);
         } catch (\ReflectionException $e) {
             Response::sendException($e);
         }
@@ -148,7 +154,8 @@ class App {
      *
      * @return array
      */
-    private static function bindParams($reflect, $vars = []) {
+    private
+    static function bindParams($reflect, $vars = []) {
         if (empty($vars)) {
             $vars = Request::instance()->getInput();
         }

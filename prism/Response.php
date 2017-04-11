@@ -42,11 +42,6 @@ class  Response {
     }
 
     public static function sendException($e = []) {
-//        $content = [
-//            'code'  => $code,
-//            'msg' => $msg,
-//        ];
-        !APP_DEBUG ?: $content['exception'] = $e;
         self::output($e);
         exit();
     }

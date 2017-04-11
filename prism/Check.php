@@ -177,6 +177,12 @@ return [
             $routeInfo = $route->getRoute();
             $inputs    = $route->getInputs();
             if (!empty($routeInfo)) {
+                if (!is_dir(APP_PATH . $routeInfo['app'])) {
+                    Response::sendError(PrismCode::ERR_ROUTE_APP, PRISM_MSG[PrismCode::ERR_ROUTE_APP]);
+                }
+                if (!file_exists(APP_PATH . $routeInfo['app'] . DS . 'controller' . DS . ucfirst($routeInfo['controller']) . '.php')) {
+                    Response::sendError(PrismCode::ERR_ROUTE_CONTROLLER, PRISM_MSG[PrismCode::ERR_ROUTE_CONTROLLER]);
+                }
                 $routeTmp = trim($routeInfo['app'], '/') . '/' . trim($routeInfo['controller'], '/');
                 if (array_key_exists($routeTmp, $config)) {
                     $routeConfig = $config["$routeTmp"];
@@ -211,6 +217,7 @@ return [
             Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
         }
 
+        return true;
     }
 
     /**
