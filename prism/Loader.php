@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: wangxiaokang@iwaimai.baidu.com
+ * User: wangxk1991@gmail.com
  * Date: 17/3/30
  * Time: 上午10:16
  * Desc: Prism自动加载文件类

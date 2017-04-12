@@ -2,7 +2,7 @@
 
 /**
  * Created by PhpStorm.
- * User: wangxiaokang@iwaimai.baidu.com
+ * User: wangxk1991@gmail.com
  * Date: 17/3/29
  * Time: 下午2:33
  * Desc: Prism错误异常

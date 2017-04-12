@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: wangxiaokang@iwaimai.baidu.com
+ * User: wangxk1991@gmail.com
  * Date: 17/4/11
  * Time: 下午9:18
  * Desc: 对外访问的数据模型工厂类
