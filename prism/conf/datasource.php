@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: wangxiaokang@iwaimai.baidu.com
+ * User: wangxk1991@gmail.com
  * Date: 17/4/4
  * Time: 上午9:35
  * Desc: 数据源配置信息

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: wangxiaokang@iwaimai.baidu.com
+ * User: wangxk1991@gmail.com
  * Date: 17/3/29
  * Time: 下午9:26
  * Desc: 网络异常
