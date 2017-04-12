@@ -8,7 +8,7 @@ use prism\Model;
 class Index extends Controller {
     public function index() {
         $model = Model::load();
-        
+
         return $this->result;
     }
 }

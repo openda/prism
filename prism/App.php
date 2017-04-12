@@ -37,6 +37,7 @@ class App {
             }
             $config = Config::get();
 
+            Response::outputPage($config, 1);
             $route = new Route($request);
             $route->setDefault([
                 'app'        => empty($config['default_app']) ? 'index' : $config['default_app'],
