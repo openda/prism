@@ -188,7 +188,6 @@ class Logger {
         $str = "[{$levelStr}][" . self::$visitId . "][" . self::$visitTime . "]\n" . $str . "\n";
 
         $logfile = Logger::getFileName($level);
-//        Response::outputPage($logfile, 1);
         file_put_contents($logfile, $str, FILE_APPEND);
     }
 }

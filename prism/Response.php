@@ -41,13 +41,16 @@ class  Response {
         }
     }
 
-    public static function sendException($e = []) {
-//        $content = [
-//            'code'  => $code,
-//            'msg' => $msg,
-//        ];
-        !APP_DEBUG ?: $content['exception'] = $e;
-        self::output($e);
+    public static function sendException($code, $msg, $e = []) {
+        $e       = empty($e) ? new \Exception() : $e;
+        $content = [
+            'code'  => $code,
+            'msg'   => $msg,
+            'file'  => $e->getFile(),
+            'line'  => $e->getLine(),
+            'trace' => $e->getTrace(),
+        ];
+        self::output($content);
         exit();
     }
 

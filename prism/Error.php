@@ -33,7 +33,7 @@ class Error {
         if (!$e instanceof \Exception) {
             $e = new ThrowableError($e);
         }
-
+        Response::sendException($e);
 //        self::getExceptionHandler()->report($e);
 //        self::getExceptionHandler()->render($e)->send();
     }
@@ -41,8 +41,8 @@ class Error {
     /**
      * Error Handler
      *
-     * @param  integer $errno   错误编号
-     * @param  integer $errstr  详细错误信息
+     * @param  integer $errno 错误编号
+     * @param  integer $errstr 详细错误信息
      * @param  string  $errfile 出错的文件
      * @param  integer $errline 出错行号
      * @param array    $errcontext
@@ -51,12 +51,6 @@ class Error {
      */
     public static function appError($errno, $errstr, $errfile = '', $errline = 0, $errcontext = []) {
         $exception = new ErrorException($errno, $errstr, $errfile, $errline, $errcontext);
-        if (error_reporting() & $errno) {
-            // 将错误信息托管至 think\exception\ErrorException
-            throw $exception;
-        } else {
-//            self::getExceptionHandler()->report($exception);
-        }
     }
 
     /**
@@ -88,18 +82,18 @@ class Error {
      *
      * @return Handle
      */
-    public static function getExceptionHandler() {
-        static $handle;
-        if (!$handle) {
-            // 异常处理handle
-            $class = Config::get('exception_handle');
-            if ($class && class_exists($class) && is_subclass_of($class, "\\prism\\exception\\Handle")) {
-                $handle = new $class;
-            } else {
-                $handle = new Handle;
-            }
-        }
-
-        return $handle;
-    }
+//    public static function getExceptionHandler() {
+//        static $handle;
+//        if (!$handle) {
+//            // 异常处理handle
+//            $class = Config::get('exception_handle');
+//            if ($class && class_exists($class) && is_subclass_of($class, "\\prism\\exception\\Handle")) {
+//                $handle = new $class;
+//            } else {
+//                $handle = new Handle;
+//            }
+//        }
+//
+//        return $handle;
+//    }
 }
