@@ -44,11 +44,12 @@ class  Response {
     public static function sendException($code, $msg, $e = []) {
         $e       = empty($e) ? new \Exception() : $e;
         $content = [
-            'code'  => $code,
-            'msg'   => $msg,
-            'file'  => $e->getFile(),
-            'line'  => $e->getLine(),
-            'trace' => $e->getTrace(),
+            'code'      => $code,
+            'msg'       => $msg,
+            'exception' => $e->getMessage(),
+            'file'      => $e->getFile(),
+            'line'      => $e->getLine(),
+            'trace'     => $e->getTrace(),
         ];
         self::output($content);
         exit();

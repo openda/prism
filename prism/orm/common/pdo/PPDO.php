@@ -4,7 +4,7 @@
  * User: wangxk1991@gmail.com
  * Date: 17/4/12
  * Time: 下午9:39
- * Desc:
+ * Desc: prism pdo基类
  */
 
 namespace prism\orm\common\pdo;
@@ -27,10 +27,14 @@ class PPDO {
 
     public function query($sql = '') {
         try {
-            $this->pdo->query($sql);
+            $sth = $this->pdo->prepare($sql);
+            $sth->execute();
+            return $this->pdo->query($sql)->fetch();
         } catch (\PDOException $e) {
             Response::sendException(PrismCode::ERR_PDO_QUERY, PRISM_MSG[PrismCode::ERR_PDO_QUERY], $e);
         }
+
+        return false;
     }
 
     public function exec($sql = '') {
@@ -42,5 +46,4 @@ class PPDO {
 
         return false;
     }
-
 }

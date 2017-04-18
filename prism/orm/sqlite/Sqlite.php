@@ -11,39 +11,46 @@ namespace prism\orm\sqlite;
 
 
 use prism\orm\BaseModel;
+use prism\orm\common\BaseDB;
+use prism\orm\common\pdo\PPDO;
+use prism\Response;
 
-class Sqlite extends BaseModel {
+class Sqlite extends BaseDB implements BaseModel {
+    private $pdo;
 
-    /**
-     * @return mixed
-     * 执行sql语句
-     */
-    public function execute() {
-        // TODO: Implement execute() method.
-
+    public function __construct($linkInfo = []) {
+        parent::__construct('sqlite');
+        self::connect($linkInfo);
     }
+
 
     /**
      * @return mixed
      * 数据库连接
      */
-    public function connect() {
+    public function connect($link) {
         // TODO: Implement connect() method.
+        $dsn = sprintf($this->dbConf['link_sql'], $link['dbfile']);
+
+        $this->pdo = new PPDO($dsn, null, null);
     }
+
 
     /**
      * @return mixed
      * 数据库查询
      */
-    public function query() {
-        // TODO: Implement query() method.
+    public function select($fileds = '*') {
+        // TODO: Implement select() method.
+        $this->sql = 'SELECT ' . $fileds . ' ' . implode(' ', $this->sqlMap);
+        self::execute();
     }
 
     /**
      * @return mixed
      * 添加
      */
-    public function add() {
+    public function add($data = []) {
         // TODO: Implement add() method.
     }
 
@@ -51,7 +58,7 @@ class Sqlite extends BaseModel {
      * @return mixed
      * 更新
      */
-    public function update() {
+    public function update($field = []) {
         // TODO: Implement update() method.
     }
 
@@ -59,7 +66,24 @@ class Sqlite extends BaseModel {
      * @return mixed
      * 删除
      */
-    public function delete() {
+    public function delete($param = []) {
         // TODO: Implement delete() method.
+    }
+
+    /**
+     * @return mixed
+     * 执行sql语句
+     */
+    public function execute() {
+        // TODO: Implement execute() method.
+        return $this->pdo->query($this->sql);
+    }
+
+    /**
+     * @return mixed
+     * 获取数据结构(数据库就是数据表的结构，url就是json结构)
+     */
+    public function structure($tbl) {
+        // TODO: Implement structure() method.
     }
 }

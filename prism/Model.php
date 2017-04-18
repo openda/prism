@@ -12,7 +12,7 @@ namespace prism;
 use prism\orm\mysql\Mysql;
 use prism\orm\pgsql\Pgsql;
 use prism\orm\sqlite\Sqlite;
-use prism\orm\URL\Url;
+use prism\orm\url\Url;
 
 /**
  * @property Sqlite model
@@ -20,23 +20,23 @@ use prism\orm\URL\Url;
 class Model {
     public $model;
 
-    public static function load($type = 'MYSQL') {
-        $type = strtoupper($type);
+    public static function load($type = 'mysql') {
+        $type = strtolower($type);
         switch ($type) {
-            case 'MYSQL': {
+            case 'mysql': {
                 return new Mysql();
             }
                 break;
-            case 'PGSQL': {
+            case 'pgsql': {
                 return new Pgsql();
             }
                 break;
-            case 'URL': {
+            case 'url': {
                 return new Url();
             }
             //默认是sqlite
             default: {
-                return new Sqlite();
+                return new Sqlite(['dbfile' => SQLITE_FILE]);
             }
         }
     }

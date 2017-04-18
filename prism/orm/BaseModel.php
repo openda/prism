@@ -10,40 +10,46 @@
 namespace prism\orm;
 
 
-abstract class BaseModel {
+interface BaseModel {
     /**
      * @return mixed
      * 数据库连接
      */
-    abstract public function connect();
+    public function connect($link);
 
     /**
      * @return mixed
      * 数据库查询
      */
-    abstract public function query();
+    public function select($fileds = '*');
 
     /**
      * @return mixed
      * 添加
      */
-    abstract public function add();
+    public function add($data = []);
 
     /**
      * @return mixed
      * 更新
      */
-    abstract public function update();
+    public function update($field = []);
 
     /**
      * @return mixed
      * 删除
      */
-    abstract public function delete();
+    public function delete($param = []);
 
     /**
      * @return mixed
      * 执行sql语句
      */
-    abstract public function execute();
+    public function execute();
+
+    /**
+     * @return mixed
+     * 获取数据结构(数据库就是数据表的结构，url就是json结构)
+     */
+    public function structure($tbl);
 }

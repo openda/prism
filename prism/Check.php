@@ -30,16 +30,16 @@ class Check {
 
     const RUNTIME_AUTH       = 0775;
     const DEFAULT_CONTROLLER =
-        "<?php 
+        '<?php 
 namespace app\\index\\controller;
 
 use prism\\Controller;
 
 class Index extends Controller{
     public function show() {
-        return 'Hello Prism';
+        return $this->result;
     }
-}";
+}';
     const DEFAULT_ROUTE      = '<?php 
 return [
     "index"=>"app/index/controller/Index.php",
@@ -47,7 +47,6 @@ return [
 
 
     public static function run($type = [], $check = [], $config = []) {
-        Logger::debug('REQUEST_PARAM_INEXIST', ['sss']);
         if (in_array('runtime', $type)) {
             self::checkRuntime();
         }
@@ -198,11 +197,11 @@ return [
                             if ($input[1] == 1 && $validate != 0) {
                                 Response::sendError($validate, PRISM_MSG[$validate]);
                             }
-                            if ($input[1] == 0 && $validate != 0 && (!empty($inputs[$param]) || !isset($inputs[$param]))) {
+                            if ($input[1] == 0 && $validate != 0 && (!empty($inputs[$param]) || isset($inputs[$param]))) {
                                 Response::sendError($validate, PRISM_MSG[$validate]);
                             }
                         } catch (ErrorException $e) {
-                            Response::sendException($e);
+                            Response::sendException(PrismCode::ERR_REQUEST_PARAM_VALIDATE, PRISM_MSG[PrismCode::ERR_REQUEST_PARAM_VALIDATE], $e);
                         }
                     }
                 }

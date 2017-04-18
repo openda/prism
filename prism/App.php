@@ -31,13 +31,12 @@ class App {
             if (is_file(APP_PATH . 'route.php')) {
                 Config::load(APP_PATH . 'route.php', 'route');
             } else {
-                Response::sendException(PrismCode::ERR_REQUEST_ROUTE);
+                Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
 
                 return false;
             }
             $config = Config::get();
 
-            Response::outputPage($config, 1);
             $route = new Route($request);
             $route->setDefault([
                 'app'        => empty($config['default_app']) ? 'index' : $config['default_app'],
@@ -46,15 +45,15 @@ class App {
             ]);
             //路由解析
             $route->parse();
-            // 路由检查
+            // 路由检查，顺带做参数校验
             $routes = Check::run(['route'], $route, $config['route']);
-            if (!empty($routes['inputs']) && !empty($routes['class']) && !empty($routes['action']) && !empty($routes['app'])) {
+            if (!empty($routes['class']) && !empty($routes['action']) && !empty($routes['app'])) {
                 Response::send(self::invoke($routes));
             } else {
                 Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
             }
         } catch (ErrorException $e) {
-            Response::sendException($e);
+            Response::sendException(PrismCode::ERR_APP_RUN, PRISM_MSG[PrismCode::ERR_APP_RUN], $e);
         }
 
         return true;
