@@ -7,7 +7,7 @@
  * Desc:
  */
 
-namespace prism\orm\URL;
+namespace prism\orm\url;
 
 
 use prism\orm\BaseModel;

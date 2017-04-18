@@ -14,7 +14,7 @@ if (version_compare(PHP_VERSION, '5.6.0', "<")) die('require PHP > 5.6.0 !');
 define('APP_DEBUG', true);
 
 // 定义数据库文件目录
-define('DB_PATH','./prism/db/prism.db');
+define('SQLITE_FILE', __DIR__ . '/prism/db/prism.db');
 
 // 引入Prism入口文件
 require './prism/Start.php';
