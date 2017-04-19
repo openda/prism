@@ -16,13 +16,14 @@ use prism\Config;
 use prism\Response;
 
 class BaseDB {
-    protected   $sql    = '';
-    protected   $sqlMap = [
+    protected $sql         = '';
+    protected $sqlMap      = [
         "from"  => "",
         "where" => "",
         "order" => "",
         "limit" => "",
     ];
+    protected $whereParams = [];
     protected $dbConf;
 
     public function __construct($dataType = 'sqlMapite') {
@@ -38,7 +39,8 @@ class BaseDB {
         return $this;
     }
 
-    public function where($where = '1=1') {
+    public function where($where = '1=1', $params = []) {
+        $this->whereParams     = $params;
         $this->sqlMap["where"] = "WHERE " . $where;
 
         return $this;

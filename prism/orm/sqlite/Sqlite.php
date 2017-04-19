@@ -13,7 +13,6 @@ namespace prism\orm\sqlite;
 use prism\orm\BaseModel;
 use prism\orm\common\BaseDB;
 use prism\orm\common\pdo\PPDO;
-use prism\Response;
 
 class Sqlite extends BaseDB implements BaseModel {
     private $pdo;
@@ -43,7 +42,8 @@ class Sqlite extends BaseDB implements BaseModel {
     public function select($fileds = '*') {
         // TODO: Implement select() method.
         $this->sql = 'SELECT ' . $fileds . ' ' . implode(' ', $this->sqlMap);
-        self::execute();
+
+        return self::query();
     }
 
     /**
@@ -76,7 +76,7 @@ class Sqlite extends BaseDB implements BaseModel {
      */
     public function execute() {
         // TODO: Implement execute() method.
-        return $this->pdo->query($this->sql);
+        return $this->pdo->execute($this->sql);
     }
 
     /**
@@ -85,5 +85,10 @@ class Sqlite extends BaseDB implements BaseModel {
      */
     public function structure($tbl) {
         // TODO: Implement structure() method.
+    }
+
+    public function query() {
+        // TODO: Implement query() method.
+        return $this->pdo->query($this->sql, $this->whereParams);
     }
 }

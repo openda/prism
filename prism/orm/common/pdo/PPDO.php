@@ -18,6 +18,7 @@ class PPDO {
 
     public function __construct($dsn, $user, $password) {
         try {
+
             $this->pdo = new \PDO($dsn, $user, $password);
             $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $e) {
@@ -25,13 +26,38 @@ class PPDO {
         }
     }
 
-    public function query($sql = '') {
+    public function query($sql = '', $params) {
         try {
-            $sth = $this->pdo->prepare($sql);
-            $sth->execute();
-            return $this->pdo->query($sql)->fetch();
+            if (!empty($params)) {
+                $sth = $this->pdo->prepare($sql);
+                foreach ($params as $key => $param) {
+                    if (is_numeric($key)) {
+                        $sth->bindParam("$key+1", $param);
+                    } else {
+                        $sth->bindParam("$key", $param);
+                    }
+                }
+                $sth->execute($params);
+                $sth->setFetchMode(\PDO::FETCH_ASSOC);
+
+                return $sth->fetchAll();
+            } else {
+                return $this->pdo->query($sql)->fetchAll();
+            }
         } catch (\PDOException $e) {
             Response::sendException(PrismCode::ERR_PDO_QUERY, PRISM_MSG[PrismCode::ERR_PDO_QUERY], $e);
+        }
+
+        return false;
+    }
+
+    public function execute($sql = '') {
+        try {
+            $sth = $this->pdo->prepare($sql);
+
+            return $sth->execute($sql);
+        } catch (\PDOException $e) {
+            Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
         }
 
         return false;
