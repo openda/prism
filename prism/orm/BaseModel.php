@@ -47,6 +47,8 @@ interface BaseModel {
      */
     public function execute();
 
+    public function query();
+
     /**
      * @return mixed
      * 获取数据结构(数据库就是数据表的结构，url就是json结构)
