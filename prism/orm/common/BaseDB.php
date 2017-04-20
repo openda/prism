@@ -16,6 +16,7 @@ use prism\Config;
 use prism\Response;
 
 class BaseDB {
+    protected $table       = '';
     protected $sql         = '';
     protected $sqlMap      = [
         "from"  => "",
@@ -33,7 +34,15 @@ class BaseDB {
         }
     }
 
+    public function table($tableName = '') {
+        self::init();
+        $this->table           = $tableName;
+
+        return $this;
+    }
+
     public function from($tableName = '') {
+        self::init();
         $this->sqlMap["from"] = "FROM " . $tableName;
 
         return $this;
@@ -58,9 +67,13 @@ class BaseDB {
         return $this;
     }
 
-//    public function like($like = []) {
-//        $this->sqlMap["like"] = $like[0] . ' LIKE ' . $like[1];
-//
-//        return $this;
-//    }
+    public function init() {
+        $this->sqlMap = [
+            "table" => "",
+            "from"  => "",
+            "where" => "",
+            "order" => "",
+            "limit" => "",
+        ];
+    }
 }
