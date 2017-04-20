@@ -27,7 +27,7 @@ interface BaseModel {
      * @return mixed
      * 添加
      */
-    public function add($data = []);
+    public function save($data = []);
 
     /**
      * @return mixed
@@ -45,7 +45,7 @@ interface BaseModel {
      * @return mixed
      * 执行sql语句
      */
-    public function execute();
+    public function execute($params);
 
     public function query();
 
