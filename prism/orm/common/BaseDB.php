@@ -36,7 +36,7 @@ class BaseDB {
 
     public function table($tableName = '') {
         self::init();
-        $this->table           = $tableName;
+        $this->table = $tableName;
 
         return $this;
     }
@@ -50,18 +50,21 @@ class BaseDB {
 
     public function where($where = '1=1', $params = []) {
         $this->whereParams     = $params;
+        $this->sqlMap["where"] = '';
         $this->sqlMap["where"] = "WHERE " . $where;
 
         return $this;
     }
 
     public function order($order = 'id DESC') {
+        $this->sqlMap["order"] = '';
         $this->sqlMap["order"] = "ORDER BY " . $order;
 
         return $this;
     }
 
     public function limit($limit = [0, 10]) {
+        $this->sqlMap["limit"] = '';
         $this->sqlMap["limit"] = "LIMIT " . join(',', $limit);
 
         return $this;

@@ -41,14 +41,13 @@ class PPDO {
             $sth = $this->pdo->prepare($sql);
             foreach ($params as $key => $param) {
                 if (is_numeric($key)) {
-                    $sth->bindParam($key + 1, $param);
+                    $sth->bindValue($key + 1, $param);
                 } else {
-                    $sth->bindParam("$key", $param);
+                    $sth->bindValue($key, $param);
                 }
             }
             $sth->execute();
             $sth->setFetchMode(\PDO::FETCH_ASSOC);
-
             return $sth->fetchAll();
         } catch (\PDOException $e) {
             Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
