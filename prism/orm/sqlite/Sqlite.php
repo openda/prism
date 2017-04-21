@@ -122,12 +122,10 @@ class Sqlite extends BaseDB implements BaseModel {
                         $params[$field[0]] = $field[1];
                     }
                 }
-                if(!empty($this->whereParams)){
+                if (!empty($this->whereParams)) {
                     array_push($params, $this->whereParams);
                 }
                 $this->sql = $this->sql . implode(',', $sets) . ' ' . $this->sqlMap['where'];
-
-//                Response::outputPage($this->sql , 1);
 
                 return self::execute($params);
             }

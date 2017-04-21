@@ -11,14 +11,13 @@ class Index extends Controller {
 //        $this->result['data'] = $model->from('user')->where('user_id = ?', array('ssss'))->select();
 
 //        $data['user_id']     = 'sdaddad';
-        $data['user_name'] = [':user_name', 'piaobeizu'];
+        $data['user_name'] = 'piaobeizu1';
 //        $data['user_phone']  = '18611470725';
 //        $data['create_time'] = '2017-04-20 21:35:48';
 //        $data['update_time'] = '2017-04-20 21:35:48';
 //
-        $model->table('user')->where('user_id = :user_id', array(':user_id' => 'sdaddad'))->update($data);
+        $this->result['data'] = $model->table('user')->where('user_id = :user_id', array(':user_id' => 'sdaddad'))->update($data);
         $this->result['data'] = $model->from('user')->where('user_id = :user_id', array(':user_id' => 'sdaddad'))->select();
-
 //        $this->result['data'] = $model->from('user')->select();
 
         return $this->result;
