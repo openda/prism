@@ -27,6 +27,8 @@ class BaseDB {
     protected $whereParams = [];
     protected $dbConf;
 
+    protected $ret;
+
     public function __construct($dataType = 'sqlMapite') {
         $this->dbConf = Config::get('data_source')[strtolower($dataType)];
         if (empty($this->dbConf)) {
@@ -35,14 +37,14 @@ class BaseDB {
     }
 
     public function table($tableName = '') {
-        self::init();
+        self::clear();
         $this->table = $tableName;
 
         return $this;
     }
 
     public function from($tableName = '') {
-        self::init();
+        self::clear();
         $this->sqlMap["from"] = "FROM " . $tableName;
 
         return $this;
@@ -70,13 +72,15 @@ class BaseDB {
         return $this;
     }
 
-    public function init() {
-        $this->sqlMap = [
+    public function clear() {
+        $this->sqlMap      = [
             "table" => "",
             "from"  => "",
             "where" => "",
             "order" => "",
             "limit" => "",
         ];
+        $this->whereParams = [];
+        $this->table       = '';
     }
 }
