@@ -39,11 +39,14 @@ class PPDO {
     public function execute($sql = '', $params) {
         try {
             $sth = $this->pdo->prepare($sql);
-            foreach ($params as $key => $param) {
-                if (is_numeric($key)) {
-                    $sth->bindValue($key + 1, $param);
-                } else {
-                    $sth->bindValue($key, $param);
+            if(!empty($params)){
+                foreach ($params as $key => $param) {
+//                    Response::outputPage($key.' '.$param);
+                    if (is_numeric($key)) {
+                        $sth->bindValue($key + 1, $param);
+                    } else {
+                        $sth->bindValue($key, $param);
+                    }
                 }
             }
             $sth->execute();

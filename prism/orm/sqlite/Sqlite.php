@@ -13,7 +13,6 @@ namespace prism\orm\sqlite;
 use prism\orm\BaseModel;
 use prism\orm\common\BaseDB;
 use prism\orm\common\pdo\PPDO;
-use prism\Request;
 use prism\Response;
 
 class Sqlite extends BaseDB implements BaseModel {
@@ -138,17 +137,22 @@ class Sqlite extends BaseDB implements BaseModel {
      * @return mixed
      * 删除
      */
-    public
-    function delete($param = []) {
-        // TODO: Implement delete() method.
+    public function delete($params = []) {
+        // TODO: Implement update() method.
+        if (!empty($params)) {
+            $this->sql = 'DELETE FROM ' . $this->table . ' WHERE ' . implode($params);
+        } else {
+            $this->sql = 'DELETE FROM ' . $this->table . ' ' . $this->sqlMap['where'];
+        }
+//        Response::outputPage($this->sql,1);
+        return self::execute($this->whereParams);
     }
 
     /**
      * @return mixed
      * 执行sql语句
      */
-    public
-    function execute($params) {
+    public function execute($params) {
         // TODO: Implement execute() method.
         return $this->pdo->execute($this->sql, $params);
     }
@@ -157,13 +161,11 @@ class Sqlite extends BaseDB implements BaseModel {
      * @return mixed
      * 获取数据结构(数据库就是数据表的结构，url就是json结构)
      */
-    public
-    function structure($tbl) {
+    public function structure($tbl) {
         // TODO: Implement structure() method.
     }
 
-    public
-    function query() {
+    public function query() {
         // TODO: Implement query() method.
         return $this->pdo->query($this->sql);
     }
