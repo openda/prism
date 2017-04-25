@@ -20,6 +20,7 @@ class PPDO {
         try {
 
             $this->pdo = new \PDO($dsn, $user, $password);
+            $this->pdo->query("SET NAMES utf8;");
             $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $e) {
             Response::sendException(PrismCode::ERR_PDO_CONNECT, PRISM_MSG[PrismCode::ERR_PDO_CONNECT], $e);
@@ -36,12 +37,11 @@ class PPDO {
         return false;
     }
 
-    public function execute($sql = '', $params) {
+    public function prepare($sql = '', $params) {
         try {
             $sth = $this->pdo->prepare($sql);
-            if(!empty($params)){
+            if (!empty($params)) {
                 foreach ($params as $key => $param) {
-//                    Response::outputPage($key.' '.$param);
                     if (is_numeric($key)) {
                         $sth->bindValue($key + 1, $param);
                     } else {
@@ -51,7 +51,18 @@ class PPDO {
             }
             $sth->execute();
             $sth->setFetchMode(\PDO::FETCH_ASSOC);
+
             return $sth->fetchAll();
+        } catch (\PDOException $e) {
+            Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
+        }
+
+        return false;
+    }
+
+    public function execute($sql = '') {
+        try {
+            return $this->pdo->execute($sql);
         } catch (\PDOException $e) {
             Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
         }

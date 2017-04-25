@@ -13,7 +13,6 @@ namespace prism\orm\sqlite;
 use prism\orm\BaseModel;
 use prism\orm\common\BaseDB;
 use prism\orm\common\pdo\PPDO;
-use prism\Response;
 
 class Sqlite extends BaseDB implements BaseModel {
     private $pdo;
@@ -45,10 +44,10 @@ class Sqlite extends BaseDB implements BaseModel {
         $this->sql = 'SELECT ' . $fileds . ' ' . implode(' ', $this->sqlMap);
 
         if (!empty($this->whereParams)) {
-            return self::execute($this->whereParams);
+            return $this->pdo->prepare($this->sql, $this->whereParams);
         }
 
-        return self::query();
+        return $this->pdo->query($this->sql);
     }
 
     /**
@@ -84,7 +83,7 @@ class Sqlite extends BaseDB implements BaseModel {
                 }
                 $this->sql = $this->sql . ' (' . implode(',', $keys) . ') VALUES ("' . implode('","', $values) . '")';
 
-                return self::execute($params);
+                return $this->pdo->prepare($this->sql, $params);
             }
         }
 
@@ -126,7 +125,7 @@ class Sqlite extends BaseDB implements BaseModel {
                 }
                 $this->sql = $this->sql . implode(',', $sets) . ' ' . $this->sqlMap['where'];
 
-                return self::execute($params);
+                return $this->pdo->prepare($this->sql, $params);
             }
         }
 
@@ -144,29 +143,36 @@ class Sqlite extends BaseDB implements BaseModel {
         } else {
             $this->sql = 'DELETE FROM ' . $this->table . ' ' . $this->sqlMap['where'];
         }
-//        Response::outputPage($this->sql,1);
-        return self::execute($this->whereParams);
-    }
 
-    /**
-     * @return mixed
-     * 执行sql语句
-     */
-    public function execute($params) {
-        // TODO: Implement execute() method.
-        return $this->pdo->execute($this->sql, $params);
+        return $this->pdo->prepare($this->sql, $this->whereParams);
     }
 
     /**
      * @return mixed
      * 获取数据结构(数据库就是数据表的结构，url就是json结构)
      */
-    public function structure($tbl) {
+    public function structure($tableName) {
         // TODO: Implement structure() method.
+        $this->sql = "PRAGMA table_info($this->table))";
+        if (!empty($tableName)) {
+            $this->sql = "PRAGMA table_info($tableName)";
+        }
+        $result = $this->pdo->query($this->sql);
+        $info   = [];
+        if ($result) {
+            foreach ($result as $key => $val) {
+                $info[] = [
+                    'name'    => $val['name'],
+                    'type'    => $val['type'],
+                    'notnull' => $val['notnull'], // not null is empty, null is yes
+                    'default' => $val['deft_value'],
+                    'primary' => (strtolower($val['dey']) == 'pri'),
+                    'autoinc' => (strtolower($val['extra']) == 'auto_increment'),
+                ];
+            }
+        }
+
+        return $info;
     }
 
-    public function query() {
-        // TODO: Implement query() method.
-        return $this->pdo->query($this->sql);
-    }
 }
