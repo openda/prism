@@ -19,7 +19,8 @@ class PrismCode {
     const ERR_CONF_PARSE              = 103;//配置文件解析函数不存在
     const ERR_CONF_PRISMLOG_EXISTED   = 104;//系统配置信息prism_log已经存在
     const ERR_CONF_DATASOURCE_EXISTED = 105;//系统配置信息data_source已经存在
-    const ERR_CONF_DATASOURCE = 106;//数据源配置出错
+    const ERR_CONF_APPLOG_EXISTED     = 106;//系统配置信息app_log已经存在
+    const ERR_CONF_DATASOURCE         = 110;//数据源配置出错
 
     const ERR_CHECK_RUNTIME = 120; //系统检查错误
     const ERR_CHECK_APPS    = 121; //系统检查错误

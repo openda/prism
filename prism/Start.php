@@ -47,23 +47,8 @@ define('IS_WIN', strpos(PHP_OS, 'WIN') !== false);
 
 require_once PRISM_PATH . 'Loader.php';
 
-// 注册自动加载
-\prism\Loader::register();
-
-// 注册错误和异常处理机制
-\prism\Error::register();
-
-// 加载系统配置文件
-\prism\Config::set(include CONF_PATH . 'config.php');
-
-// 加载系统日志文件
-\prism\Config::set(include CONF_PATH . 'log.php', 'prism_log');
-
-// 加载系统日志文件
-\prism\Config::set(include CONF_PATH . 'datasource.php', 'data_source');
-
-// 系统检查
-\prism\Check::run(['runtime']);
+//系统开始
+\prism\Prism::start();
 
 // 开始执行应用
 \prism\App::run();

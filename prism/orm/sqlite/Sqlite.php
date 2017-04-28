@@ -4,7 +4,7 @@
  * User: wangxk1991@gmail.com
  * Date: 17/4/11
  * Time: 下午9:27
- * Desc:
+ * Desc: sqlite 基本操作
  */
 
 namespace prism\orm\sqlite;
@@ -63,6 +63,8 @@ class Sqlite extends BaseDB implements BaseModel {
             if (!empty($datas)) {
                 $params = [];
                 $flag   = 0;
+                $keys   = [];
+                $values = [];
                 foreach ($datas as $key => $data) {
                     if ($flag === 0) {
                         if (!is_array($data)) {
