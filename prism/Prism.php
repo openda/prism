@@ -9,6 +9,7 @@
  */
 
 namespace prism;
+
 use prism\controller;
 use prism\Error;
 
@@ -19,25 +20,23 @@ class Prism {
      * 应用初始化
      */
     static public function start() {
-        //自动加载函数
-        spl_autoload_register('Prism\Prism::auto_load');
-        //TODO 设置异常处理
-        Error::register();
-        //TODO 加载系统配置
-        self::$_config = Config::get();
-        var_dump(self::$_config);
-        //TODO 运行应用
-        echo "开始---1";
+        // 注册自动加载
+        \prism\Loader::register();
 
+        // 注册错误和异常处理机制
+        \prism\Error::register();
 
-    }
+        // 加载系统配置文件
+        \prism\Config::set(include CONF_PATH . 'config.php');
 
-    static public function auto_load($class) {
-        echo '开始自动加载啦';
-    }
+        // 加载系统日志文件
+        \prism\Config::set(include CONF_PATH . 'log.php', 'prism_log');
 
-    private static function createApp() {
+        // 加载数据源配置文件
+        \prism\Config::set(include CONF_PATH . 'datasource.php', 'data_source');
 
+        // 系统缓存检查
+        \prism\Check::run(['runtime']);
     }
 }
 

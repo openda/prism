@@ -26,9 +26,6 @@ class Loader {
     private static $prefixesPsr0     = [];
     private static $fallbackDirsPsr0 = [];
 
-    // 自动加载的文件
-    private static $autoloadFiles = [];
-
     // 自动加载
     public static function autoload($class) {
         if ($file = self::findFile($class)) {
@@ -122,43 +119,6 @@ class Loader {
         }
     }
 
-    // 添加Psr0空间
-    private static function addPsr0($prefix, $paths, $prepend = false) {
-        if (!$prefix) {
-            if ($prepend) {
-                self::$fallbackDirsPsr0 = array_merge(
-                    (array)$paths,
-                    self::$fallbackDirsPsr0
-                );
-            } else {
-                self::$fallbackDirsPsr0 = array_merge(
-                    self::$fallbackDirsPsr0,
-                    (array)$paths
-                );
-            }
-
-            return;
-        }
-
-        $first = $prefix[0];
-        if (!isset(self::$prefixesPsr0[$first][$prefix])) {
-            self::$prefixesPsr0[$first][$prefix] = (array)$paths;
-
-            return;
-        }
-        if ($prepend) {
-            self::$prefixesPsr0[$first][$prefix] = array_merge(
-                (array)$paths,
-                self::$prefixesPsr0[$first][$prefix]
-            );
-        } else {
-            self::$prefixesPsr0[$first][$prefix] = array_merge(
-                self::$prefixesPsr0[$first][$prefix],
-                (array)$paths
-            );
-        }
-    }
-
     // 添加Psr4空间
     private static function addPsr4($prefix, $paths, $prepend = false) {
         if (!$prefix) {
@@ -206,40 +166,6 @@ class Loader {
         }
     }
 
-    // 注册composer自动加载
-    private static function registerComposerLoader() {
-        if (is_file(VENDOR_PATH . 'composer/autoload_namespaces.php')) {
-            $map = require VENDOR_PATH . 'composer/autoload_namespaces.php';
-            foreach ($map as $namespace => $path) {
-                self::addPsr0($namespace, $path);
-            }
-        }
-
-        if (is_file(VENDOR_PATH . 'composer/autoload_psr4.php')) {
-            $map = require VENDOR_PATH . 'composer/autoload_psr4.php';
-            foreach ($map as $namespace => $path) {
-                self::addPsr4($namespace, $path);
-            }
-        }
-
-        if (is_file(VENDOR_PATH . 'composer/autoload_classmap.php')) {
-            $classMap = require VENDOR_PATH . 'composer/autoload_classmap.php';
-            if ($classMap) {
-                self::addClassMap($classMap);
-            }
-        }
-
-        if (is_file(VENDOR_PATH . 'composer/autoload_files.php')) {
-            $includeFiles = require VENDOR_PATH . 'composer/autoload_files.php';
-            foreach ($includeFiles as $fileIdentifier => $file) {
-                if (empty(self::$autoloadFiles[$fileIdentifier])) {
-                    __require_file($file);
-                    self::$autoloadFiles[$fileIdentifier] = true;
-                }
-            }
-        }
-    }
-
     public static function register($autoload = '') {
         // 注册系统自动加载
         spl_autoload_register($autoload ?: 'prism\\Loader::autoload', true, true);
@@ -247,18 +173,6 @@ class Loader {
         self::addNamespace([
             'prism' => PRISM_PATH . DS,
         ]);
-//        // 加载类库映射文件
-//        if (is_file(RUNTIME_PATH . 'classmap' . EXT)) {
-//            self::addClassMap(__include_file(RUNTIME_PATH . 'classmap' . EXT));
-//        }
-
-        // Composer自动加载支持
-//        if (is_dir(VENDOR_PATH . 'composer')) {
-//            self::registerComposerLoader();
-//        }
-
-        // 自动加载extend目录
-//        self::$fallbackDirsPsr4[] = rtrim(EXTEND_PATH, DS);
     }
 
     /**
