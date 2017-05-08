@@ -46,6 +46,8 @@ define('IS_CLI', PHP_SAPI == 'cli' ? true : false);
 define('IS_WIN', strpos(PHP_OS, 'WIN') !== false);
 
 require_once PRISM_PATH . 'Loader.php';
+//自动注册
+\prism\Loader::register();
 
 //系统开始
 \prism\Prism::start();

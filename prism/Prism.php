@@ -16,16 +16,7 @@ use prism\Error;
 class Prism {
     protected static $_config = [];
 
-    /**
-     * 应用初始化
-     */
     static public function start() {
-        // 注册自动加载
-        \prism\Loader::register();
-
-        // 注册错误和异常处理机制
-        \prism\Error::register();
-
         // 加载系统配置文件
         \prism\Config::set(include CONF_PATH . 'config.php');
 

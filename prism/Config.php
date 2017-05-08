@@ -56,15 +56,15 @@ class Config {
      * @return mixed
      */
     public static function load($file, $name = '', $range = '') {
-        if (!self::has('prism_log')) {
-            Response::sendError(PrismCode::ERR_CONF_PRISMLOG_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_PRISMLOG_EXISTED]);
-        }
-        if (!self::has('data_source')) {
-            Response::sendError(PrismCode::ERR_CONF_DATASOURCE_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_DATASOURCE_EXISTED]);
-        }
-        if (!self::has('app_log')) {
-            Response::sendError(PrismCode::ERR_CONF_APPLOG_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_APPLOG_EXISTED]);
-        }
+//        if (self::has('prism_log')) {
+//            Response::sendError(PrismCode::ERR_CONF_PRISMLOG_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_PRISMLOG_EXISTED]);
+//        }
+//        if (self::has('data_source')) {
+//            Response::sendError(PrismCode::ERR_CONF_DATASOURCE_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_DATASOURCE_EXISTED]);
+//        }
+//        if (self::has('app_log')) {
+//            Response::sendError(PrismCode::ERR_CONF_APPLOG_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_APPLOG_EXISTED]);
+//        }
         $range = $range ?: self::$range;
         if (!isset(self::$config[$range])) {
             self::$config[$range] = [];
@@ -143,15 +143,15 @@ class Config {
      * @return mixed
      */
     public static function set($name, $value = null, $range = '') {
-        if (!self::has('prism_log')) {
-            Response::sendError(PrismCode::ERR_CONF_PRISMLOG_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_PRISMLOG_EXISTED]);
-        }
-        if (!self::has('data_source')) {
-            Response::sendError(PrismCode::ERR_CONF_DATASOURCE_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_DATASOURCE_EXISTED]);
-        }
-        if (!self::has('app_log')) {
-            Response::sendError(PrismCode::ERR_CONF_APPLOG_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_APPLOG_EXISTED]);
-        }
+//        if (self::has('prism_log')) {
+//            Response::sendError(PrismCode::ERR_CONF_PRISMLOG_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_PRISMLOG_EXISTED]);
+//        }
+//        if (self::has('data_source')) {
+//            Response::sendError(PrismCode::ERR_CONF_DATASOURCE_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_DATASOURCE_EXISTED]);
+//        }
+//        if (self::has('app_log')) {
+//            Response::sendError(PrismCode::ERR_CONF_APPLOG_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_APPLOG_EXISTED]);
+//        }
         $range = $range ?: self::$range;
         if (!isset(self::$config[$range])) {
             self::$config[$range] = [];
