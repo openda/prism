@@ -23,7 +23,7 @@ class Route {
 
     public function __construct(Request $request) {
         $this->request = $request;
-        $this->inputs = $request->getInput();
+        $this->inputs  = $request->getInput();
     }
 
     /**
@@ -40,9 +40,9 @@ class Route {
                 $uri  = $this->request->getUri();
                 $uris = explode('/', substr($uri, 1, strlen($uri) - 1));
                 if (!empty($uris)) {
-                    $this->route['app']        = $uris[0];
-                    $this->route['controller'] = $uris[1];
-                    $this->route['action']     = $uris[2];
+                    $this->route['app']      = $uris[0];
+                    $this->route['resource'] = $uris[1];
+//                    $this->route['action']     = $uris[2];
                 } else {
                     Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
                 }

@@ -30,12 +30,13 @@ class PrismCode {
 
     const ERR_APP_RUN = 160; //APP运行出错
 
-    const ERR_REQUEST          = 299;
-    const ERR_REQUEST_ROUTE    = 201;
-    const ERR_ROUTE_FILE       = 202; //路由表不存在
-    const ERR_ROUTE_APP        = 203; //APP不存在
-    const ERR_ROUTE_CONTROLLER = 204; //控制器不存在
-    const ERR_ROUTE_ACTION     = 205; //操作方法不存在
+    const ERR_REQUEST                  = 299;
+    const ERR_REQUEST_ROUTE            = 201;
+    const ERR_ROUTE_FILE               = 202; //路由表不存在
+    const ERR_ROUTE_APP                = 203; //APP不存在
+    const ERR_ROUTE_CONTROLLER         = 204; //控制器不存在
+    const ERR_ROUTE_ACTION             = 205; //操作方法不存在
+    const ERR_ROUTE_APP_FILE_INEXISTED = 206; //app路由文件不存在
 
     const ERR_REQUEST_METHOD         = 209; //请求方式出错
     const ERR_REQUEST_PARAM_INEXIST  = 210; //请求参数缺失
@@ -71,15 +72,16 @@ const PRISM_MSG = array(
 
     PrismCode::ERR_APP_RUN => 'APP运行出错',
 
-    PrismCode::ERR_REQUEST          => '请求失败',
-    PrismCode::ERR_REQUEST_ROUTE    => '请求路由出错',
-    PrismCode::ERR_ROUTE_FILE       => '路由表不存在',
-    PrismCode::ERR_ROUTE_APP        => 'APP不存在',
-    PrismCode::ERR_ROUTE_CONTROLLER => '控制器不存在',
-    PrismCode::ERR_ROUTE_ACTION     => '操作方法不存在',
+    PrismCode::ERR_REQUEST                  => '请求失败',
+    PrismCode::ERR_REQUEST_ROUTE            => '请求路由出错',
+    PrismCode::ERR_ROUTE_FILE               => '路由表不存在',
+    PrismCode::ERR_ROUTE_APP                => 'APP不存在',
+    PrismCode::ERR_ROUTE_CONTROLLER         => '控制器不存在',
+    PrismCode::ERR_ROUTE_ACTION             => '操作方法不存在',
+    PrismCode::ERR_ROUTE_APP_FILE_INEXISTED => 'app路由文件不存在',
 
 
-    PrismCode::ERR_REQUEST_METHOD         => '请求方式出错',
+    PrismCode::ERR_REQUEST_METHOD         => '请求方式不存在',
     PrismCode::ERR_REQUEST_PARAM_INEXIST  => '请求参数缺失',
     PrismCode::ERR_REQUEST_PARAM_EMAIL    => '邮箱格式不正确',
     PrismCode::ERR_REQUEST_PARAM_PHONE    => '手机号码不正确',

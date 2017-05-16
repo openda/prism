@@ -60,6 +60,9 @@ class  Response {
             'code' => $code,
             'msg'  => $msg,
         ];
+        if (APP_DEBUG) {
+            $content['trace'] = debug_backtrace();
+        }
         self::output($content);
         exit();
     }

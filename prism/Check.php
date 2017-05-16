@@ -172,26 +172,31 @@ return [
     private static function checkRoute(Route $route = null, $config = []) {
         if (!is_null($route)) {
             // 获取路由表
+            $action    = '';
             $class     = '';
-            $routeInfo = $route->getRoute();
+            $namespace = '';
             $inputs    = $route->getInputs();
+            $routeInfo = $route->getRoute();
             if (!empty($routeInfo)) {
                 if (!is_dir(APP_PATH . $routeInfo['app'])) {
                     Response::sendError(PrismCode::ERR_ROUTE_APP, PRISM_MSG[PrismCode::ERR_ROUTE_APP]);
                 }
-                if (!file_exists(APP_PATH . $routeInfo['app'] . DS . 'controller' . DS . ucfirst($routeInfo['controller']) . '.php')) {
-                    Response::sendError(PrismCode::ERR_ROUTE_CONTROLLER, PRISM_MSG[PrismCode::ERR_ROUTE_CONTROLLER]);
-                }
-                $routeTmp = trim($routeInfo['app'], '/') . '/' . trim($routeInfo['controller'], '/');
+//                if (!file_exists(APP_PATH . $routeInfo['app'] . DS . 'controller' . DS . ucfirst($routeInfo['controller']) . '.php')) {
+//                    Response::sendError(PrismCode::ERR_ROUTE_CONTROLLER, PRISM_MSG[PrismCode::ERR_ROUTE_CONTROLLER]);
+//                }
+                $routeTmp = trim($routeInfo['resource'], '/');
                 if (array_key_exists($routeTmp, $config)) {
                     $routeConfig = $config["$routeTmp"];
-                    $class       = $routeConfig[0];
+                    $class       = $routeConfig["controller"];
+                    $namespace   = str_replace("/", "\\", substr($class, 0, -4));
                     // 判断请求方式是否出错
-                    if (strpos(strtoupper($routeConfig[1]), strtoupper($route->getRequest()->getType())) === false) {
+                    if (!array_key_exists($route->getRequest()->getType(), $routeConfig["method"])) {
                         Response::sendError(PrismCode::ERR_REQUEST_METHOD, PRISM_MSG[PrismCode::ERR_REQUEST_METHOD]);
                     }
+                    $action = empty($routeConfig["method"][$route->getRequest()->getType()]['action']) ? $route->getRequest()->getType() :
+                        $routeConfig["method"][$route->getRequest()->getType()]['action'];
                     // 校验请求参数
-                    foreach ($routeConfig[2] as $param => $input) {
+                    foreach ($routeConfig['method'][$route->getRequest()->getType()]['cp'] as $param => $input) {
                         try {
                             $validate = self::validate($inputs[$param], strtoupper($input[0]), !isset($input[2]) ? '' : $input[2]);
                             if ($input[1] == 1 && $validate != 0) {
@@ -206,9 +211,11 @@ return [
                     }
                 }
             }
+            $routeInfo['action']    = $action;
             $routeInfo['class']     = $class;
             $routeInfo['inputs']    = $inputs;
-            $routeInfo['namespace'] = join('\\', [Config::get('app_namespace'), $routeInfo['app'], 'controller', ucfirst($routeInfo['controller'])]);
+            $routeInfo['namespace'] = join('\\', [Config::get('app_namespace'), $namespace]);
+//            Response::outputPage($routeInfo, 1);
 
             return $routeInfo;
         } else {

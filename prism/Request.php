@@ -38,7 +38,7 @@ class Request {
         }
 
         $this->input = $_REQUEST;
-        $this->type  = $_SERVER['REQUEST_METHOD'];
+        $this->type  = strtolower($_SERVER['REQUEST_METHOD']);
 
     }
 

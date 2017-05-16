@@ -6,7 +6,7 @@ use prism\Controller;
 use prism\Model;
 
 class Index extends Controller {
-    public function index() {
+    public function get() {
         $model = Model::load('sqlite');
 //        $this->result['data'] = $model->from('user')->where('user_id = ?', array('ssss'))->select();
 

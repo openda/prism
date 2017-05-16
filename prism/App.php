@@ -27,24 +27,23 @@ class App {
             // APP检查
             Check::run(['app']);
 
-            // 加载路由信息
-            if (is_file(APP_PATH . 'route.php')) {
-                Config::load(APP_PATH . 'route.php', 'route');
-            } else {
-                Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
-
-                return false;
-            }
-            $config = Config::get();
-
             $route = new Route($request);
             $route->setDefault([
-                'app'        => empty($config['default_app']) ? 'index' : $config['default_app'],
-                'controller' => empty($config['default_controller']) ? 'index' : $config['default_controller'],
-                'action'     => empty($config['default_action']) ? 'index' : $config['default_action'],
+                'app' => empty($config['default_app']) ? 'index' : $config['default_app'],
+                //                'controller' => empty($config['default_controller']) ? 'index' : $config['default_controller'],
+                //                'action'     => empty($config['default_action']) ? 'index' : $config['default_action'],
             ]);
             //路由解析
             $route->parse();
+
+            // 加载路由文件
+            if (is_file(APP_PATH . $route->getRoute()['app'] . '/route.php')) {
+                Config::load(APP_PATH . $route->getRoute()['app'] . '/route.php', 'route');
+            } else {
+                Response::sendError(PrismCode::ERR_ROUTE_APP_FILE_INEXISTED, PRISM_MSG[PrismCode::ERR_ROUTE_APP_FILE_INEXISTED]);
+                return false;
+            }
+            $config = Config::get();
             // 路由检查，顺带做参数校验
             $routes = Check::run(['route'], $route, $config['route']);
             if (!empty($routes['class']) && !empty($routes['action']) && !empty($routes['app'])) {
@@ -116,6 +115,7 @@ class App {
      */
     public static function invoke($route = []) {
         try {
+//            Response::outputPage($route, 1);
             $class       = new \ReflectionClass($route['namespace']);
             $constructor = $class->getConstructor();
             if ($constructor) {
