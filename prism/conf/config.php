@@ -12,5 +12,5 @@ return [
     'default_timezone' => 'PRC',
 
     // log文件前缀
-    'log_file'         => 'log',
+    'log_file_prefix'  => 'log',
 ];

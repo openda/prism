@@ -15,9 +15,9 @@ return [
     // 默认APP
     'default_app'        => 'index',
     // 默认controller
-    'default_controller' => 'index',
+    'default_resource'      => 'index',
     // 默认action
-    'default_action'     => 'index',
+    'default_request_method' => 'GET',
 
     // 定义前端
 ];

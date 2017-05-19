@@ -8,7 +8,8 @@
  */
 
 // 记录开始运行时间
-$_GLOBALS['_beginTime'] = microtime(true);
+$GLOBALS['_beginTime'] = microtime(true);
+$GLOBALS['_loginID'] = rand(10000,99999); //定义全局访问ID
 //记录内存使用情况
 define('MEMORY_LIMIT_ON', function_exists('memory_get_usage'));
 
@@ -50,7 +51,7 @@ require_once PRISM_PATH . 'Loader.php';
 \prism\Loader::register();
 
 //系统开始
-\prism\Prism::start();
+\prism\Prism::run();
 
 // 开始执行应用
 \prism\App::run();

@@ -15,7 +15,7 @@ class Request {
 
     private $input;
     //请求方式
-    private $type;
+    private $method;
 
     protected $options;
 
@@ -38,7 +38,7 @@ class Request {
         }
 
         $this->input = $_REQUEST;
-        $this->type  = strtolower($_SERVER['REQUEST_METHOD']);
+        $this->method  = strtolower($_SERVER['REQUEST_METHOD']);
 
     }
 
@@ -52,20 +52,6 @@ class Request {
 
     public function getRequestInfo() {
         return ['uri' => $this->uri, 'input' => $this->input, 'type' => $this->type];
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getType() {
-        return $this->type;
-    }
-
-    /**
-     * @param mixed $type
-     */
-    public function setType($type) {
-        $this->type = $type;
     }
 
     /**
@@ -94,5 +80,19 @@ class Request {
      */
     public function setInput($input) {
         $this->input = $input;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod(): string {
+        return $this->method;
+    }
+
+    /**
+     * @param string $method
+     */
+    public function setMethod(string $method) {
+        $this->method = $method;
     }
 }

@@ -52,6 +52,7 @@ class  Response {
             'trace'     => $e->getTrace(),
         ];
         self::output($content);
+        Logger::info("PRISM_END");
         exit();
     }
 
@@ -64,6 +65,7 @@ class  Response {
             $content['trace'] = debug_backtrace();
         }
         self::output($content);
+        Logger::info("PRISM_END");
         exit();
     }
 

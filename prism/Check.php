@@ -36,7 +36,8 @@ namespace app\\index\\controller;
 use prism\\Controller;
 
 class Index extends Controller{
-    public function show() {
+    public function get() {
+        $this->result[data]=>"Welcome to Prism World!";
         return $this->result;
     }
 }';
@@ -82,7 +83,8 @@ return [
                     mkdir(CACHE_PATH, Check::RUNTIME_AUTH);
                 }
             } catch (ErrorException $e) {
-                Response::send(PrismCode::ERR_CHECK_RUNTIME, PRISM_MSG[PrismCode::ERR_CHECK_RUNTIME], $e);
+                Response::sendException(PrismCode::ERR_CHECK_RUNTIME, PRISM_MSG[PrismCode::ERR_CHECK_RUNTIME], $e);
+                Logger::error("RUNTIME_INIT_FAILED", [$e->getMessage()]);
             }
         } else {
             try {
@@ -96,7 +98,8 @@ return [
                 mkdir(DATA_PATH, Check::RUNTIME_AUTH);
                 mkdir(CACHE_PATH, Check::RUNTIME_AUTH);
             } catch (ErrorException $e) {
-                Response::sendException($e);
+                Response::sendException(PrismCode::ERR_CHECK_RUNTIME, PRISM_MSG[PrismCode::ERR_CHECK_RUNTIME], $e);
+                Logger::error("RUNTIME_INIT_FAILED", [$e->getMessage()]);
             }
         }
         // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
@@ -181,31 +184,30 @@ return [
                 if (!is_dir(APP_PATH . $routeInfo['app'])) {
                     Response::sendError(PrismCode::ERR_ROUTE_APP, PRISM_MSG[PrismCode::ERR_ROUTE_APP]);
                 }
-//                if (!file_exists(APP_PATH . $routeInfo['app'] . DS . 'controller' . DS . ucfirst($routeInfo['controller']) . '.php')) {
-//                    Response::sendError(PrismCode::ERR_ROUTE_CONTROLLER, PRISM_MSG[PrismCode::ERR_ROUTE_CONTROLLER]);
-//                }
                 $routeTmp = trim($routeInfo['resource'], '/');
                 if (array_key_exists($routeTmp, $config)) {
                     $routeConfig = $config["$routeTmp"];
                     $class       = $routeConfig["controller"];
                     $namespace   = str_replace("/", "\\", substr($class, 0, -4));
-                    // 判断请求方式是否出错
-                    if (!array_key_exists($route->getRequest()->getType(), $routeConfig["method"])) {
-                        Response::sendError(PrismCode::ERR_REQUEST_METHOD, PRISM_MSG[PrismCode::ERR_REQUEST_METHOD]);
-                    }
-                    $action = empty($routeConfig["method"][$route->getRequest()->getType()]['action']) ? $route->getRequest()->getType() :
-                        $routeConfig["method"][$route->getRequest()->getType()]['action'];
+//                    // 判断请求方式是否出错
+//                    if (!array_key_exists($route->getRequest()->getType(), $routeConfig["method"])) {
+//                        Response::sendError(PrismCode::ERR_REQUEST_METHOD, PRISM_MSG[PrismCode::ERR_REQUEST_METHOD]);
+//                    }
+                    $action = empty($routeConfig["method"][$route->getMethod()]['action']) ? $route->getMethod() : $routeConfig["method"][$route->getMethod()]['action'];
                     // 校验请求参数
-                    foreach ($routeConfig['method'][$route->getRequest()->getType()]['cp'] as $param => $input) {
+                    foreach ($routeConfig['method'][$route->getMethod()]['cp'] as $param => $input) {
                         try {
                             $validate = self::validate($inputs[$param], strtoupper($input[0]), !isset($input[2]) ? '' : $input[2]);
                             if ($input[1] == 1 && $validate != 0) {
+                                Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param]);
                                 Response::sendError($validate, PRISM_MSG[$validate]);
                             }
                             if ($input[1] == 0 && $validate != 0 && (!empty($inputs[$param]) || isset($inputs[$param]))) {
+                                Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param]);
                                 Response::sendError($validate, PRISM_MSG[$validate]);
                             }
                         } catch (ErrorException $e) {
+                            Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$e->getMessage()]);
                             Response::sendException(PrismCode::ERR_REQUEST_PARAM_VALIDATE, PRISM_MSG[PrismCode::ERR_REQUEST_PARAM_VALIDATE], $e);
                         }
                     }
@@ -215,6 +217,7 @@ return [
             $routeInfo['class']     = $class;
             $routeInfo['inputs']    = $inputs;
             $routeInfo['namespace'] = join('\\', [Config::get('app_namespace'), $namespace]);
+
 //            Response::outputPage($routeInfo, 1);
 
             return $routeInfo;

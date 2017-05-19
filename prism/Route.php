@@ -20,10 +20,12 @@ class Route {
     //默认绑定的路由
     protected $default;
     private   $inputs = [];
+    private   $method = '';
 
     public function __construct(Request $request) {
         $this->request = $request;
         $this->inputs  = $request->getInput();
+        $this->method  = $request->getMethod();
     }
 
     /**
@@ -42,14 +44,15 @@ class Route {
                 if (!empty($uris)) {
                     $this->route['app']      = $uris[0];
                     $this->route['resource'] = $uris[1];
-//                    $this->route['action']     = $uris[2];
+                    $this->route['type']     = $this->request->getType();
                 } else {
+                    Logger::error("ERR_REQUEST_ROUTE", $uris);
                     Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
                 }
             }
         } else {
+            Logger::error("ERR_REQUEST", ["request is null"]);
             Response::sendError(PrismCode::ERR_REQUEST, PRISM_MSG[PrismCode::ERR_REQUEST]);
-//            throw new ErrorException(PrismCode::ERR_REQUEST, PRISM_MSG[PrismCode::ERR_REQUEST], __FILE__, __LINE__);
         }
     }
 
@@ -107,6 +110,20 @@ class Route {
      */
     public function setInputs($inputs) {
         $this->inputs = $inputs;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod(): string {
+        return $this->method;
+    }
+
+    /**
+     * @param string $method
+     */
+    public function setMethod(string $method) {
+        $this->method = $method;
     }
 
 }

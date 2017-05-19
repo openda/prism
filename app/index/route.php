@@ -1,12 +1,17 @@
 <?php
 return [
-    "user" => [
+    "index" => [
         "controller" => "index/controller/Index.php",
         "method"     => [
-            "post" => [
+            "get"  => [
                 "cp"     => ['id' => ['string', 0]],
-                "action" => "post"
-            ],
+                "action" => "get"
+            ]
+        ],
+    ],
+    "user" => [
+        "controller" => "index/controller/User.php",
+        "method"     => [
             "get"  => [
                 "cp"     => ['id' => ['string', 0]],
                 "action" => "get"

@@ -22,8 +22,8 @@ class Index extends Controller {
 //        $model->table('user')->where('user_id = :user_id', array(':user_id' => 'sdaddad'))->delete();
 //        $this->result['data']    = $model->from('user')->where('user_id = :user_id', array(':user_id' => 'sdadda'))->select();
 //        $this->result['data'] = $model->from('user')->select();
-        $this->result['data'] = $model->structure('user');
-
+//        $this->result['data'] = $model->structure('user');
+        $this->result['data'] = "Welcome to Prism World!";
         return $this->result;
     }
 }

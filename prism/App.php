@@ -21,6 +21,8 @@ class App {
     public static $debug = true;
 
     public static function run(Request $request = null) {
+        Logger::info("PRISM_START");
+
         is_null($request) && $request = Request::instance();
         try {
             self::init();
@@ -29,19 +31,19 @@ class App {
 
             $route = new Route($request);
             $route->setDefault([
-                'app' => empty($config['default_app']) ? 'index' : $config['default_app'],
-                //                'controller' => empty($config['default_controller']) ? 'index' : $config['default_controller'],
-                //                'action'     => empty($config['default_action']) ? 'index' : $config['default_action'],
+                'app'      => empty($config['default_app']) ? 'index' : $config['default_app'],
+                'method'   => empty($config['default_request_method']) ? 'get' : $config['default_request_method'],
+                'resource' => empty($config['default_resource']) ? 'index' : $config['default_resource'],
             ]);
             //路由解析
             $route->parse();
+            Logger::debug("路由信息：", $route->getRoute());
 
             // 加载路由文件
             if (is_file(APP_PATH . $route->getRoute()['app'] . '/route.php')) {
                 Config::load(APP_PATH . $route->getRoute()['app'] . '/route.php', 'route');
             } else {
                 Response::sendError(PrismCode::ERR_ROUTE_APP_FILE_INEXISTED, PRISM_MSG[PrismCode::ERR_ROUTE_APP_FILE_INEXISTED]);
-                return false;
             }
             $config = Config::get();
             // 路由检查，顺带做参数校验
@@ -49,11 +51,13 @@ class App {
             if (!empty($routes['class']) && !empty($routes['action']) && !empty($routes['app'])) {
                 Response::send(self::invoke($routes));
             } else {
+                Logger::error("ERR_REQUEST_ROUTE", [$routes['app'], $routes['class'], $routes['action']]);
                 Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
             }
         } catch (ErrorException $e) {
             Response::sendException(PrismCode::ERR_APP_RUN, PRISM_MSG[PrismCode::ERR_APP_RUN], $e);
         }
+        Logger::info("PRISM_END");
 
         return true;
     }
@@ -64,17 +68,16 @@ class App {
     public static function init() {
         // 初始化app
         $config = self::initApp();
+        // 设置系统时区
+        date_default_timezone_set($config['default_timezone']);
+
         // 注册应用命名空间
         self::$namespace = $config['app_namespace'];
         Loader::addNamespace($config['app_namespace'], APP_PATH);
         if (!empty($config['root_namespace'])) {
             Loader::addNamespace($config['root_namespace']);
         }
-        // 设置系统时区
-        date_default_timezone_set($config['default_timezone']);
-
         //TODO 监听app启动
-
         return Config::get();
     }
 
@@ -138,7 +141,7 @@ class App {
             }
             Response::sendError(PrismCode::ERR_ROUTE_ACTION, PRISM_MSG[PrismCode::ERR_ROUTE_ACTION]);
         } catch (\ReflectionException $e) {
-            Response::sendException($e);
+            Response::sendException(PrismCode::ERR_ROUTE_REFLECTION_FAILED, PRISM_MSG[PrismCode::ERR_ROUTE_REFLECTION_FAILED], $e);
         }
 
         return false;
@@ -154,8 +157,7 @@ class App {
      *
      * @return array
      */
-    private
-    static function bindParams($reflect, $vars = []) {
+    private static function bindParams($reflect, $vars = []) {
         if (empty($vars)) {
             $vars = Request::instance()->getInput();
         }
