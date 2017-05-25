@@ -197,7 +197,7 @@ return [
                     // 校验请求参数
                     foreach ($routeConfig['method'][$route->getMethod()]['cp'] as $param => $input) {
                         try {
-                            $validate = self::validate($inputs[$param], strtoupper($input[0]), !isset($input[2]) ? '' : $input[2]);
+                            $validate = self::validate($inputs[trim($param)], strtoupper(trim($input[0])), !isset($input[2]) ? '' : $input[2]);
                             if ($input[1] == 1 && $validate != 0) {
                                 Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param]);
                                 Response::sendError($validate, PRISM_MSG[$validate]);
@@ -206,6 +206,8 @@ return [
                                 Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param]);
                                 Response::sendError($validate, PRISM_MSG[$validate]);
                             }
+                            //过滤参数中的空格
+                            $inputs[$param] = trim($inputs[$param]);
                         } catch (ErrorException $e) {
                             Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$e->getMessage()]);
                             Response::sendException(PrismCode::ERR_REQUEST_PARAM_VALIDATE, PRISM_MSG[PrismCode::ERR_REQUEST_PARAM_VALIDATE], $e);

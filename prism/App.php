@@ -9,6 +9,7 @@
 
 namespace prism;
 
+use const app\common\APP_MSG;
 use const prism\common\PRISM_MSG;
 use prism\common\PrismCode;
 use prism\core\exception\ErrorException;
@@ -21,8 +22,7 @@ class App {
     public static $debug = true;
 
     public static function run(Request $request = null) {
-        Logger::info("PRISM_START");
-
+        Logger::info("PRISM_START"  );
         is_null($request) && $request = Request::instance();
         try {
             self::init();
@@ -36,9 +36,9 @@ class App {
                 'resource' => empty($config['default_resource']) ? 'index' : $config['default_resource'],
             ]);
             //路由解析
-            $route->parse();
-            Logger::debug("路由信息：", $route->getRoute());
 
+            $route->parse();
+            Logger::debug("路由信息：", ["路由：" => $route->getRoute(), "参数" => $route->getInputs()]);
             // 加载路由文件
             if (is_file(APP_PATH . $route->getRoute()['app'] . '/route.php')) {
                 Config::load(APP_PATH . $route->getRoute()['app'] . '/route.php', 'route');
@@ -49,7 +49,15 @@ class App {
             // 路由检查，顺带做参数校验
             $routes = Check::run(['route'], $route, $config['route']);
             if (!empty($routes['class']) && !empty($routes['action']) && !empty($routes['app'])) {
-                Response::send(self::invoke($routes));
+                $ret = self::invoke($routes);
+                if (array_key_exists($ret, APP_MSG)) {
+                    Response::send([
+                        "code" => $ret,
+                        "msg"  => APP_MSG[$ret],
+                    ]);
+                } else {
+                    Response::send($ret);
+                }
             } else {
                 Logger::error("ERR_REQUEST_ROUTE", [$routes['app'], $routes['class'], $routes['action']]);
                 Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
@@ -77,6 +85,7 @@ class App {
         if (!empty($config['root_namespace'])) {
             Loader::addNamespace($config['root_namespace']);
         }
+
         //TODO 监听app启动
         return Config::get();
     }
@@ -118,7 +127,6 @@ class App {
      */
     public static function invoke($route = []) {
         try {
-//            Response::outputPage($route, 1);
             $class       = new \ReflectionClass($route['namespace']);
             $constructor = $class->getConstructor();
             if ($constructor) {
@@ -135,8 +143,12 @@ class App {
                     if ($method->isPrivate() || $method->isConstructor() || $method->isStatic() || $method->isDestructor()) {
                         Response::sendError(PrismCode::ERR_REQUEST_ACTION_TYPE, PRISM_MSG[PrismCode::ERR_REQUEST_ACTION_TYPE]);
                     }
+//                    self::bindParams($method, $route['inputs']);
+//                    return $method->invokeArgs($instance, $route['inputs']);
+                    $reflectMethod = new \ReflectionMethod($instance, $route['action']);
+                    $args          = self::bindParams($reflectMethod, $route['inputs']);
 
-                    return $method->invokeArgs($instance, $route['inputs']);
+                    return $reflectMethod->invokeArgs($instance, $args);
                 }
             }
             Response::sendError(PrismCode::ERR_ROUTE_ACTION, PRISM_MSG[PrismCode::ERR_ROUTE_ACTION]);
@@ -192,7 +204,8 @@ class App {
                 } elseif ($param->isDefaultValueAvailable()) {
                     $args[] = $param->getDefaultValue();
                 } else {
-                    Response::sendException(new \InvalidArgumentException('method param miss:' . $name));
+                    Response::sendException(PrismCode::ERR_REQUEST_PARAM_INEXIST, APP_MSG[PrismCode::ERR_REQUEST_PARAM_INEXIST],
+                        new \InvalidArgumentException('method param miss:' . $name));
                 }
             }
         }

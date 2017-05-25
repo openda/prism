@@ -100,7 +100,7 @@ class Logger {
         $filename = null;
         if ($logLevel == Logger::DEBUG || $logLevel == Logger::NOTICE) {
             $filename = LOG_PATH . '/' . $logfile . '.' . $date;
-        } elseif ($logLevel == Logger::WARN || $logfile == Logger::ERROR) {
+        } elseif ($logLevel == Logger::WARN || $logLevel == Logger::ERROR) {
             $filename = LOG_PATH . '/' . $logfile . '.' . $date . '.warn';
         } else {
             $filename = null;
@@ -137,30 +137,46 @@ class Logger {
     }
 
 
-    static public function debug($desc, $info) {
+    static public function debug($desc, $info = null) {
         if (!APP_DEBUG) {
             return;
         }
-        $log = self::make(Logger::DEBUG, "DEBUG", [$desc . " [ " . json_encode($info) . " ]"]);
-        Logger::log(Logger::DEBUG, $log);
+        $infos = [$info];
+        if (is_array($info)) {
+            $infos = $info;
+        }
+        $log = self::make(self::DEBUG, "DEBUG", [$desc . " [ " .
+                                                 str_replace('\\"', '"', json_encode($infos, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES)) . " ]"]);
+        Logger::log(self::DEBUG, $log);
     }
 
 
-    static public function warn($logText, $info = []) {
-        $log = self::make(Logger::WARN, $logText, $info);
-        Logger::log(Logger::WARN, $log);
+    static public function warn($logText, $info = null) {
+        $infos = [$info];
+        if (is_array($info)) {
+            $infos = $info;
+        }
+        $log = self::make(self::WARN, $logText, $infos);
+        Logger::log(self::WARN, $log);
     }
 
 
-    static public function error($logText, $info = []) {
-        $log = self::make(Logger::ERROR, $logText, $info);
-        Logger::log(Logger::ERROR, $log);
+    static public function error($logText, $info = null) {
+        $infos = [$info];
+        if (is_array($info)) {
+            $infos = $info;
+        }
+        $log = self::make(self::ERROR, $logText, $infos);
+        Logger::log(self::ERROR, $log);
     }
 
 
-    static public function info($logText, $info = []) {
-
-        $log = self::make(Logger::NOTICE, $logText, $info);
+    static public function info($logText, $info = null) {
+        $infos = [$info];
+        if (is_array($info)) {
+            $infos = $info;
+        }
+        $log = self::make(self::NOTICE, $logText, $infos);
         Logger::log(self::NOTICE, $log);
     }
 
@@ -186,10 +202,11 @@ class Logger {
             $trace    = debug_backtrace();
             if (!empty($info) && is_array($info)) {
                 for ($i = 0; $i < count($logTexts); $i++) {
-                    $log = $log . $logTexts[$i] . (empty($info[$i]) ? '' : $info[$i]);
+                    $log = $log . $logTexts[$i] . (empty($info[$i]) ? '' :
+                            str_replace("\'", "'", json_encode($info[$i], JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES)));
                 }
             } else {
-                $log = $log . str_replace("%s", "", $logText);
+                $log = $log . str_replace("%s", "", str_replace("\'", "'", json_encode($logTexts, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES)));
             }
 
             $logContent = "[LOG-DETAIL] : " . $log . "\n";
@@ -213,7 +230,9 @@ class Logger {
         $levelStr = self::$LogLevel[$level];
 
         $str = "[" . self::$visitId . "][" . $levelStr . "][" . self::$visitTime . "]\n" . $str . "\n";
-
+//        if($level == Logger::ERROR){
+//            Response::outputPage($str);
+//        }
         $logfile = Logger::getFileName($level);
         file_put_contents($logfile, $str, FILE_APPEND);
     }

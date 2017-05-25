@@ -9,7 +9,7 @@
 defined('PRISM_PATH') or exit();
 return [
     // 默认时区
-    'default_timezone' => 'PRC',
+    'default_timezone' => 'Asia/Shanghai',
 
     // log文件前缀
     'log_file_prefix'  => 'log',

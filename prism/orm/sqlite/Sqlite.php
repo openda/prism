@@ -10,9 +10,13 @@
 namespace prism\orm\sqlite;
 
 
+use const prism\common\PRISM_MSG;
+use prism\common\PrismCode;
+use prism\Logger;
 use prism\orm\BaseModel;
 use prism\orm\common\BaseDB;
 use prism\orm\common\pdo\PPDO;
+use prism\Response;
 
 class Sqlite extends BaseDB implements BaseModel {
     private $pdo;
@@ -29,8 +33,7 @@ class Sqlite extends BaseDB implements BaseModel {
      */
     public function connect($link) {
         // TODO: Implement connect() method.
-        $dsn = sprintf($this->dbConf['link_sql'], $link['dbfile']);
-
+        $dsn       = sprintf($this->dbConf['link_sql'], $link['dbfile']);
         $this->pdo = new PPDO($dsn, null, null);
     }
 
@@ -41,6 +44,9 @@ class Sqlite extends BaseDB implements BaseModel {
      */
     public function select($fileds = '*') {
         // TODO: Implement select() method.
+        if (empty($this->sqlMap["from"])) {
+            $this->sqlMap["from"] = "FROM " . $this->table;
+        }
         $this->sql = 'SELECT ' . $fileds . ' ' . implode(' ', $this->sqlMap);
 
         if (!empty($this->whereParams)) {
@@ -99,13 +105,13 @@ class Sqlite extends BaseDB implements BaseModel {
     public function update($fields = []) {
         // TODO: Implement update() method.
         $this->sql = 'UPDATE ' . $this->table . ' SET ';
+        $params    = [];
+        $flag      = 0;
+        $sets      = [];
         if (!is_array($fields)) {
             $this->sql = $this->sql . ' ' . $fields;
         } else {
             if (!empty($fields)) {
-                $params = [];
-                $flag   = 0;
-                $sets   = [];
                 foreach ($fields as $key => $field) {
                     if ($flag === 0) {
                         if (!is_array($field)) {
@@ -115,20 +121,26 @@ class Sqlite extends BaseDB implements BaseModel {
                         }
                     }
                     if ($flag === 1) {
-                        $sets[] = $key . '="' . $field . '"';
+                        $sets[] = $key . '=' . $field . '';
                     }
                     if ($flag === 2) {
-                        $sets[]            = $key . '=' . $field[0];
+                        $sets[]            = $key . '=' . $field[0] . '';
                         $params[$field[0]] = $field[1];
                     }
                 }
                 if (!empty($this->whereParams)) {
-                    array_push($params, $this->whereParams);
+                    $params = array_merge($params, $this->whereParams);
                 }
                 $this->sql = $this->sql . implode(',', $sets) . ' ' . $this->sqlMap['where'];
-
-                return $this->pdo->prepare($this->sql, $params);
             }
+        }
+        try {
+            if ($this->pdo->prepare($this->sql, $params) == "00000") {
+                return true;
+            }
+        } catch (\Exception $e) {
+            Logger::error("ERR_PDO_EXEC", [$e->getMessage()]);
+            Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
         }
 
         return false;

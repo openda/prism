@@ -29,7 +29,7 @@ class BaseDB {
 
     protected $ret;
 
-    public function __construct($dataType = 'sqlMapite') {
+    public function __construct($dataType = 'sqlite') {
         $this->dbConf = Config::get('data_source')[strtolower($dataType)];
         if (empty($this->dbConf)) {
             Response::sendError(PrismCode::ERR_CONF_DATASOURCE, PRISM_MSG[PrismCode::ERR_CONF_DATASOURCE]);
@@ -38,7 +38,7 @@ class BaseDB {
 
     public function table($tableName = '') {
         self::clear();
-        $this->table = $tableName;
+        $this->table          = $tableName;
 
         return $this;
     }

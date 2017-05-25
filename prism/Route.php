@@ -44,7 +44,7 @@ class Route {
                 if (!empty($uris)) {
                     $this->route['app']      = $uris[0];
                     $this->route['resource'] = $uris[1];
-                    $this->route['type']     = $this->request->getType();
+                    $this->route['type']     = $this->request->getMethod();
                 } else {
                     Logger::error("ERR_REQUEST_ROUTE", $uris);
                     Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);

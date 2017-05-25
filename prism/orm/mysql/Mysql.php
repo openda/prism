@@ -10,9 +10,9 @@
 namespace prism\orm\mysql;
 
 
-use prism\orm\BaseModel;
+use prism\orm\common\BaseDB;
 
-class Mysql extends BaseModel {
+class Mysql extends BaseDB {
 
     /**
      * @return mixed
