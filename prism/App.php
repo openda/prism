@@ -22,7 +22,7 @@ class App {
     public static $debug = true;
 
     public static function run(Request $request = null) {
-        Logger::info("PRISM_START"  );
+        Logger::info("PRISM_START");
         is_null($request) && $request = Request::instance();
         try {
             self::init();
@@ -45,12 +45,15 @@ class App {
             } else {
                 Response::sendError(PrismCode::ERR_ROUTE_APP_FILE_INEXISTED, PRISM_MSG[PrismCode::ERR_ROUTE_APP_FILE_INEXISTED]);
             }
+            Logger::debug("加载路由文件：", [Config::get('route')]);
             $config = Config::get();
             // 路由检查，顺带做参数校验
             $routes = Check::run(['route'], $route, $config['route']);
+            Logger::debug("路由检查完毕：", $routes);
             if (!empty($routes['class']) && !empty($routes['action']) && !empty($routes['app'])) {
                 $ret = self::invoke($routes);
                 if (array_key_exists($ret, APP_MSG)) {
+                    Logger::debug("执行action：", ["code" => $ret, "msg"  => APP_MSG[$ret]]);
                     Response::send([
                         "code" => $ret,
                         "msg"  => APP_MSG[$ret],
@@ -63,6 +66,7 @@ class App {
                 Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
             }
         } catch (ErrorException $e) {
+            Logger::error("ERR_APP_RUN", $e->getMessage());
             Response::sendException(PrismCode::ERR_APP_RUN, PRISM_MSG[PrismCode::ERR_APP_RUN], $e);
         }
         Logger::info("PRISM_END");

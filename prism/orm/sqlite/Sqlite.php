@@ -89,9 +89,16 @@ class Sqlite extends BaseDB implements BaseModel {
                         $params[$data[0]] = $data[1];
                     }
                 }
-                $this->sql = $this->sql . ' (' . implode(',', $keys) . ') VALUES ("' . implode('","', $values) . '")';
+                $this->sql = $this->sql . ' (' . implode(',', $keys) . ') VALUES (\'' . implode('\',\'', $values) . '\')';
 
-                return $this->pdo->prepare($this->sql, $params);
+                try {
+                    if ($this->pdo->prepare($this->sql, $params) == "00000") {
+                        return true;
+                    }
+                } catch (\Exception $e) {
+                    Logger::error("ERR_PDO_EXEC", [$e->getMessage()]);
+                    Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
+                }
             }
         }
 
@@ -189,4 +196,17 @@ class Sqlite extends BaseDB implements BaseModel {
         return $info;
     }
 
+    /**
+     * @param $dsn
+     * @param $user
+     * @param $pwd
+     * @param $other
+     *
+     * @return mixed
+     * @测试数据库实例是否能连接
+     */
+    public function testConnection($dsn, $user, $pwd, $other) {
+        // TODO: Implement connect() method.
+        return PPDO::testConnect($dsn, $user, $pwd, 1);
+    }
 }

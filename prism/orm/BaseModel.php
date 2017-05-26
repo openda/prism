@@ -46,4 +46,15 @@ interface BaseModel {
      * 获取数据结构(数据库就是数据表的结构，url就是json结构)
      */
     public function structure($tbl);
+
+    /**
+     * @param $dsn
+     * @param $user
+     * @param $pwd
+     * @param $other
+     *
+     * @return mixed
+     * @测试数据库实例是否能连接
+     */
+    public function testConnection($dsn, $user, $pwd, $other);
 }

@@ -11,19 +11,23 @@ namespace app\index\controller;
 
 
 use app\common\AppCode;
+use app\common\Functions;
 use prism\Config;
 use prism\Controller;
+use prism\Logger;
 use prism\Model;
+use prism\orm\mysql\Mysql;
 
 class DBLink extends Controller {
+    /**
+     * @param $db_type
+     *
+     * @return array|int
+     * @desc 获取数据库连接模板
+     */
     public function getDBLink($db_type) {
-//        $user = Model::load('sqlite')->table('dblink');
-//        //查询该类型的数据库连接方式是否存在
-//        if ($user->where('db_type = ?', array(trim($db_type)))->select()) {
-//            return AppCode::APP_USER_EXISTED;
-//        }
-        $db_type     = strtolower($db_type);
         $dataSources = Config::get("data_source");
+        $db_type     = strtolower($dataSources['db_type'][$db_type]);
 
         if (!array_key_exists($db_type, $dataSources)) {
             return AppCode::DATA_SOURCE_INEXISTED;
@@ -40,26 +44,146 @@ class DBLink extends Controller {
         return $this->result;
     }
 
+    /**
+     * @param $db_type
+     * @param $link_info
+     *
+     * @return array|int
+     * @desc 添加数据库链接实例
+     */
     public function addDBLink($db_type, $link_info) {
-//        $user = Model::load('sqlite')->table('dblink');
-//        //查询该类型的数据库连接方式是否存在
-//        if ($user->where('db_type = ?', array(trim($db_type)))->select()) {
-//            return AppCode::APP_USER_EXISTED;
-//        }
-        $db_type     = strtolower($db_type);
         $dataSources = Config::get("data_source");
+        $db_type     = strtolower($dataSources['db_type'][$db_type]);
         if (!array_key_exists($db_type, $dataSources)) {
             return AppCode::DATA_SOURCE_INEXISTED;
         }
-        foreach ($dataSources[$db_type]['link_info'] as $dataSource) {
-            $tmp['key']   = $dataSource[0];
-            $tmp['value'] = $dataSource[2];
-            $tmp['desc']  = $dataSource[1];
+        $dataSource = $dataSources[$db_type];
 
-            $this->result['data']['template'][] = $tmp;
+        $linkInfo = json_decode($link_info, true);
+        //TODO 判断是数据库连接实例连接数据是否成功
+        $connect = 0;
+        switch ($db_type) {
+            case "mysql": {
+                $connect = $this->connectMysql($dataSource, $linkInfo);
+            }
+                break;
+            case "pgsql": {
+                $connect = $this->connectPgsql($dataSource, $linkInfo);
+            }
+                break;
+            case "sqlite": {
+                $connect = $this->connectSqlite($dataSource, $linkInfo);
+            }
+                break;
+            case "4": {
+            }
+                break;
+            case "5": {
+            }
+                break;
+            case "6": {
+            }
+                break;
         }
-        $this->result['data']['type'] = $db_type;
+        if ($connect) {
+            return $connect;
+        }
+        $now = date("Y-m-d H:i:s");
+        unset($linkInfo['password']);
+        $dbLink              = Model::load('sqlite')->table('dblink');
+        $data['db_id']       = Functions::GenIDS(3, $db_type);
+        $data['user_id']     = "";
+        $data['db_type']     = $db_type;
+        $data['link_info']   = json_encode($linkInfo, true);
+        $data['create_time'] = $now;
+        $data['update_time'] = $now;
+        $data['status']      = 1;
+
+        if (!$dbLink->save($data)) {
+            return AppCode::DB_LINK_SAVE_FAILED;
+        }
 
         return $this->result;
+    }
+
+    /**
+     * @param $dataSource
+     * @param $linkInfo
+     *
+     * @desc 检查mysql实例是否正确
+     */
+    private function connectMysql($dataSource, $linkInfo) {
+        $errMap = [
+            'host'   => AppCode::ERR_DBLINK_PARAM_HOST,
+            'port'   => AppCode::ERR_DBLINK_PARAM_PORT,
+            'dbname' => AppCode::ERR_DBLINK_PARAM_DBNAME,
+            'user'   => AppCode::ERR_DBLINK_PARAM_USER,
+        ];
+        foreach ($dataSource['link_info'] as $infos) {
+            if (!Functions::validate($linkInfo[$infos[0]], $infos[2]) > 0) {
+                return $errMap[$infos[0]];
+            }
+        }
+        $dsn = sprintf($dataSource['link_sql'], $linkInfo['host'], $linkInfo['port'], $linkInfo['dbname']);
+
+        if (!(Model::load('mysql')->testConnection($dsn, $linkInfo['user'], $linkInfo['password'], null))) {
+            return AppCode::DB_LINK_CONNECT_FAILED;
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param $dataSource
+     * @param $linkInfo
+     *
+     * @desc 检查pgsql实例是否正确
+     */
+    private function connectPgsql($dataSource, $linkInfo) {
+        $errMap = [
+            'host'   => AppCode::ERR_DBLINK_PARAM_HOST,
+            'port'   => AppCode::ERR_DBLINK_PARAM_PORT,
+            'dbname' => AppCode::ERR_DBLINK_PARAM_DBNAME,
+            'user'   => AppCode::ERR_DBLINK_PARAM_USER,
+        ];
+        foreach ($dataSource['link_info'] as $infos) {
+            if (!Functions::validate($linkInfo[$infos[0]], $infos[2]) > 0) {
+                return $errMap[$infos[0]];
+            }
+        }
+        $dsn = sprintf($dataSource['link_sql'], $linkInfo['host'], $linkInfo['port'], $linkInfo['dbname']);
+
+        if (!(Model::load('pgsql')->testConnection($dsn, $linkInfo['user'], $linkInfo['password'], null))) {
+            return AppCode::DB_LINK_CONNECT_FAILED;
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param $dataSource
+     * @param $linkInfo
+     *
+     * @desc 检查sqlite实例是否正确
+     */
+    private function connectSqlite($dataSource, $linkInfo) {
+        $errMap = [
+            'host'   => AppCode::ERR_DBLINK_PARAM_HOST,
+            'port'   => AppCode::ERR_DBLINK_PARAM_PORT,
+            'dbname' => AppCode::ERR_DBLINK_PARAM_DBNAME,
+            'user'   => AppCode::ERR_DBLINK_PARAM_USER,
+        ];
+        foreach ($dataSource['link_info'] as $infos) {
+            if (!Functions::validate($linkInfo[$infos[0]], $infos[2]) > 0) {
+                return $errMap[$infos[0]];
+            }
+        }
+        $dsn = sprintf($dataSource['link_sql'], $linkInfo['host'], $linkInfo['port'], $linkInfo['dbname']);
+
+        if (!(Model::load('sqlite')->testConnection($dsn, $linkInfo['user'], $linkInfo['password'], null))) {
+            return AppCode::DB_LINK_CONNECT_FAILED;
+        }
+
+        return 0;
     }
 }

@@ -203,10 +203,10 @@ class Logger {
             if (!empty($info) && is_array($info)) {
                 for ($i = 0; $i < count($logTexts); $i++) {
                     $log = $log . $logTexts[$i] . (empty($info[$i]) ? '' :
-                            str_replace("\'", "'", json_encode($info[$i], JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES)));
+                            str_replace('\"', '"', json_encode($info[$i], JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES)));
                 }
             } else {
-                $log = $log . str_replace("%s", "", str_replace("\'", "'", json_encode($logTexts, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES)));
+                $log = $log . str_replace("%s", "", str_replace('\"', '"', json_encode($logTexts, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES)));
             }
 
             $logContent = "[LOG-DETAIL] : " . $log . "\n";

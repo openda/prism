@@ -34,7 +34,7 @@ return [
                 "action" => "getDBLink"
             ],
             "put" => [
-                "cp"     => ["db_type" => ["string", 1], "link_info" => ["string", 1]],
+                "cp"     => ["db_type" => ["option", 1, [1, 2, 3, 4]], "link_info" => ["json", 1]],
                 "action" => "addDBLink"
             ],
         ],

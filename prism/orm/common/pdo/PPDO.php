@@ -9,6 +9,8 @@
 
 namespace prism\orm\common\pdo;
 
+use const app\common\APP_MSG;
+use app\common\AppCode;
 use const prism\common\PRISM_MSG;
 use prism\common\PrismCode;
 use prism\Logger;
@@ -23,6 +25,7 @@ class PPDO {
             $this->pdo = new \PDO($dsn, $user, $password);
 //            $this->pdo->exec("SET NAMES utf8;");
             $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
         } catch (\PDOException $e) {
             Logger::error("ERR_PDO_CONNECT", [$dsn, $e->getMessage()]);
             Response::sendException(PrismCode::ERR_PDO_CONNECT, PRISM_MSG[PrismCode::ERR_PDO_CONNECT], $e);
@@ -64,41 +67,51 @@ class PPDO {
                 if (empty($fetchAll)) {
                     return true;
                 }
+
                 return $fetchAll;
             }
         } catch (\PDOException $e) {
-            Logger::error("ERR_PDO_CONNECT", $e->getMessage());
+            Logger::error("ERR_PDO_EXEC", [$sql,$e->getMessage()]);
             Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
         }
 
         return false;
     }
 
-    public
-    function execute($sql = '') {
+    public function execute($sql = '') {
         try {
             Logger::info("EXECUTE_SQL", [$sql]);
 
             return $this->pdo->execute($sql);
         } catch (\PDOException $e) {
-            Logger::error("ERR_PDO_CONNECT", $e->getMessage());
+            Logger::error("ERR_PDO_EXEC", [$sql,$e->getMessage()]);
             Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
         }
 
         return false;
     }
 
-    public
-    function exec($sql = '') {
+    public function exec($sql = '') {
         try {
             Logger::info("EXECUTE_SQL", [$sql]);
 
             return $this->pdo->exec($sql);
         } catch (\PDOException $e) {
-            Logger::error("ERR_PDO_CONNECT", $e->getMessage());
+            Logger::error("ERR_PDO_EXEC", [$sql,$e->getMessage()]);
             Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
         }
 
         return false;
+    }
+
+    public static function testConnect($dsn, $user, $password, $other) {
+        try {
+            $pdo = new \PDO($dsn, $user, $password);
+            $pdo->getAttribute(\PDO::ATTR_SERVER_INFO);
+        } catch (\PDOException $e) {
+            Logger::error("ERR_PDO_CONNECT_TEST", [$dsn, $e->getMessage()]);
+            return false;
+        }
+        return true;
     }
 }

@@ -6,10 +6,10 @@
  * Time: 下午6:21
  * Desc: 公共入口文件
  */
-
+error_reporting(E_ALL);
 // 记录开始运行时间
 $GLOBALS['_beginTime'] = microtime(true);
-$GLOBALS['_loginID'] = rand(10000,99999); //定义全局访问ID
+$GLOBALS['_loginID']   = rand(10000, 99999); //定义全局访问ID
 //记录内存使用情况
 define('MEMORY_LIMIT_ON', function_exists('memory_get_usage'));
 

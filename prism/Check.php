@@ -15,18 +15,6 @@ use prism\common\PrismCode;
 use prism\core\exception\ErrorException;
 
 class Check {
-    const PARAM_STRING = 'STRING';
-    const PARAM_NUMBER = 'NUMBER';
-    const PARAM_TIME   = 'TIME';
-    const PARAM_PHONE  = 'PHONE';
-    const PARAM_EMAIL  = 'EMAIL';
-    const PARAM_MD532  = 'MD532';
-    const PARAM_OPTION = 'OPTION';
-
-    const VALIDATE_BANKACOOUNT         = "/[\d]{10,}/";
-    const VALIDATE_NUMBER_GREATER_ZERO = "/^[1-9]\d*$/";
-    const VALIDATE_TIME                =
-        "/^\d{4}[\-](0?[1-9]|1[012])[\-](0?[1-9]|[12][0-9]|3[01])(\s+(0?[0-9]|1[0-9]|2[0-3])\:(0?[0-9]|[1-5][0-9])\:(0?[0-9]|[1-5][0-9]))?$/";
 
     const RUNTIME_AUTH       = 0775;
     const DEFAULT_CONTROLLER =
@@ -197,7 +185,7 @@ return [
                     // 校验请求参数
                     foreach ($routeConfig['method'][$route->getMethod()]['cp'] as $param => $input) {
                         try {
-                            $validate = self::validate($inputs[trim($param)], strtoupper(trim($input[0])), !isset($input[2]) ? '' : $input[2]);
+                            $validate = Validate::validate($inputs[trim($param)], strtoupper(trim($input[0])), !isset($input[2]) ? '' : $input[2]);
                             if ($input[1] == 1 && $validate != 0) {
                                 Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param]);
                                 Response::sendError($validate, PRISM_MSG[$validate]);
@@ -220,81 +208,14 @@ return [
             $routeInfo['inputs']    = $inputs;
             $routeInfo['namespace'] = join('\\', [Config::get('app_namespace'), $namespace]);
 
-//            Response::outputPage($routeInfo, 1);
-
             return $routeInfo;
         } else {
             //TODO 添加http请求错误相关的异常和日志
+            Logger::error("ERR_REQUEST_ROUTE");
             Response::sendError(PrismCode::ERR_REQUEST_ROUTE, PRISM_MSG[PrismCode::ERR_REQUEST_ROUTE]);
         }
 
         return true;
     }
 
-    /**
-     * @param $value
-     * @param $type
-     * @param $preg
-     *
-     * @desc 单个参数类型校验器
-     */
-    public static function validate($value, $type = Check::PARAM_STRING, $pattern = '', $errno = '') {
-        if ($type == Check::PARAM_STRING) {
-            if ($pattern != '' && $pattern != null) {
-                if (!preg_match($pattern, $value)) {
-                    return PrismCode::ERR_REQUEST_PARAM_STRING;
-                }
-            } else {
-                if ($value == '' || $value == null) {
-                    return PrismCode::ERR_REQUEST_PARAM_STRING;
-                }
-            }
-        } else if ($type == Check::PARAM_TIME) {
-            if ($pattern == '') {
-                $pattern = Check::VALIDATE_TIME;
-            }
-            if (!preg_match($pattern, $value)) {
-                return PrismCode::ERR_REQUEST_PARAM_TIME;
-            }
-
-        } else if ($type == Check::PARAM_PHONE) {
-            if (!preg_match("/^1[34578]{1}\d{9}$/", $value)) {
-                return PrismCode::ERR_REQUEST_PARAM_PHONE;
-            }
-        } else if ($type == Check::PARAM_EMAIL) {
-            if (filter_var($value, FILTER_VALIDATE_EMAIL) == false) {
-                return PrismCode::ERR_REQUEST_PARAM_EMAIL;
-            }
-        } else if ($type == Check::PARAM_NUMBER) {
-            if ($pattern != '' && $pattern != null) {
-                if (!preg_match($pattern, $value)) {
-                    return PrismCode::ERR_REQUEST_PARAM_NUMBER;
-                }
-            }
-            if (!is_numeric($value) || $value > 100000000000 || $value < 0 || strpos($value, '.')) {
-                return PrismCode::ERR_REQUEST_PARAM_NUMBER;
-            }
-        } else if ($type == Check::PARAM_OPTION) {
-            if (!is_array($pattern)) {
-                return PrismCode::ERR_REQUEST_PARAM;
-            }
-            if (!in_array($value, $pattern)) {
-                return PrismCode::ERR_REQUEST_PARAM_OPTION;
-            }
-        } else if ($type == Check::PARAM_MD532) {
-            if (!preg_match("/^[a-z0-9]{32}$/", $value)) {
-                return PrismCode::ERR_REQUEST_PARAM_MD532;
-            }
-        } else {
-            if ($pattern != '' && $pattern != null) {
-                if (!preg_match($pattern, $value)) {
-                    return PrismCode::ERR_REQUEST_PARAM;
-                }
-            } else {
-                return PrismCode::ERR_REQUEST_PARAM;
-            }
-        }
-
-        return PrismCode::SUCCESS;
-    }
 }

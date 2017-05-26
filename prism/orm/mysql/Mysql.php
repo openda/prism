@@ -10,15 +10,16 @@
 namespace prism\orm\mysql;
 
 
+use prism\orm\BaseModel;
 use prism\orm\common\BaseDB;
+use prism\orm\common\pdo\PPDO;
 
-class Mysql extends BaseDB {
-
+class Mysql extends BaseDB implements BaseModel {
     /**
      * @return mixed
      * 数据库连接
      */
-    public function connect() {
+    public function connect($link) {
         // TODO: Implement connect() method.
     }
 
@@ -26,23 +27,23 @@ class Mysql extends BaseDB {
      * @return mixed
      * 数据库查询
      */
-    public function query() {
-        // TODO: Implement query() method.
+    public function select($fileds = '*') {
+        // TODO: Implement select() method.
     }
 
     /**
      * @return mixed
      * 添加
      */
-    public function add() {
-        // TODO: Implement add() method.
+    public function save($data = []) {
+        // TODO: Implement save() method.
     }
 
     /**
      * @return mixed
      * 更新
      */
-    public function update() {
+    public function update($field = []) {
         // TODO: Implement update() method.
     }
 
@@ -50,15 +51,29 @@ class Mysql extends BaseDB {
      * @return mixed
      * 删除
      */
-    public function delete() {
+    public function delete($param = []) {
         // TODO: Implement delete() method.
     }
 
     /**
      * @return mixed
-     * 执行sql语句
+     * 获取数据结构(数据库就是数据表的结构，url就是json结构)
      */
-    public function execute() {
-        // TODO: Implement execute() method.
+    public function structure($tbl) {
+        // TODO: Implement structure() method.
+    }
+
+    /**
+     * @param $dsn
+     * @param $user
+     * @param $pwd
+     * @param $other
+     *
+     * @return mixed
+     * @测试数据库实例是否能连接
+     */
+    public function testConnection($dsn, $user, $pwd, $other) {
+        // TODO: Implement testConnection() method.
+        return PPDO::testConnect($dsn, $user, $pwd, $other);
     }
 }
