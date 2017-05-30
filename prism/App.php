@@ -45,7 +45,7 @@ class App {
             } else {
                 Response::sendError(PrismCode::ERR_ROUTE_APP_FILE_INEXISTED, PRISM_MSG[PrismCode::ERR_ROUTE_APP_FILE_INEXISTED]);
             }
-            Logger::debug("加载路由文件：", [Config::get('route')]);
+//            Logger::debug("加载路由文件：", [Config::get('route')]);
             $config = Config::get();
             // 路由检查，顺带做参数校验
             $routes = Check::run(['route'], $route, $config['route']);

@@ -10,17 +10,30 @@
 namespace prism\orm\mysql;
 
 
+use prism\Logger;
 use prism\orm\BaseModel;
 use prism\orm\common\BaseDB;
 use prism\orm\common\pdo\PPDO;
 
 class Mysql extends BaseDB implements BaseModel {
+    private $pdo;
+
+    public function __construct($linkInfo = [], $exception = 1) {
+        parent::__construct('mysql');
+        self::connect($linkInfo, $exception);
+    }
+
     /**
+     * @param $link
+     * @param $test 是否是测试链接
+     *
      * @return mixed
      * 数据库连接
      */
-    public function connect($link) {
+    public function connect($link, $exception) {
         // TODO: Implement connect() method.
+        $dsn       = sprintf($this->dbConf['link_sql'], $link['host'], $link['port'], $link['dbname']);
+        $this->pdo = new PPDO($dsn, $link['user'], $link['password'], $exception);
     }
 
     /**
@@ -63,17 +76,39 @@ class Mysql extends BaseDB implements BaseModel {
         // TODO: Implement structure() method.
     }
 
+//    /**
+//     * @param $dsn
+//     * @param $user
+//     * @param $pwd
+//     * @param $other
+//     *
+//     * @return mixed
+//     * @测试数据库实例是否能连接
+//     */
+//    public function testConnection($dsn, $user, $pwd, $other) {
+//        // TODO: Implement testConnection() method.
+//        if ($this->pdo === null) {
+//            return false;
+//        }
+//
+//        return true;
+//    }
+
     /**
-     * @param $dsn
-     * @param $user
-     * @param $pwd
-     * @param $other
-     *
      * @return mixed
      * @测试数据库实例是否能连接
      */
-    public function testConnection($dsn, $user, $pwd, $other) {
-        // TODO: Implement testConnection() method.
-        return PPDO::testConnect($dsn, $user, $pwd, $other);
+    public function getConnection() {
+        // TODO: Implement getConnection() method.
+        return $this->pdo->getPDO();
+    }
+
+    /**
+     * @return mixed
+     * 数据库查询
+     */
+    public function query($sql = "") {
+        // TODO: Implement query() method.
+        return $this->pdo->query($sql);
     }
 }

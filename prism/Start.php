@@ -41,7 +41,7 @@ defined('DATA_PATH') or define('DATA_PATH', RUNTIME_PATH . '/data'); // 应用�
 defined('CACHE_PATH') or define('CACHE_PATH', RUNTIME_PATH . '/cache'); // 应用模板缓存目录
 
 defined('CONF_PARSE') or define('CONF_PARSE', '');    // 配置文件解析方法
-
+defined('SESSION_ENABLE') or define('SESSION_ENABLE', 'on'); // 应用状态 加载对应的配置文件
 // 环境常量
 define('IS_CLI', PHP_SAPI == 'cli' ? true : false);
 define('IS_WIN', strpos(PHP_OS, 'WIN') !== false);

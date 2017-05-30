@@ -20,11 +20,11 @@ use prism\orm\url\Url;
 class Model {
     public $model;
 
-    public static function load($type = 'mysql') {
+    public static function load($type = 'mysql', $linkInfo = [], $exception = 1) {
         $type = strtolower($type);
         switch ($type) {
             case 'mysql': {
-                return new Mysql();
+                return new Mysql($linkInfo, $exception);
             }
                 break;
             case 'pgsql': {
@@ -36,7 +36,11 @@ class Model {
             }
             //默认是sqlite
             default: {
-                return new Sqlite(['dbfile' => SQLITE_FILE]);
+                if (empty($linkInfo))
+                    //返回默认的系统sqlite配置
+                    return new Sqlite(['dbfile' => SQLITE_FILE]);
+                else
+                    return new Sqlite($linkInfo);
             }
         }
     }

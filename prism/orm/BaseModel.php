@@ -12,16 +12,25 @@ namespace prism\orm;
 
 interface BaseModel {
     /**
+     * @param $link
+     * @param $exception 是否抛出异常
+     *
      * @return mixed
      * 数据库连接
      */
-    public function connect($link);
+    public function connect($link, $exception);
 
     /**
      * @return mixed
      * 数据库查询
      */
     public function select($fileds = '*');
+
+    /**
+     * @return mixed
+     * 数据库查询
+     */
+    public function query($sql = "");
 
     /**
      * @return mixed
@@ -56,5 +65,11 @@ interface BaseModel {
      * @return mixed
      * @测试数据库实例是否能连接
      */
-    public function testConnection($dsn, $user, $pwd, $other);
+//    public function testConnection($dsn, $user, $pwd, $other);
+
+    /**
+     * @return mixed
+     * @测试数据库实例是否能连接
+     */
+    public function getConnection();
 }

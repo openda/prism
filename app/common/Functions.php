@@ -15,20 +15,33 @@ use prism\Validate;
 class Functions {
 
     /**
-     * @param $idType 1：用户ID，2：图标ID，3：数据库连接ID，4仪表盘ID
+     * @param $idType 1：用户ID，2：报表ID，3：数据库连接ID，4仪表盘ID
      * @param $other 某个类型的ID的细分
      *
      * @return int|string
      */
     public static function GenIDS($idType, $other = '') {
-        $id  = "";
-        $ids = \prism\Model::load('sqlite')->table('ids');
+        $chartMap     = [
+            'table'     => 1,
+            'histogram' => 2,
+            'piechart'  => 3,
+            'linechart' => 4,
+        ];
+        $dataSourceMap = [];
+        $dashBoardMap  = [];
+        $id            = "";
+        $ids           = \prism\Model::load('sqlite')->table('ids');
         while (true) {
             if ($idType == "1") {
                 $id = "U_" . date("ymd") . rand(100, 999);
-            }
-            if ($idType == "3") {
+            } else if ($idType == "2") {
+                $id = "GR_" . substr(strval($chartMap[$other] + 1000), 1, 3) . rand(10000, 99999);
+            } else if ($idType == "3") {
                 $id = "DB_" . substr(strval($other + 1000), 1, 3) . rand(10000, 99999);
+            } else if ($idType == "4") {
+                $id = "DA_" . substr(strval($other + 1000), 1, 3) . rand(10000, 99999);
+            } else {
+                return false;
             }
             if (!$ids->where("id = '$id'")->select()) {
                 if (!$ids->save(['id' => $id, 'type' => $other])) {

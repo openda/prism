@@ -9,8 +9,6 @@
 
 namespace prism\orm\common\pdo;
 
-use const app\common\APP_MSG;
-use app\common\AppCode;
 use const prism\common\PRISM_MSG;
 use prism\common\PrismCode;
 use prism\Logger;
@@ -19,22 +17,31 @@ use prism\Response;
 class PPDO {
     private $pdo;
 
-    public function __construct($dsn, $user, $password) {
+    public function __construct($dsn, $user, $password, $exception) {
         try {
-
+            Logger::debug("数据库连接信息是：", [$dsn, $user, $password, $exception]);
             $this->pdo = new \PDO($dsn, $user, $password);
-//            $this->pdo->exec("SET NAMES utf8;");
             $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 
         } catch (\PDOException $e) {
-            Logger::error("ERR_PDO_CONNECT", [$dsn, $e->getMessage()]);
-            Response::sendException(PrismCode::ERR_PDO_CONNECT, PRISM_MSG[PrismCode::ERR_PDO_CONNECT], $e);
+            if ($exception) {
+                Logger::error("ERR_PDO_CONNECT", [$dsn, $e->getMessage()]);
+                Response::sendException(PrismCode::ERR_PDO_CONNECT, PRISM_MSG[PrismCode::ERR_PDO_CONNECT], $e);
+            } else {
+                Logger::error("ERR_PDO_CONNECT_TEST", [$dsn, $e->getMessage()]);
+
+                return null;
+            }
         }
     }
 
     public function query($sql = '') {
         try {
-            return $this->pdo->query($sql)->fetchAll();
+            $fetchAll = $this->pdo->query($sql)->fetchAll();
+            Logger::info("QUERY_SQL", [$sql, $fetchAll]);
+
+            return $fetchAll;
         } catch (\PDOException $e) {
             Response::sendException(PrismCode::ERR_PDO_QUERY, PRISM_MSG[PrismCode::ERR_PDO_QUERY], $e);
         }
@@ -62,18 +69,22 @@ class PPDO {
             $sth->execute();
             $fetchAll = $sth->fetchAll();
             //注，不能通过fetchAll中获取执行结果，应该是errorCode中来获取
-            Logger::info("PREPARE_SQL", [$sql, $params, $sth->errorInfo()]);
             if ($sth->errorCode() == "00000") {
+                Logger::info("PREPARE_SQL", [$sql, $params, $fetchAll]);
                 if (empty($fetchAll)) {
                     return true;
+                }
+                if (count($fetchAll) == 1) {
+                    return $fetchAll[0];
                 }
 
                 return $fetchAll;
             }
         } catch (\PDOException $e) {
-            Logger::error("ERR_PDO_EXEC", [$sql,$e->getMessage()]);
+            Logger::error("PREPARE_SQL", [$sql, $e->getMessage()]);
             Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
         }
+        Logger::info("PREPARE_SQL", [$sql, $params, $sth->errorInfo()]);
 
         return false;
     }
@@ -84,7 +95,7 @@ class PPDO {
 
             return $this->pdo->execute($sql);
         } catch (\PDOException $e) {
-            Logger::error("ERR_PDO_EXEC", [$sql,$e->getMessage()]);
+            Logger::error("ERR_PDO_EXEC", [$sql, $e->getMessage()]);
             Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
         }
 
@@ -97,21 +108,15 @@ class PPDO {
 
             return $this->pdo->exec($sql);
         } catch (\PDOException $e) {
-            Logger::error("ERR_PDO_EXEC", [$sql,$e->getMessage()]);
+            Logger::error("ERR_PDO_EXEC", [$sql, $e->getMessage()]);
             Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
         }
 
         return false;
     }
 
-    public static function testConnect($dsn, $user, $password, $other) {
-        try {
-            $pdo = new \PDO($dsn, $user, $password);
-            $pdo->getAttribute(\PDO::ATTR_SERVER_INFO);
-        } catch (\PDOException $e) {
-            Logger::error("ERR_PDO_CONNECT_TEST", [$dsn, $e->getMessage()]);
-            return false;
-        }
-        return true;
+    public function getPDO() {
+        return $this->pdo;
     }
+
 }

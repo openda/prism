@@ -106,6 +106,9 @@ class Validate {
             }
         }
 
+        //TODO 做sql防注入的校验
         return PrismCode::SUCCESS;
     }
+
+
 }

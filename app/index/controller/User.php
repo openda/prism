@@ -10,11 +10,11 @@
 namespace app\index\controller;
 
 use app\common\AppCode;
-use prism\Controller;
+use app\index\BaseController;
 use prism\Logger;
 use prism\Model;
 
-class User extends Controller {
+class User extends BaseController {
     /**
      * @param $userName
      * @param $password
@@ -57,7 +57,7 @@ class User extends Controller {
      */
     public function login($user_name, $password) {
         $user     = Model::load('sqlite')->table('user');
-        $userInfo = $user->where('user_name = ?', array(trim($user_name)))->select("user_name , user_pwd")[0];
+        $userInfo = $user->where('user_name = ?', array(trim($user_name)))->select("user_name , user_pwd");
         Logger::debug("用户信息：", $userInfo);
         //查询该用户是否已经存在
         if ($userInfo == null) {
@@ -80,7 +80,7 @@ class User extends Controller {
      */
     public function updateUser($user_name, $password, $email, $phone) {
         $user     = Model::load('sqlite')->table('user');
-        $userInfo = $user->where('user_name = :user_name', array(':user_name' => trim($user_name)))->select()[0];
+        $userInfo = $user->where('user_name = :user_name', array(':user_name' => trim($user_name)))->select();
         //查询该用户是否已经存在
         if ($userInfo == null) {
             return AppCode::APP_USER_INISTED;

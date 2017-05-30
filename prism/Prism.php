@@ -23,8 +23,14 @@ class Prism {
 //        // 加载数据源配置文件
         \prism\Config::set(include CONF_PATH . 'datasource.php', 'data_source');
 
+        // 加载图表模板配置文件
+        \prism\Config::set(include CONF_PATH . 'charts.php', 'charts_info');
+
         // 系统缓存检查
         \prism\Check::run(['runtime']);
+
+        if(SESSION_ENABLE == "on"){
+            session_start();
+        }
     }
 }
-

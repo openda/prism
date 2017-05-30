@@ -21,9 +21,9 @@ use prism\Response;
 class Sqlite extends BaseDB implements BaseModel {
     private $pdo;
 
-    public function __construct($linkInfo = []) {
+    public function __construct($linkInfo = [], $test = 0) {
         parent::__construct('sqlite');
-        self::connect($linkInfo);
+        self::connect($linkInfo, $test);
     }
 
 
@@ -31,10 +31,10 @@ class Sqlite extends BaseDB implements BaseModel {
      * @return mixed
      * 数据库连接
      */
-    public function connect($link) {
+    public function connect($link, $test) {
         // TODO: Implement connect() method.
         $dsn       = sprintf($this->dbConf['link_sql'], $link['dbfile']);
-        $this->pdo = new PPDO($dsn, null, null);
+        $this->pdo = new PPDO($dsn, null, null, $test);
     }
 
 
@@ -196,17 +196,33 @@ class Sqlite extends BaseDB implements BaseModel {
         return $info;
     }
 
+//    /**
+//     * @param $dsn
+//     * @param $user
+//     * @param $pwd
+//     * @param $other
+//     *
+//     * @return mixed
+//     * @测试数据库实例是否能连接
+//     */
+//    public function testConnection($dsn, $user, $pwd, $other) {
+//        // TODO: Implement connect() method.
+//        return PPDO::testConnect($dsn, $user, $pwd, 1);
+//    }
+
     /**
-     * @param $dsn
-     * @param $user
-     * @param $pwd
-     * @param $other
-     *
      * @return mixed
      * @测试数据库实例是否能连接
      */
-    public function testConnection($dsn, $user, $pwd, $other) {
-        // TODO: Implement connect() method.
-        return PPDO::testConnect($dsn, $user, $pwd, 1);
+    public function getConnection() {
+        // TODO: Implement getConnection() method.
+    }
+
+    /**
+     * @return mixed
+     * 数据库查询
+     */
+    public function query($sql = "") {
+        // TODO: Implement query() method.
     }
 }

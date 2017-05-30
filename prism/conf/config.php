@@ -13,4 +13,6 @@ return [
 
     // log文件前缀
     'log_file_prefix'  => 'log',
+
+    'session_enable' => "on",
 ];

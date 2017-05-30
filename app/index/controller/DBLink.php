@@ -12,13 +12,11 @@ namespace app\index\controller;
 
 use app\common\AppCode;
 use app\common\Functions;
+use app\index\BaseController;
 use prism\Config;
-use prism\Controller;
-use prism\Logger;
 use prism\Model;
-use prism\orm\mysql\Mysql;
 
-class DBLink extends Controller {
+class DBLink extends BaseController {
     /**
      * @param $db_type
      *
@@ -52,39 +50,22 @@ class DBLink extends Controller {
      * @desc 添加数据库链接实例
      */
     public function addDBLink($db_type, $link_info) {
+        $methodMap   = [
+            "mysql"  => "connectMysql",
+            "pgsql"  => "connectPgsql",
+            "sqlite" => "connectSqlite",
+        ];
         $dataSources = Config::get("data_source");
-        $db_type     = strtolower($dataSources['db_type'][$db_type]);
-        if (!array_key_exists($db_type, $dataSources)) {
+//        $db_type     = strtolower($dataSources['db_type'][$db_type]);
+        if (!array_key_exists(strtolower($db_type), $dataSources)) {
             return AppCode::DATA_SOURCE_INEXISTED;
         }
         $dataSource = $dataSources[$db_type];
 
         $linkInfo = json_decode($link_info, true);
         //TODO 判断是数据库连接实例连接数据是否成功
-        $connect = 0;
-        switch ($db_type) {
-            case "mysql": {
-                $connect = $this->connectMysql($dataSource, $linkInfo);
-            }
-                break;
-            case "pgsql": {
-                $connect = $this->connectPgsql($dataSource, $linkInfo);
-            }
-                break;
-            case "sqlite": {
-                $connect = $this->connectSqlite($dataSource, $linkInfo);
-            }
-                break;
-            case "4": {
-            }
-                break;
-            case "5": {
-            }
-                break;
-            case "6": {
-            }
-                break;
-        }
+        $connect = call_user_func($this->$methodMap[$db_type],$dataSource,$linkInfo);
+
         if ($connect) {
             return $connect;
         }
@@ -124,9 +105,7 @@ class DBLink extends Controller {
                 return $errMap[$infos[0]];
             }
         }
-        $dsn = sprintf($dataSource['link_sql'], $linkInfo['host'], $linkInfo['port'], $linkInfo['dbname']);
-
-        if (!(Model::load('mysql')->testConnection($dsn, $linkInfo['user'], $linkInfo['password'], null))) {
+        if (Model::load('mysql',$linkInfo,0)->getConnection()==null) {
             return AppCode::DB_LINK_CONNECT_FAILED;
         }
 
