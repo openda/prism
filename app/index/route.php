@@ -4,8 +4,8 @@ return [
         "controller" => "index/controller/Index.php",
         "method"     => [
             "get" => [
-                "cp"     => ['id' => ['string', 0]],
-                "action" => "get"
+                "cp"     => [],
+                "action" => "getMysql"
             ]
         ],
     ],

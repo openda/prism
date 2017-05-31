@@ -63,7 +63,7 @@ class Sqlite extends BaseDB implements BaseModel {
     public function save($datas = []) {
         // TODO: Implement add() method.
         $this->sql = 'INSERT INTO ' . $this->table;
-        if (!is_array($datas)) {
+        if (!is_array($datas) && isset($datas)) {
             $this->sql = $this->sql . ' ' . $datas;
         } else {
             if (!empty($datas)) {
@@ -115,7 +115,7 @@ class Sqlite extends BaseDB implements BaseModel {
         $params    = [];
         $flag      = 0;
         $sets      = [];
-        if (!is_array($fields)) {
+        if (!is_array($fields) && isset($fields)) {
             $this->sql = $this->sql . ' ' . $fields;
         } else {
             if (!empty($fields)) {
@@ -128,7 +128,7 @@ class Sqlite extends BaseDB implements BaseModel {
                         }
                     }
                     if ($flag === 1) {
-                        $sets[] = $key . '=' . $field . '';
+                        $sets[] = $key . '="' . $field . '"';
                     }
                     if ($flag === 2) {
                         $sets[]            = $key . '=' . $field[0] . '';
@@ -216,6 +216,7 @@ class Sqlite extends BaseDB implements BaseModel {
      */
     public function getConnection() {
         // TODO: Implement getConnection() method.
+        return $this->pdo->getPDO();
     }
 
     /**
@@ -224,5 +225,6 @@ class Sqlite extends BaseDB implements BaseModel {
      */
     public function query($sql = "") {
         // TODO: Implement query() method.
+        return $this->pdo->query($sql);
     }
 }

@@ -43,6 +43,7 @@ class PPDO {
 
             return $fetchAll;
         } catch (\PDOException $e) {
+            Logger::error("ERR_PDO_QUERY", $e->getMessage());
             Response::sendException(PrismCode::ERR_PDO_QUERY, PRISM_MSG[PrismCode::ERR_PDO_QUERY], $e);
         }
 
@@ -81,7 +82,7 @@ class PPDO {
                 return $fetchAll;
             }
         } catch (\PDOException $e) {
-            Logger::error("PREPARE_SQL", [$sql, $e->getMessage()]);
+            Logger::error("ERR_PDO_EXEC", [$sql, $e->getMessage()]);
             Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
         }
         Logger::info("PREPARE_SQL", [$sql, $params, $sth->errorInfo()]);

@@ -36,19 +36,19 @@ interface BaseModel {
      * @return mixed
      * 添加
      */
-    public function save($data = []);
+    public function save($datas = []);
 
     /**
      * @return mixed
      * 更新
      */
-    public function update($field = []);
+    public function update($fields = []);
 
     /**
      * @return mixed
      * 删除
      */
-    public function delete($param = []);
+    public function delete($params = []);
 
     /**
      * @return mixed

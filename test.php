@@ -11,7 +11,7 @@
 //
 //}
 //try {
-//    $pdo = new PDO("sqlite:/phpstudy/www/prism/prism/db/prism.db", null, null);
+//    $pdo = new PDO("sqlite:/phpstudy/www/prism/prism/prismdb/prism.prismdb", null, null);
 ////    $pdo->exec("SET NAMES utf8;");
 //    $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
 //    $update = 'UPDATE user SET user_email=:user_email,user_phone=:user_phone,user_pwd=:user_pwd,update_time=:update_time WHERE user_name = :user_name';

@@ -26,7 +26,7 @@ defined('ROOT_PATH') or define('ROOT_PATH', str_replace('\\', '/', realpath(dirn
 defined('PRISM_PATH') or define('PRISM_PATH', __DIR__ . '/');
 defined('APP_PATH') or define('APP_PATH', dirname($_SERVER['SCRIPT_FILENAME']) . '/app/');
 
-defined('SQLITE_FILE') or define('SQLITE_FILE', PRISM_PATH . 'db/prism.db');//定义sqlite数据库文件地址
+defined('SQLITE_FILE') or define('SQLITE_FILE', PRISM_PATH . 'prismdb/prism.prismdb');//定义sqlite数据库文件地址
 defined('CORE_PATH') or define('CORE_PATH', realpath(PRISM_PATH . 'core') . '/'); //系统目录
 defined('CONF_PATH') or define('CONF_PATH', PRISM_PATH . 'conf/'); //定义配置目录
 defined('APP_CONF') or define('APP_CONF', APP_PATH . DS); //定义APP配置目录
