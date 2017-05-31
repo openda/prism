@@ -9,11 +9,12 @@
 
 return [
     "NOTICE" => [
-        "PRISM_START" => "========================  prism start  ========================",
-        "PRISM_END"   => "========================  prism end  ========================",
-        "EXECUTE_SQL" => "执行的SQL是：【%s】",
-        "QUERY_SQL"   => "执行的SQL是：【%s】, 执行结果是：【%s】",
-        "PREPARE_SQL" => "执行的SQL是：【%s】, 执行参数是：【%s】，执行结果是：【%s】",
+        "PRISM_START"  => "========================  prism start  ========================",
+        "PRISM_END"    => "========================  prism end  ========================",
+        "EXECUTE_SQL"  => "执行的SQL是：【%s】",
+        "QUERY_SQL"    => "执行的SQL是：【%s】, 执行结果是：【%s】",
+        "PREPARE_SQL"  => "执行的SQL是：【%s】, 执行参数是：【%s】，执行结果是：【%s】",
+        "SESSION_INIT" => "session初始化 , 配置信息是【%s】",
     ],
     "ERROR"  => [
         "ERR_REQUEST"                => "请求失败，失败原因：【%s】",

@@ -14,5 +14,9 @@ return [
     // log文件前缀
     'log_file_prefix'  => 'log',
 
-    'session_enable' => "on",
+    'session' => [
+        'prefix'         => 'module',
+        'type'           => '',
+        'auto_start'     => true,
+    ],
 ];

@@ -51,7 +51,11 @@ class Mysql extends BaseDB implements BaseModel {
         $this->sql = 'SELECT ' . $fileds . ' ' . implode(' ', $this->sqlMap);
 
         if (!empty($this->whereParams)) {
-            return $this->pdo->prepare($this->sql, $this->whereParams);
+            $rets = $this->pdo->prepare($this->sql, $this->whereParams);
+            if ($rets === true) {
+                return [];
+            }
+            return $rets;
         }
 
         return $this->pdo->query($this->sql);

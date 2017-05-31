@@ -10,9 +10,11 @@
 namespace app\index\controller;
 
 use app\common\AppCode;
+use app\common\Functions;
 use app\index\BaseController;
 use prism\Logger;
 use prism\Model;
+use prism\Session;
 
 class User extends BaseController {
     /**
@@ -25,15 +27,15 @@ class User extends BaseController {
      * @desc 添加用户
      */
     public function addUser($user_name, $password, $email, $phone) {
-        $user = Model::load('sqlite')->table('user');
+        $User = Model::load('sqlite')->table('user');
         //查询该用户是否已经存在
-        if ($user->where('user_name = :user_name', array(':user_name' => trim($user_name)))->select()) {
+        if (!empty($User->where('user_name = :user_name', [':user_name' => trim($user_name)])->select())) {
             return AppCode::APP_USER_EXISTED;
         }
         $now = date("Y-m-d H:i:s");
 
         //添加新用户
-        $data['user_id']     = "u_" . date("ymd") . rand(10, 99);
+        $data['user_id']     = Functions::GenIDS(1);
         $data['user_name']   = $user_name;
         $data['user_email']  = $email;
         $data['user_phone']  = $phone;
@@ -42,7 +44,7 @@ class User extends BaseController {
         $data['update_time'] = $now;
         $data['status']      = 1;
 
-        $user->save($data);
+        $User->save($data);
 
         return $this->result;
     }
@@ -60,12 +62,15 @@ class User extends BaseController {
         $userInfo = $user->where('user_name = ?', array(trim($user_name)))->select("user_name , user_pwd");
         Logger::debug("用户信息：", $userInfo);
         //查询该用户是否已经存在
-        if ($userInfo == null) {
+        if (empty($userInfo)) {
             return AppCode::APP_USER_INISTED;
         }
         if (md5($password) != $userInfo["user_pwd"]) {
             return AppCode::ERR_USER_PASSWORD;
         }
+        $userInfo = $user->where('user_name = ?', array(trim($user_name)))->select("user_name , user_id");
+        //记录登录用户信息到session
+        Session::set("user_name", $userInfo);
 
         return $this->result;
     }
@@ -80,9 +85,9 @@ class User extends BaseController {
      */
     public function updateUser($user_name, $password, $email, $phone) {
         $user     = Model::load('sqlite')->table('user');
-        $userInfo = $user->where('user_name = :user_name', array(':user_name' => trim($user_name)))->select();
+        $userInfo = $user->where('user_name = :user_name', [':user_name' => trim($user_name)])->select();
         //查询该用户是否已经存在
-        if ($userInfo == null) {
+        if (empty($userInfo)) {
             return AppCode::APP_USER_INISTED;
         }
 

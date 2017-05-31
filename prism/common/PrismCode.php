@@ -30,6 +30,8 @@ class PrismCode {
 
     const ERR_APP_RUN = 160; //APP运行出错
 
+    const ERR_SESSION_DRIVER = 161; //session驱动出错
+
     const ERR_REQUEST                  = 299;
     const ERR_REQUEST_ROUTE            = 201;
     const ERR_ROUTE_FILE               = 202; //路由表不存在
@@ -56,9 +58,9 @@ class PrismCode {
     const ERR_REQUEST_ACTION_TYPE    = 222;//请求方法类型出错
     const ERR_REQUEST_PARAM_VALIDATE = 223;//参数校验出错
 
-    const ERR_PDO_CONNECT      = 301; //PDO连接失败
-    const ERR_PDO_QUERY        = 302; //PDO查询失败
-    const ERR_PDO_EXEC         = 303; //PDO执行sql失败
+    const ERR_PDO_CONNECT = 301; //PDO连接失败
+    const ERR_PDO_QUERY   = 302; //PDO查询失败
+    const ERR_PDO_EXEC    = 303; //PDO执行sql失败
 }
 const PRISM_MSG = array(
     PrismCode::SUCCESS => 'success',
@@ -75,7 +77,8 @@ const PRISM_MSG = array(
     PrismCode::ERR_CREATE_CONTROLLER => '生成app默认控制器失败',
     PrismCode::ERR_CREATE_ROUTE      => '生成app默认路由失败',
 
-    PrismCode::ERR_APP_RUN => 'APP运行出错',
+    PrismCode::ERR_APP_RUN        => 'APP运行出错',
+    PrismCode::ERR_SESSION_DRIVER => 'session驱动出错',
 
     PrismCode::ERR_REQUEST                  => '请求失败',
     PrismCode::ERR_REQUEST_ROUTE            => '请求路由出错',
