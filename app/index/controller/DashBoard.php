@@ -14,6 +14,7 @@ use app\common\AppCode;
 use app\common\Functions;
 use app\index\BaseController;
 use prism\Model;
+use prism\Session;
 
 class DashBoard extends BaseController {
     const DASHBOARD_STATUS_VALID   = 1;
@@ -28,13 +29,14 @@ class DashBoard extends BaseController {
      * @desc 添加一个报表
      */
     public function addDashBoard($dash_name, $dash_info, $report_ids, $dash_brief, $share_link) {
-        $now = date("Y-m-d H:i:s");
+        $now      = date("Y-m-d H:i:s");
+        $userInfo = Session::get('user_info');
 
         $Report = Model::load('sqlite')->table('dashboard');
 
         $data['dash_id']     = Functions::GenIDS(4);
         $data['dash_name']   = $dash_name;
-        $data['user_id']     = '';
+        $data['user_id']     = $userInfo['user_id'];
         $data['report_ids']  = $report_ids;
         $data['dash_info']   = $dash_info;
         $data['create_time'] = $now;
@@ -59,7 +61,7 @@ class DashBoard extends BaseController {
      * @desc 更新一个报表
      */
     public function updateReport($dash_id, $dash_name, $dash_info, $report_ids, $dash_brief, $share_link) {
-        $Report     = Model::load('sqlite')->table('dashboard');
+        $Report   = Model::load('sqlite')->table('dashboard');
         $dashInfo = $Report->where('dash_id = :dash_id,status = :status',
             array(':dash_id' => trim($dash_id), ':status' => self::DASHBOARD_STATUS_VALID))->select();
         //查询该报表是否已经存在
@@ -97,7 +99,7 @@ class DashBoard extends BaseController {
      * @desc 删除一个报表
      */
     public function deleteReport($dash_id) {
-        $Report     = Model::load('sqlite')->table('dashboard');
+        $Report   = Model::load('sqlite')->table('dashboard');
         $dashInfo = $Report->where('dash_id = :dash_id,status = :status',
             array(':dash_id' => trim($dash_id), ':status' => self::DASHBOARD_STATUS_VALID))->select();
         //查询该报表是否已经存在

@@ -15,6 +15,7 @@ use app\common\Functions;
 use app\index\BaseController;
 use prism\Config;
 use prism\Model;
+use prism\Session;
 
 class DBLink extends BaseController {
     /**
@@ -56,7 +57,6 @@ class DBLink extends BaseController {
             "sqlite" => "connectSqlite",
         ];
         $dataSources = Config::get("data_source");
-//        $db_type     = strtolower($dataSources['db_type'][$db_type]);
         if (!array_key_exists(strtolower($db_type), $dataSources)) {
             return AppCode::DATA_SOURCE_INEXISTED;
         }
@@ -64,16 +64,18 @@ class DBLink extends BaseController {
 
         $linkInfo = json_decode($link_info, true);
         //TODO 判断是数据库连接实例连接数据是否成功
-        $connect = call_user_func($this->$methodMap[$db_type],$dataSource,$linkInfo);
+        $connect = call_user_func($this->$methodMap[$db_type], $dataSource, $linkInfo);
 
         if ($connect) {
             return $connect;
         }
-        $now = date("Y-m-d H:i:s");
+        //获取session中的用户信息
+        $userInfo = Session::get('user_info');
+        $now      = date("Y-m-d H:i:s");
         unset($linkInfo['password']);
         $dbLink              = Model::load('sqlite')->table('dblink');
         $data['db_id']       = Functions::GenIDS(3, $db_type);
-        $data['user_id']     = "";
+        $data['user_id']     = $userInfo['user_id'];
         $data['db_type']     = $db_type;
         $data['link_info']   = json_encode($linkInfo, true);
         $data['create_time'] = $now;
@@ -105,7 +107,7 @@ class DBLink extends BaseController {
                 return $errMap[$infos[0]];
             }
         }
-        if (Model::load('mysql',$linkInfo,0)->getConnection()==null) {
+        if (Model::load('mysql', $linkInfo, 0)->getConnection() == null) {
             return AppCode::DB_LINK_CONNECT_FAILED;
         }
 
@@ -130,9 +132,7 @@ class DBLink extends BaseController {
                 return $errMap[$infos[0]];
             }
         }
-        $dsn = sprintf($dataSource['link_sql'], $linkInfo['host'], $linkInfo['port'], $linkInfo['dbname']);
-
-        if (!(Model::load('pgsql')->testConnection($dsn, $linkInfo['user'], $linkInfo['password'], null))) {
+        if (Model::load('pgsql', $linkInfo, 0)->getConnection() == null) {
             return AppCode::DB_LINK_CONNECT_FAILED;
         }
 
@@ -157,9 +157,7 @@ class DBLink extends BaseController {
                 return $errMap[$infos[0]];
             }
         }
-        $dsn = sprintf($dataSource['link_sql'], $linkInfo['host'], $linkInfo['port'], $linkInfo['dbname']);
-
-        if (!(Model::load('sqlite')->testConnection($dsn, $linkInfo['user'], $linkInfo['password'], null))) {
+        if (Model::load('sqlite', $linkInfo, 0)->getConnection() == null) {
             return AppCode::DB_LINK_CONNECT_FAILED;
         }
 

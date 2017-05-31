@@ -70,7 +70,7 @@ class User extends BaseController {
         }
         $userInfo = $user->where('user_name = ?', array(trim($user_name)))->select("user_name , user_id");
         //记录登录用户信息到session
-        Session::set("user_name", $userInfo);
+        Session::set("user_info", $userInfo);
 
         return $this->result;
     }

@@ -14,6 +14,7 @@ use app\common\AppCode;
 use app\common\Functions;
 use app\index\BaseController;
 use prism\Model;
+use prism\Session;
 
 class Report extends BaseController {
     const REPORT_STATUS_VALID   = 1;
@@ -28,13 +29,14 @@ class Report extends BaseController {
      * @desc 添加一个报表
      */
     public function addReport($db_link_id, $report_type, $report_info, $report_brief, $share_link) {
-        $now = date("Y-m-d H:i:s");
+        $now      = date("Y-m-d H:i:s");
+        $userInfo = Session::get('user_info');
 
         $Report = Model::load('sqlite')->table('report');
 
         $data['report_id']    = Functions::GenIDS(2, $report_type);
         $data['db_linkid']    = $db_link_id;
-        $data['user_id']      = '';
+        $data['user_id']      = $userInfo['user_id'];
         $data['report_type']  = $report_type;
         $data['report_info']  = $report_info;
         $data['create_time']  = $now;
