@@ -4,11 +4,14 @@
  * User: wangxk1991@gmail.com
  * Date: 17/3/30
  * Time: 上午10:16
- * Desc: Prism自动加载文件类
+ * Desc: Prism自动加载器
  */
 
 namespace prism;
 
+
+use const prism\common\PRISM_MSG;
+use prism\common\PrismCode;
 
 class Loader {
     protected static $instance = [];
@@ -136,7 +139,7 @@ class Loader {
             // Register directories for a new namespace.
             $length = strlen($prefix);
             if ('\\' !== $prefix[$length - 1]) {
-                throw new \InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.");
+                Response::sendException(PrismCode::ERR_NAMESPACE_PSR4_PREFIX, PRISM_MSG[PrismCode::ERR_NAMESPACE_PSR4_PREFIX], ['A non-empty PSR-4 prefix must end with a namespace separator.']);
             }
             self::$prefixLengthsPsr4[$prefix[0]][$prefix] = $length;
             self::$prefixDirsPsr4[$prefix]                = (array)$paths;

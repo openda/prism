@@ -7,7 +7,7 @@
  * Desc: 基类
  */
 
-namespace app\index;
+namespace app\prism;
 
 
 use prism\Controller;

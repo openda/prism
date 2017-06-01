@@ -13,6 +13,10 @@ namespace prism\common;
 class PrismCode {
     const SUCCESS = 0;
 
+    const EXCEPTION = 1;
+    const ERROR     = 2;
+    const SHUTDOWN  = 3;
+
     // 内部错误区
     const ERR_CONF_PARAM              = 101; //错误配置参数
     const ERR_CONF_NO_APP             = 102; //配置文件中未定义app
@@ -21,6 +25,7 @@ class PrismCode {
     const ERR_CONF_DATASOURCE_EXISTED = 105;//系统配置信息data_source已经存在
     const ERR_CONF_APPLOG_EXISTED     = 106;//系统配置信息app_log已经存在
     const ERR_CONF_DATASOURCE         = 110;//数据源配置出错
+    const ERR_NAMESPACE_PSR4_PREFIX   = 111;//数据源配置出错
 
     const ERR_CHECK_RUNTIME = 120; //系统检查错误
     const ERR_CHECK_APPS    = 121; //系统检查错误
@@ -65,6 +70,10 @@ class PrismCode {
 const PRISM_MSG = array(
     PrismCode::SUCCESS => 'success',
 
+    PrismCode::EXCEPTION => '系统异常',
+    PrismCode::ERROR     => '系统错误',
+    PrismCode::SHUTDOWN  => '系统中断',
+
     PrismCode::ERR_CHECK_RUNTIME => '运行目录检查错误',
     PrismCode::ERR_CHECK_APPS    => 'APP检查错误',
 
@@ -73,6 +82,7 @@ const PRISM_MSG = array(
     PrismCode::ERR_CONF_PARSE              => '配置文件解析函数不存在',
     PrismCode::ERR_CONF_PRISMLOG_EXISTED   => '系统配置信息prism_log已经存在',
     PrismCode::ERR_CONF_DATASOURCE_EXISTED => '系统配置信息data_source已经存在',
+    PrismCode::ERR_NAMESPACE_PSR4_PREFIX   => '非空PSR-4前缀必须以命名空间分离',
 
     PrismCode::ERR_CREATE_CONTROLLER => '生成app默认控制器失败',
     PrismCode::ERR_CREATE_ROUTE      => '生成app默认路由失败',

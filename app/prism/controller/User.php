@@ -7,11 +7,11 @@
  * Desc: user资源
  */
 
-namespace app\index\controller;
+namespace app\prism\controller;
 
 use app\common\AppCode;
 use app\common\Functions;
-use app\index\BaseController;
+use app\prism\BaseController;
 use prism\Logger;
 use prism\Model;
 use prism\Session;

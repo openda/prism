@@ -7,11 +7,11 @@
  * Desc: 用户数据资源（虚拟资源）
  */
 
-namespace app\index\controller;
+namespace app\prism\controller;
 
 
 use app\common\AppCode;
-use app\index\BaseController;
+use app\prism\BaseController;
 use prism\Model;
 
 class UserDB extends BaseController {

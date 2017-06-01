@@ -14,9 +14,24 @@ return [
     // log文件前缀
     'log_file_prefix'  => 'log',
 
-    'session' => [
-        'prefix'         => 'module',
-        'type'           => '',
-        'auto_start'     => true,
+    /**
+     * 自定义系统级别的配置文件
+     * key是配置的参数名，value是配置文件的路径
+     */
+    'prism_common_config_files'     => [
+        'prism_log'   => CONF_PATH . 'log.php',
+        'data_source' => CONF_PATH . 'datasource.php',
+        'charts_info' => CONF_PATH . 'charts.php',
     ],
+
+    /**
+     * session配置
+     */
+    'session'          => [
+        'prefix'     => 'module',
+        'type'       => '',
+        'auto_start' => true,
+    ],
+
+    'prism_db' => PRISM_PATH . 'prismdb/prism.db',
 ];

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\index\controller;
+namespace app\prism\controller;
 
 use prism\Controller;
 use prism\Model;

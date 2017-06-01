@@ -25,9 +25,10 @@ class App {
         Logger::info("PRISM_START");
         is_null($request) && $request = Request::instance();
         try {
+            //初始化app
             self::init();
             // APP检查
-            Check::run(['app']);
+            Prism::checkApp();
 
             $route = new Route($request);
             $route->setDefault([
@@ -48,12 +49,12 @@ class App {
 //            Logger::debug("加载路由文件：", [Config::get('route')]);
             $config = Config::get();
             // 路由检查，顺带做参数校验
-            $routes = Check::run(['route'], $route, $config['route']);
+            $routes = Prism::checkRoute($route, $config['route']);
             Logger::debug("路由检查完毕：", $routes);
             if (!empty($routes['class']) && !empty($routes['action']) && !empty($routes['app'])) {
                 $ret = self::invoke($routes);
-                if (array_key_exists($ret, APP_MSG)) {
-                    Logger::debug("执行action：", ["code" => $ret, "msg"  => APP_MSG[$ret]]);
+                if (!is_array($ret) && array_key_exists($ret, APP_MSG)) {
+                    Logger::debug("执行action：", ["code" => $ret, "msg" => APP_MSG[$ret]]);
                     Response::send([
                         "code" => $ret,
                         "msg"  => APP_MSG[$ret],
@@ -82,7 +83,6 @@ class App {
         $config = self::initApp();
         // 设置系统时区
         date_default_timezone_set($config['default_timezone']);
-
         // 注册应用命名空间
         self::$namespace = $config['app_namespace'];
         Loader::addNamespace($config['app_namespace'], APP_PATH);
@@ -111,8 +111,23 @@ class App {
             } else {
                 // 加载app基础配置信息
                 Config::load(APP_CONF . 'config.php');
-                //加载app日志配置
-                Config::load(APP_CONF . 'log.php', 'app_log');
+                //加载app公共自定义配置
+                $commonConfFiles = Config::get('app_common_config_files');
+                if (!empty($commonConfFiles)) {
+                    foreach ($commonConfFiles as $name => $commonConfFile) {
+                        Config::load($commonConfFile, $name);
+                    }
+                }
+                //加载app独立配置
+                $apps = Config::get('apps');
+                if (!empty($apps)) {
+                    foreach ($apps as $app) {
+                        Config::load(APP_PATH . "$app/conf/config.php", $app);
+                    }
+                } else {
+                    Response::sendError(PrismCode::ERR_CONF_NO_APP, PRISM_MSG[PrismCode::ERR_CONF_NO_APP]);
+                }
+
             }
             self::$init = true;
         }

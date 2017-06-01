@@ -38,7 +38,7 @@ class Model {
             default: {
                 if (empty($linkInfo))
                     //返回默认的系统sqlite配置
-                    return new Sqlite(['dbfile' => SQLITE_FILE]);
+                    return new Sqlite(['dbfile' => Config::get('prism_db')]);
                 else
                     return new Sqlite($linkInfo);
             }

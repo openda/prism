@@ -7,10 +7,10 @@
  * Desc:
  */
 
-namespace app\index\controller;
+namespace app\prism\controller;
 
 
-use app\index\BaseController;
+use app\prism\BaseController;
 
 class ChartInstance extends BaseController {
     public function getChartInstance($db_link_id, $chart_type, $chart_info) {

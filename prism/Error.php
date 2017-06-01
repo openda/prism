@@ -10,8 +10,9 @@
 namespace prism;
 
 
+use const prism\common\PRISM_MSG;
+use prism\common\PrismCode;
 use prism\core\exception\ErrorException;
-use prism\core\exception\ThrowableError;
 
 class Error {
     /**
@@ -30,12 +31,7 @@ class Error {
      * @param  \Exception|\Throwable $e
      */
     public static function appException($e) {
-        if (!$e instanceof \Exception) {
-            $e = new ThrowableError($e);
-        }
-        Response::sendException($e);
-//        self::getExceptionHandler()->report($e);
-//        self::getExceptionHandler()->render($e)->send();
+        Response::sendException(PrismCode::EXCEPTION, PRISM_MSG[PrismCode::EXCEPTION], $e);
     }
 
     /**
@@ -51,6 +47,7 @@ class Error {
      */
     public static function appError($errno, $errstr, $errfile = '', $errline = 0, $errcontext = []) {
         $exception = new ErrorException($errno, $errstr, $errfile, $errline, $errcontext);
+        Response::sendException(PrismCode::ERROR, PRISM_MSG[PrismCode::ERROR], $exception);
     }
 
     /**
@@ -77,23 +74,4 @@ class Error {
         return in_array($type, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE]);
     }
 
-    /**
-     * Get an instance of the exception handler.
-     *
-     * @return Handle
-     */
-//    public static function getExceptionHandler() {
-//        static $handle;
-//        if (!$handle) {
-//            // 异常处理handle
-//            $class = Config::get('exception_handle');
-//            if ($class && class_exists($class) && is_subclass_of($class, "\\prism\\exception\\Handle")) {
-//                $handle = new $class;
-//            } else {
-//                $handle = new Handle;
-//            }
-//        }
-//
-//        return $handle;
-//    }
 }
