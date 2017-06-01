@@ -10,33 +10,27 @@
 
 namespace prism;
 
-use prism\controller;
-use prism\Error;
-
 class Prism {
     protected static $_config = [];
 
-    /**
-     * 应用初始化
-     */
-    static public function start() {
-        // 注册自动加载
-        \prism\Loader::register();
-
-        // 注册错误和异常处理机制
-        \prism\Error::register();
-
+    static public function run() {
         // 加载系统配置文件
         \prism\Config::set(include CONF_PATH . 'config.php');
 
         // 加载系统日志文件
         \prism\Config::set(include CONF_PATH . 'log.php', 'prism_log');
 
-        // 加载数据源配置文件
+//        // 加载数据源配置文件
         \prism\Config::set(include CONF_PATH . 'datasource.php', 'data_source');
+
+        // 加载图表模板配置文件
+        \prism\Config::set(include CONF_PATH . 'charts.php', 'charts_info');
 
         // 系统缓存检查
         \prism\Check::run(['runtime']);
+
+        if(SESSION_ENABLE == "on"){
+            session_start();
+        }
     }
 }
-

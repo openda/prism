@@ -31,21 +31,26 @@ class Logger {
     static $visitTime = null;
     static $visitId   = null;
 
+
     static public function setVisitTime($vtime) {
         self::$visitTime = $vtime;
     }
+
 
     static public function setVisitId($vid) {
         self::$visitId = $vid;
     }
 
+
     static public function setInItem($key, $value) {
         self::$in[$key] = $value;
     }
 
+
     static public function setOutItem($key, $value) {
         self::$out[$key] = $value;
     }
+
 
     static public function getResultItem(array $result) {
         if (key_exists("errNo", $result)) {
@@ -90,12 +95,12 @@ class Logger {
 
 
     static protected function getFileName($logLevel) {
-        $logfile  = Config::get("log_file");
+        $logfile  = Config::get("log_file_prefix");
         $date     = date('Y-m-d');
         $filename = null;
         if ($logLevel == Logger::DEBUG || $logLevel == Logger::NOTICE) {
             $filename = LOG_PATH . '/' . $logfile . '.' . $date;
-        } elseif ($logLevel == Logger::WARN || $logfile == Logger::ERROR) {
+        } elseif ($logLevel == Logger::WARN || $logLevel == Logger::ERROR) {
             $filename = LOG_PATH . '/' . $logfile . '.' . $date . '.warn';
         } else {
             $filename = null;
@@ -132,61 +137,102 @@ class Logger {
     }
 
 
-    static public function debug($logText, $infos = []) {
+    static public function debug($desc, $info = null) {
         if (!APP_DEBUG) {
             return;
         }
-        $log = self::make($logText, $infos);
-        Logger::log(Logger::DEBUG, $log);
+        $infos = [$info];
+        if (is_array($info)) {
+            $infos = $info;
+        }
+        $log = self::make(self::DEBUG, "DEBUG", [$desc . " [ " .
+                                                 str_replace('\\"', '"', json_encode($infos, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES)) . " ]"]);
+        Logger::log(self::DEBUG, $log);
     }
 
 
-    static public function warn($logText, $infos = []) {
-        $log = self::make($logText, $infos);
-        Logger::log(Logger::WARN, $log);
+    static public function warn($logText, $info = null) {
+        $infos = [$info];
+        if (is_array($info)) {
+            $infos = $info;
+        }
+        $log = self::make(self::WARN, $logText, $infos);
+        Logger::log(self::WARN, $log);
     }
 
 
-    static public function error($logText, $infos = []) {
-        $log = self::make($logText, $infos);
-        Logger::log(Logger::ERROR, $log);
+    static public function error($logText, $info = null) {
+        $infos = [$info];
+        if (is_array($info)) {
+            $infos = $info;
+        }
+        $log = self::make(self::ERROR, $logText, $infos);
+        Logger::log(self::ERROR, $log);
     }
 
-    static private function make($textType, $infos = []) {
-        $log = '';
-        $prismLog = Config::get('prism_log');
-        $appLog   = Config::get('app_log');
-        $logText  = empty($prismLog[$textType]) ? $appLog[$textType] : $prismLog[$textType];
+
+    static public function info($logText, $info = null) {
+        $infos = [$info];
+        if (is_array($info)) {
+            $infos = $info;
+        }
+        $log = self::make(self::NOTICE, $logText, $infos);
+        Logger::log(self::NOTICE, $log);
+    }
+
+
+    static private function make($logType, $textType, $info = []) {
+        $lineBreak = "\n";
+        $log       = '';
+        $prismLog  = Config::get('prism_log');
+        $appLog    = Config::get('app_log');
+
+        $logText = empty($prismLog[self::$LogLevel[$logType]][$textType]) ? $appLog[self::$LogLevel[$logType]][$textType] : $prismLog[self::$LogLevel[$logType]][$textType];
+
+        if ($textType == "PRISM_END") {
+            $lineBreak = "\n\n";
+        }
         if (empty($logText)) {
             $trace      = debug_backtrace();
             $logContent = "[LOG-DETAIL] : not define log text in configure file！\n";
             $logContent = $logContent . "[LOG-HAPPEN] : " .
-                "Class:{$trace[2]['class']} | Function:{$trace[2]['function']} | Line:{$trace[1]['line']} | File:{$trace[1]['file']}" . "\n";
+                "Class:{$trace[2]['class']} | Function:{$trace[2]['function']} | Line:{$trace[1]['line']} | File:{$trace[1]['file']}" . $lineBreak;
         } else {
             $logTexts = explode('%s', $logText);
             $trace    = debug_backtrace();
-            for ($i = 0; $i < count($logTexts); $i++) {
-                $log = $log . $logTexts[$i] . (empty($infos[$i]) ? '' : $infos[$i]);
+            if (!empty($info) && is_array($info)) {
+                for ($i = 0; $i < count($logTexts); $i++) {
+                    $log = $log . $logTexts[$i] . (empty($info[$i]) ? '' :
+                            str_replace('\"', '"', json_encode($info[$i], JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES)));
+                }
+            } else {
+                $log = $log . str_replace("%s", "", str_replace('\"', '"', json_encode($logTexts, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES)));
             }
+
             $logContent = "[LOG-DETAIL] : " . $log . "\n";
             $logContent = $logContent . "[LOG-HAPPEN] : " .
-                "Class:{$trace[2]['class']} | Function:{$trace[2]['function']} | Line:{$trace[1]['line']} | File:{$trace[1]['file']}" . "\n";
+                "Class:{$trace[2]['class']} | Function:{$trace[2]['function']} | Line:{$trace[1]['line']} | File:{$trace[1]['file']}" . $lineBreak;
         }
 
         return $logContent;
     }
 
-    static public function log($level, $str) {
+
+    static private function log($level, $str) {
         if (self::$visitTime == null)
             self::$visitTime = date('Y-m-d H:i:s');
+//            Response::outputPage(self::$visitTime,1);
 
-        if (self::$visitId == null)
-            self::$visitId = rand(1000, 10000);
+        if (self::$visitId == null) {
+            self::$visitId = $GLOBALS['_loginID'];
+        }
 
         $levelStr = self::$LogLevel[$level];
 
-        $str = "[{$levelStr}][" . self::$visitId . "][" . self::$visitTime . "]\n" . $str . "\n";
-
+        $str = "[" . self::$visitId . "][" . $levelStr . "][" . self::$visitTime . "]\n" . $str . "\n";
+//        if($level == Logger::ERROR){
+//            Response::outputPage($str);
+//        }
         $logfile = Logger::getFileName($level);
         file_put_contents($logfile, $str, FILE_APPEND);
     }

@@ -10,9 +10,9 @@
 namespace prism\orm\url;
 
 
-use prism\orm\BaseModel;
+use prism\orm\common\BaseDB;
 
-class Url extends BaseModel {
+class Url extends BaseDB {
 
     /**
      * @return mixed

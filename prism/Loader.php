@@ -10,8 +10,6 @@
 namespace prism;
 
 
-use prism\core\exception\ErrorException;
-
 class Loader {
     protected static $instance = [];
     // 类名映射

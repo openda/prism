@@ -56,13 +56,13 @@ class Config {
      * @return mixed
      */
     public static function load($file, $name = '', $range = '') {
-        if (!self::has('prism_log')) {
+        if (self::has('prism_log') && $name == 'prism_log') {
             Response::sendError(PrismCode::ERR_CONF_PRISMLOG_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_PRISMLOG_EXISTED]);
         }
-        if (!self::has('data_source')) {
+        if (self::has('data_source') && $name == 'data_source') {
             Response::sendError(PrismCode::ERR_CONF_DATASOURCE_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_DATASOURCE_EXISTED]);
         }
-        if (!self::has('app_log')) {
+        if (self::has('app_log') && $name == 'app_log') {
             Response::sendError(PrismCode::ERR_CONF_APPLOG_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_APPLOG_EXISTED]);
         }
         $range = $range ?: self::$range;
@@ -95,6 +95,7 @@ class Config {
     public static function has($name, $range = '') {
         $range = $range ?: self::$range;
 
+//        var_dump(isset(self::$config[$range][strtolower($name)]));
         if (!strpos($name, '.')) {
             return isset(self::$config[$range][strtolower($name)]);
         } else {
@@ -143,13 +144,13 @@ class Config {
      * @return mixed
      */
     public static function set($name, $value = null, $range = '') {
-        if (!self::has('prism_log')) {
+        if (self::has('prism_log') && $value == 'prism_log') {
             Response::sendError(PrismCode::ERR_CONF_PRISMLOG_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_PRISMLOG_EXISTED]);
         }
-        if (!self::has('data_source')) {
+        if (self::has('data_source') && $value == 'data_source') {
             Response::sendError(PrismCode::ERR_CONF_DATASOURCE_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_DATASOURCE_EXISTED]);
         }
-        if (!self::has('app_log')) {
+        if (self::has('app_log') && $value == 'app_log') {
             Response::sendError(PrismCode::ERR_CONF_APPLOG_EXISTED, PRISM_MSG[PrismCode::ERR_CONF_APPLOG_EXISTED]);
         }
         $range = $range ?: self::$range;

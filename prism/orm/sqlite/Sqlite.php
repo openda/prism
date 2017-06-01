@@ -10,16 +10,20 @@
 namespace prism\orm\sqlite;
 
 
+use const prism\common\PRISM_MSG;
+use prism\common\PrismCode;
+use prism\Logger;
 use prism\orm\BaseModel;
 use prism\orm\common\BaseDB;
 use prism\orm\common\pdo\PPDO;
+use prism\Response;
 
 class Sqlite extends BaseDB implements BaseModel {
     private $pdo;
 
-    public function __construct($linkInfo = []) {
+    public function __construct($linkInfo = [], $test = 0) {
         parent::__construct('sqlite');
-        self::connect($linkInfo);
+        self::connect($linkInfo, $test);
     }
 
 
@@ -27,11 +31,10 @@ class Sqlite extends BaseDB implements BaseModel {
      * @return mixed
      * 数据库连接
      */
-    public function connect($link) {
+    public function connect($link, $test) {
         // TODO: Implement connect() method.
-        $dsn = sprintf($this->dbConf['link_sql'], $link['dbfile']);
-
-        $this->pdo = new PPDO($dsn, null, null);
+        $dsn       = sprintf($this->dbConf['link_sql'], $link['dbfile']);
+        $this->pdo = new PPDO($dsn, null, null, $test);
     }
 
 
@@ -41,10 +44,18 @@ class Sqlite extends BaseDB implements BaseModel {
      */
     public function select($fileds = '*') {
         // TODO: Implement select() method.
+        if (empty($this->sqlMap["from"])) {
+            $this->sqlMap["from"] = "FROM " . $this->table;
+        }
         $this->sql = 'SELECT ' . $fileds . ' ' . implode(' ', $this->sqlMap);
 
         if (!empty($this->whereParams)) {
-            return $this->pdo->prepare($this->sql, $this->whereParams);
+            $rets = $this->pdo->prepare($this->sql, $this->whereParams);
+            if ($rets === true) {
+                return [];
+            }
+
+            return $rets;
         }
 
         return $this->pdo->query($this->sql);
@@ -57,7 +68,7 @@ class Sqlite extends BaseDB implements BaseModel {
     public function save($datas = []) {
         // TODO: Implement add() method.
         $this->sql = 'INSERT INTO ' . $this->table;
-        if (!is_array($datas)) {
+        if (!is_array($datas) && isset($datas)) {
             $this->sql = $this->sql . ' ' . $datas;
         } else {
             if (!empty($datas)) {
@@ -83,9 +94,16 @@ class Sqlite extends BaseDB implements BaseModel {
                         $params[$data[0]] = $data[1];
                     }
                 }
-                $this->sql = $this->sql . ' (' . implode(',', $keys) . ') VALUES ("' . implode('","', $values) . '")';
+                $this->sql = $this->sql . ' (' . implode(',', $keys) . ') VALUES (\'' . implode('\',\'', $values) . '\')';
 
-                return $this->pdo->prepare($this->sql, $params);
+                try {
+                    if ($this->pdo->prepare($this->sql, $params) == "00000") {
+                        return true;
+                    }
+                } catch (\Exception $e) {
+                    Logger::error("ERR_PDO_EXEC", [$e->getMessage()]);
+                    Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
+                }
             }
         }
 
@@ -99,13 +117,13 @@ class Sqlite extends BaseDB implements BaseModel {
     public function update($fields = []) {
         // TODO: Implement update() method.
         $this->sql = 'UPDATE ' . $this->table . ' SET ';
-        if (!is_array($fields)) {
+        $params    = [];
+        $flag      = 0;
+        $sets      = [];
+        if (!is_array($fields) && isset($fields)) {
             $this->sql = $this->sql . ' ' . $fields;
         } else {
             if (!empty($fields)) {
-                $params = [];
-                $flag   = 0;
-                $sets   = [];
                 foreach ($fields as $key => $field) {
                     if ($flag === 0) {
                         if (!is_array($field)) {
@@ -118,17 +136,23 @@ class Sqlite extends BaseDB implements BaseModel {
                         $sets[] = $key . '="' . $field . '"';
                     }
                     if ($flag === 2) {
-                        $sets[]            = $key . '=' . $field[0];
+                        $sets[]            = $key . '=' . $field[0] . '';
                         $params[$field[0]] = $field[1];
                     }
                 }
                 if (!empty($this->whereParams)) {
-                    array_push($params, $this->whereParams);
+                    $params = array_merge($params, $this->whereParams);
                 }
                 $this->sql = $this->sql . implode(',', $sets) . ' ' . $this->sqlMap['where'];
-
-                return $this->pdo->prepare($this->sql, $params);
             }
+        }
+        try {
+            if ($this->pdo->prepare($this->sql, $params) == "00000") {
+                return true;
+            }
+        } catch (\Exception $e) {
+            Logger::error("ERR_PDO_EXEC", [$e->getMessage()]);
+            Response::sendException(PrismCode::ERR_PDO_EXEC, PRISM_MSG[PrismCode::ERR_PDO_EXEC], $e);
         }
 
         return false;
@@ -177,4 +201,35 @@ class Sqlite extends BaseDB implements BaseModel {
         return $info;
     }
 
+//    /**
+//     * @param $dsn
+//     * @param $user
+//     * @param $pwd
+//     * @param $other
+//     *
+//     * @return mixed
+//     * @测试数据库实例是否能连接
+//     */
+//    public function testConnection($dsn, $user, $pwd, $other) {
+//        // TODO: Implement connect() method.
+//        return PPDO::testConnect($dsn, $user, $pwd, 1);
+//    }
+
+    /**
+     * @return mixed
+     * @测试数据库实例是否能连接
+     */
+    public function getConnection() {
+        // TODO: Implement getConnection() method.
+        return $this->pdo->getPDO();
+    }
+
+    /**
+     * @return mixed
+     * 数据库查询
+     */
+    public function query($sql = "") {
+        // TODO: Implement query() method.
+        return $this->pdo->query($sql);
+    }
 }

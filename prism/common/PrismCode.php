@@ -30,25 +30,33 @@ class PrismCode {
 
     const ERR_APP_RUN = 160; //APP运行出错
 
-    const ERR_REQUEST          = 299;
-    const ERR_REQUEST_ROUTE    = 201;
-    const ERR_ROUTE_FILE       = 202; //路由表不存在
-    const ERR_ROUTE_APP        = 203; //APP不存在
-    const ERR_ROUTE_CONTROLLER = 204; //控制器不存在
-    const ERR_ROUTE_ACTION     = 205; //操作方法不存在
+    const ERR_SESSION_DRIVER = 161; //session驱动出错
 
-    const ERR_REQUEST_METHOD         = 209; //请求方式出错
-    const ERR_REQUEST_PARAM_INEXIST  = 210; //请求参数缺失
-    const ERR_REQUEST_PARAM_TIME     = 211;//查询时间有问题
-    const ERR_REQUEST_PARAM_PHONE    = 212;//用户手机号格式不正确
-    const ERR_REQUEST_PARAM_EMAIL    = 213;//用户email格式不正确
-    const ERR_REQUEST_PARAM_MD532    = 214;//用户email格式不正确
-    const ERR_REQUEST_PARAM_NUMBER   = 215;//用户email格式不正确
-    const ERR_REQUEST_PARAM_STRING   = 216;//用户email格式不正确
-    const ERR_REQUEST_PARAM_OPTION   = 217;//用户email格式不正确
-    const ERR_REQUEST_PARAM          = 218;//用户请求参数不正确
-    const ERR_REQUEST_ACTION_TYPE    = 219;//请求方法类型出错
-    const ERR_REQUEST_PARAM_VALIDATE = 220;//参数校验出错
+    const ERR_REQUEST                  = 299;
+    const ERR_REQUEST_ROUTE            = 201;
+    const ERR_ROUTE_FILE               = 202; //路由表不存在
+    const ERR_ROUTE_APP                = 203; //APP不存在
+    const ERR_ROUTE_CONTROLLER         = 204; //控制器不存在
+    const ERR_ROUTE_ACTION             = 205; //操作方法不存在
+    const ERR_ROUTE_APP_FILE_INEXISTED = 206; //app路由文件不存在
+    const ERR_ROUTE_REFLECTION_FAILED  = 207; //app路由文件不存在
+
+    const ERR_REQUEST_METHOD        = 209; //请求方式出错
+    const ERR_REQUEST_PARAM_INEXIST = 210; //请求参数缺失
+    const ERR_REQUEST_PARAM_TIME    = 211;//查询时间有问题
+    const ERR_REQUEST_PARAM_PHONE   = 212;//用户手机号格式不正确
+    const ERR_REQUEST_PARAM_EMAIL   = 213;//用户email格式不正确
+    const ERR_REQUEST_PARAM_MD532   = 214;//MD5格式不正确
+    const ERR_REQUEST_PARAM_NUMBER  = 215;//NUMBER格式不正确
+    const ERR_REQUEST_PARAM_STRING  = 216;//String格式不正确
+    const ERR_REQUEST_PARAM_OPTION  = 217;//OPTION格式不正确
+    const ERR_REQUEST_PARAM_JSON    = 218;//JSON格式不正确
+    const ERR_REQUEST_PARAM_IP      = 219;//IP格式不正确
+    const ERR_REQUEST_PARAM_URL     = 220;//URL格式不正确
+    const ERR_REQUEST_PARAM         = 221;//用户请求参数不正确
+
+    const ERR_REQUEST_ACTION_TYPE    = 222;//请求方法类型出错
+    const ERR_REQUEST_PARAM_VALIDATE = 223;//参数校验出错
 
     const ERR_PDO_CONNECT = 301; //PDO连接失败
     const ERR_PDO_QUERY   = 302; //PDO查询失败
@@ -69,17 +77,19 @@ const PRISM_MSG = array(
     PrismCode::ERR_CREATE_CONTROLLER => '生成app默认控制器失败',
     PrismCode::ERR_CREATE_ROUTE      => '生成app默认路由失败',
 
-    PrismCode::ERR_APP_RUN => 'APP运行出错',
+    PrismCode::ERR_APP_RUN        => 'APP运行出错',
+    PrismCode::ERR_SESSION_DRIVER => 'session驱动出错',
 
-    PrismCode::ERR_REQUEST          => '请求失败',
-    PrismCode::ERR_REQUEST_ROUTE    => '请求路由出错',
-    PrismCode::ERR_ROUTE_FILE       => '路由表不存在',
-    PrismCode::ERR_ROUTE_APP        => 'APP不存在',
-    PrismCode::ERR_ROUTE_CONTROLLER => '控制器不存在',
-    PrismCode::ERR_ROUTE_ACTION     => '操作方法不存在',
+    PrismCode::ERR_REQUEST                  => '请求失败',
+    PrismCode::ERR_REQUEST_ROUTE            => '请求路由出错',
+    PrismCode::ERR_ROUTE_FILE               => '路由表不存在',
+    PrismCode::ERR_ROUTE_APP                => 'APP不存在',
+    PrismCode::ERR_ROUTE_CONTROLLER         => '控制器不存在',
+    PrismCode::ERR_ROUTE_ACTION             => '操作方法不存在',
+    PrismCode::ERR_ROUTE_APP_FILE_INEXISTED => 'app路由文件不存在',
+    PrismCode::ERR_ROUTE_REFLECTION_FAILED  => "路由反射失败",
 
-
-    PrismCode::ERR_REQUEST_METHOD         => '请求方式出错',
+    PrismCode::ERR_REQUEST_METHOD         => '请求方式不存在',
     PrismCode::ERR_REQUEST_PARAM_INEXIST  => '请求参数缺失',
     PrismCode::ERR_REQUEST_PARAM_EMAIL    => '邮箱格式不正确',
     PrismCode::ERR_REQUEST_PARAM_PHONE    => '手机号码不正确',
@@ -88,6 +98,7 @@ const PRISM_MSG = array(
     PrismCode::ERR_REQUEST_PARAM_NUMBER   => '数字格式不正确',
     PrismCode::ERR_REQUEST_PARAM_STRING   => '字符串格式不正确',
     PrismCode::ERR_REQUEST_PARAM_OPTION   => '选项值格式不正确',
+    PrismCode::ERR_REQUEST_PARAM_JSON     => "JSON串格式不正确",
     PrismCode::ERR_REQUEST_PARAM          => '用户请求参数不正确',
     PrismCode::ERR_REQUEST_ACTION_TYPE    => '请求方法类型出错',
     PrismCode::ERR_REQUEST_PARAM_VALIDATE => '参数校验出错',
