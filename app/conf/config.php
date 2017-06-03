@@ -11,9 +11,9 @@ return [
     'app_namespace'           => 'app',
 
     // APP 定义
-    'apps'                    => ['index','prism'],
+    'apps'                    => ['prism'],
     // 默认APP
-    'default_app'             => 'index',
+    'default_app'             => 'prism',
     // 默认controller
     'default_resource'        => 'index',
     // 默认action
