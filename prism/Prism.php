@@ -147,20 +147,14 @@ return [
                 // 创建每个app的默认控制器Index,如果已经存在控制器则不创建默认的控制器
                 if (!glob(APP_PATH . "$app/controller/Index.php")) {
                     try {
-                        $indexController = fopen(APP_PATH . "$app/controller/Index.php", 'w');
-                        $code            = sprintf(Prism::DEFAULT_CONTROLLER, $app);
-                        fwrite($indexController, $code);
-                        fclose($indexController);
+                        $code = sprintf(Prism::DEFAULT_CONTROLLER, $app);
+                        File::write(APP_PATH . "$app/controller/Index.php", $code);
 
-                        $configFile = fopen(APP_PATH . "$app/conf/config.php", 'w');
-                        $code       = Prism::DEFAULT_CONFIG;
-                        fwrite($configFile, $code);
-                        fclose($configFile);
+                        $code = Prism::DEFAULT_CONFIG;
+                        File::write(APP_PATH . "$app/conf/config.php", $code);
 
-                        $configFile = fopen(APP_PATH . "$app/route.php", 'w');
-                        $code       = sprintf(Prism::DEFAULT_ROUTE, $app);
-                        fwrite($configFile, $code);
-                        fclose($configFile);
+                        $code = sprintf(Prism::DEFAULT_ROUTE, $app);
+                        File::write(APP_PATH . "$app/route.php", $code);
                     } catch (ErrorException $e) {
                         Response::sendException(PrismCode::ERR_CHECK_APPS, APP_MSG[PrismCode::ERR_CHECK_APPS], $e);
                     }
@@ -205,17 +199,26 @@ return [
                     // 校验请求参数
                     foreach ($routeConfig['method'][$route->getMethod()]['cp'] as $param => $input) {
                         try {
-                            $validate = Validate::validate($inputs[trim($param)], strtoupper(trim($input[0])), !isset($input[2]) ? '' : $input[2]);
-                            if ($input[1] == 1 && $validate != 0) {
-                                Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param]);
-                                Response::sendError($validate, PRISM_MSG[$validate]);
+
+                            if ($input[1] == 1) {
+                                $validate = Validate::validate($inputs[trim($param)], strtoupper(trim($input[0])), !isset($input[2]) ? '' : $input[2]);
+                                if ($validate != 0) {
+                                    Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param]);
+                                    Response::sendError($validate, PRISM_MSG[$validate]);
+                                }
+                                //过滤参数中的空格
+                                $inputs[$param] = trim($inputs[$param]);
                             }
-                            if ($input[1] == 0 && $validate != 0 && (!empty($inputs[$param]) || isset($inputs[$param]))) {
-                                Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param]);
-                                Response::sendError($validate, PRISM_MSG[$validate]);
+                            if ($input[1] == 0 && (!empty($inputs[$param]) || isset($inputs[$param]))) {
+                                $validate = Validate::validate($inputs[trim($param)], strtoupper(trim($input[0])), !isset($input[2]) ? '' : $input[2]);
+                                if ($validate != 0) {
+                                    Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param, $inputs[$param]]);
+                                    Response::sendError($validate, PRISM_MSG[$validate]);
+                                }
+                                //过滤参数中的空格
+                                $inputs[$param] = trim($inputs[$param]);
                             }
-                            //过滤参数中的空格
-                            $inputs[$param] = trim($inputs[$param]);
+
                         } catch (ErrorException $e) {
                             Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$e->getMessage()]);
                             Response::sendException(PrismCode::ERR_REQUEST_PARAM_VALIDATE, PRISM_MSG[PrismCode::ERR_REQUEST_PARAM_VALIDATE], $e);

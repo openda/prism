@@ -230,10 +230,7 @@ class Logger {
         $levelStr = self::$LogLevel[$level];
 
         $str = "[" . self::$visitId . "][" . $levelStr . "][" . self::$visitTime . "]\n" . $str . "\n";
-//        if($level == Logger::ERROR){
-//            Response::outputPage($str);
-//        }
         $logfile = Logger::getFileName($level);
-        file_put_contents($logfile, $str, FILE_APPEND);
+        File::write($logfile,$str,'a');
     }
 }

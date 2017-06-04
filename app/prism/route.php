@@ -1,4 +1,4 @@
-<?php 
+<?php
 return [
     "index"         => [
         "controller" => "prism/controller/Index.php",
@@ -6,6 +6,15 @@ return [
             "get" => [
                 "cp"     => [],
                 "action" => "show"
+            ]
+        ],
+    ],
+    "prism"         => [
+        "controller" => "prism/controller/Prism.php",
+        "method"     => [
+            "put" => [
+                "cp"     => [],
+                "action" => "init"
             ]
         ],
     ],
@@ -98,7 +107,7 @@ return [
                 "action" => "addDashBoard"
             ],
             "post"   => [
-                "cp"     => ["dash_id" => ["string", 1],"dash_name" => ["string", 1], "dash_info" => ["json", 1], "report_ids" => ["string", 0], "dash_brief" => ["string", 0], "share_link" => ["url", 0]],
+                "cp"     => ["dash_id" => ["string", 1], "dash_name" => ["string", 1], "dash_info" => ["json", 1], "report_ids" => ["string", 0], "dash_brief" => ["string", 0], "share_link" => ["url", 0]],
                 "action" => "updateDashBoard"
             ],
             "delete" => [

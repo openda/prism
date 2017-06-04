@@ -23,5 +23,10 @@ return [
         'app_log' => APP_CONF . 'log.php',
     ],
 
+    //加密文件
+    'encrypt_file'=>APP_PATH . '.encrypt',
+
     // 定义前端
+    'fe_name'                 => 'prism_fe',
+    'fe_path'                 => '',
 ];

@@ -53,8 +53,8 @@ class App {
             Logger::debug("路由检查完毕：", $routes);
             if (!empty($routes['class']) && !empty($routes['action']) && !empty($routes['app'])) {
                 $ret = self::invoke($routes);
+                Logger::debug("执行action：", $ret);
                 if (!is_array($ret) && array_key_exists($ret, APP_MSG)) {
-                    Logger::debug("执行action：", ["code" => $ret, "msg" => APP_MSG[$ret]]);
                     Response::send([
                         "code" => $ret,
                         "msg"  => APP_MSG[$ret],
@@ -165,7 +165,7 @@ class App {
 //                    self::bindParams($method, $route['inputs']);
 //                    return $method->invokeArgs($instance, $route['inputs']);
                     $reflectMethod = new \ReflectionMethod($instance, $route['action']);
-                    $args          = self::bindParams($reflectMethod, $route['inputs']);
+                    $args          = self::bindParams($reflectMethod, empty($route['inputs']) ? [] : $route['inputs']);
 
                     return $reflectMethod->invokeArgs($instance, $args);
                 }

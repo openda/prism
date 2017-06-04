@@ -25,10 +25,11 @@ class PrismCode {
     const ERR_CONF_DATASOURCE_EXISTED = 105;//系统配置信息data_source已经存在
     const ERR_CONF_APPLOG_EXISTED     = 106;//系统配置信息app_log已经存在
     const ERR_CONF_DATASOURCE         = 110;//数据源配置出错
-    const ERR_NAMESPACE_PSR4_PREFIX   = 111;//数据源配置出错
+    const ERR_NAMESPACE_PSR4_PREFIX   = 111;//psr4配置出错
 
     const ERR_CHECK_RUNTIME = 120; //系统检查错误
     const ERR_CHECK_APPS    = 121; //系统检查错误
+    const ERR_FILE_WRITE    = 122; //文件写入错误
 
     const ERR_CREATE_CONTROLLER = 140;//生成app默认控制器失败
     const ERR_CREATE_ROUTE      = 141;//生成app默认路由失败
@@ -76,6 +77,7 @@ const PRISM_MSG = array(
 
     PrismCode::ERR_CHECK_RUNTIME => '运行目录检查错误',
     PrismCode::ERR_CHECK_APPS    => 'APP检查错误',
+    PrismCode::ERR_FILE_WRITE    => '文件写入错误',
 
     PrismCode::ERR_CONF_PARAM              => '配置参数错误',
     PrismCode::ERR_CONF_NO_APP             => '配置文件中未定义app',

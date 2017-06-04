@@ -14,6 +14,7 @@ class AppCode {
     const SUCCESS                    = 0;
     const ERR_RETURN_RESULT_STRUCTER = 1001; //控制器返回的数据结构有问题
     const ERR_GENERATE_UNIQUE_ID     = 1002; //生成唯一id出错
+    const ERR_FILE_INEXISTED = 1003;//加载文件不存在
 
     const APP_USER_EXISTED  = 1100;
     const APP_USER_INISTED  = 1101;
@@ -45,6 +46,7 @@ const APP_MSG = [
 
     AppCode::ERR_RETURN_RESULT_STRUCTER => '返回结果结构有误',
     AppCode::ERR_GENERATE_UNIQUE_ID     => '生成唯一id出错',
+    AppCode::ERR_FILE_INEXISTED => '加载文件不存在',
 
     AppCode::APP_USER_EXISTED  => "用户已经存在",
     AppCode::APP_USER_INISTED  => "用户不存在，请注册",
