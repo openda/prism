@@ -32,7 +32,7 @@ class DashBoard extends BaseController {
         $now      = date("Y-m-d H:i:s");
         $userInfo = Session::get('user_info');
 
-        $Report = Model::load('sqlite')->table('dashboard');
+        $DashBoard = Model::load('sqlite')->table('dashboard');
 
         $data['dash_id']     = Functions::GenIDS(4);
         $data['dash_name']   = $dash_name;
@@ -45,7 +45,7 @@ class DashBoard extends BaseController {
         $data['share_link']  = $share_link;
         $data['dash_brief']  = $dash_brief;
 
-        $Report->save($data);
+        $DashBoard->save($data);
 
         return $this->result;
     }
@@ -61,8 +61,8 @@ class DashBoard extends BaseController {
      * @desc 更新一个报表
      */
     public function updateReport($dash_id, $dash_name, $dash_info, $report_ids, $dash_brief, $share_link) {
-        $Report   = Model::load('sqlite')->table('dashboard');
-        $dashInfo = $Report->where('dash_id = :dash_id,status = :status',
+        $DashBoard   = Model::load('sqlite')->table('dashboard');
+        $dashInfo = $DashBoard->where('dash_id = :dash_id,status = :status',
             array(':dash_id' => trim($dash_id), ':status' => self::DASHBOARD_STATUS_VALID))->select();
         //查询该报表是否已经存在
         if ($dashInfo == null) {
@@ -85,7 +85,7 @@ class DashBoard extends BaseController {
         }
         $data['update_time'] = [":update_time", date("Y-m-d H:i:s")];
 
-        if (!$Report->where('dash_id = :dash_id', array(":dash_id" => $dash_id))->update($data)) {
+        if (!$DashBoard->where('dash_id = :dash_id', array(":dash_id" => $dash_id))->update($data)) {
             return AppCode::ERR_UPDATE_DASHBOARD;
         }
 
@@ -99,8 +99,8 @@ class DashBoard extends BaseController {
      * @desc 删除一个报表
      */
     public function deleteReport($dash_id) {
-        $Report   = Model::load('sqlite')->table('dashboard');
-        $dashInfo = $Report->where('dash_id = :dash_id,status = :status',
+        $DashBoard   = Model::load('sqlite')->table('dashboard');
+        $dashInfo = $DashBoard->where('dash_id = :dash_id,status = :status',
             array(':dash_id' => trim($dash_id), ':status' => self::DASHBOARD_STATUS_VALID))->select();
         //查询该报表是否已经存在
         if ($dashInfo == null) {
@@ -111,7 +111,7 @@ class DashBoard extends BaseController {
         }
         $data['update_time'] = [":update_time", date("Y-m-d H:i:s")];
 
-        if (!$Report->where('dash_id = :dash_id', array(":dash_id" => $dash_id))->update($data)) {
+        if (!$DashBoard->where('dash_id = :dash_id', array(":dash_id" => $dash_id))->update($data)) {
             return AppCode::ERR_DELETE_DASHBOARD;
         }
 

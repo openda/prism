@@ -11,11 +11,11 @@ namespace app\prism\controller;
 
 
 use app\common\AppCode;
-use app\prism\BaseController;
 use prism\Config;
+use prism\Controller;
 use prism\File;
 
-class Prism extends BaseController {
+class Prism extends Controller {
     /**
      * @return array
      *

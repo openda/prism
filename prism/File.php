@@ -107,6 +107,7 @@ class File {
             fwrite($fileHandle, $content);
             fclose($fileHandle);
         } catch (ErrorException $e) {
+            Logger::error('ERR_FILE_WRITE', [$file, $e->getMessage()]);
             Response::sendException(PrismCode::ERR_FILE_WRITE, PRISM_MSG[PrismCode::ERR_FILE_WRITE], $e);
         }
     }

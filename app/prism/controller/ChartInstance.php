@@ -4,7 +4,7 @@
  * User: wangxk1991@gmail.com
  * Date: 2017/5/29
  * Time: 下午9:20
- * Desc:
+ * Desc: 图表实例资源（虚拟资源）
  */
 
 namespace app\prism\controller;
