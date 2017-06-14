@@ -37,7 +37,7 @@ defined('CACHE_PATH') or define('CACHE_PATH', RUNTIME_PATH . DS . 'cache'); // �
 defined('APP_PATH') or define('APP_PATH', dirname($_SERVER['SCRIPT_FILENAME']) . DS . 'app' . DS);
 defined('APP_STATUS') or define('APP_STATUS', ''); // 应用状态 加载对应的配置文件
 defined('APP_DEBUG') or define('APP_DEBUG', true); // 是否调试模式
-defined('APP_CONF') or define('APP_CONF', APP_PATH.'conf'. DS); //定义APP配置目录
+defined('APP_CONF') or define('APP_CONF', APP_PATH . 'conf' . DS); //定义APP配置目录
 
 defined('CONF_PARSE') or define('CONF_PARSE', '');    // 配置文件解析方法
 

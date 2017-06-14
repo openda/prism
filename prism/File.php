@@ -71,7 +71,8 @@ class File {
                 self::recursiveChmod($path . "/" . $entry, $filePerm, $dirPerm);
             }
             // When we are done with the contents of the directory, we chmod the directory itself
-            chmod($path, $dirPerm);
+            system("chmod -R " . $dirPerm . " $path");
+//            chmod($path, $dirPerm);
         }
 
         // Everything seemed to work out well, return TRUE
