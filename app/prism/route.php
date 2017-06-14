@@ -1,16 +1,25 @@
 <?php
 return [
     "index"         => [
-        "controller" => "index/controller/Index.php",
+        "controller" => "prism/controller/Index.php",
         "method"     => [
             "get" => [
                 "cp"     => [],
-                "action" => "getMysql"
+                "action" => "show"
+            ]
+        ],
+    ],
+    "prism"         => [
+        "controller" => "prism/controller/Prism.php",
+        "method"     => [
+            "put" => [
+                "cp"     => [],
+                "action" => "init"
             ]
         ],
     ],
     "user"          => [
-        "controller" => "index/controller/User.php",
+        "controller" => "prism/controller/User.php",
         "method"     => [
             "get"  => [
                 "cp"     => ["user_name" => ["string", 1], "password" => ["string", 1]],
@@ -27,7 +36,7 @@ return [
         ],
     ],
     "dblink"        => [
-        "controller" => "index/controller/DBLink.php",
+        "controller" => "prism/controller/DBLink.php",
         "method"     => [
             "get" => [
                 "cp"     => ["db_type" => ["string", 1]],
@@ -40,7 +49,7 @@ return [
         ],
     ],
     "userdb"        => [
-        "controller" => "index/controller/UserDB.php",
+        "controller" => "prism/controller/UserDB.php",
         "method"     => [
             "get" => [
                 "cp"     => ["db_link_id" => ["string", 1], "db_name" => ["string", 0], "table_name" => ["string", 0]],
@@ -49,7 +58,7 @@ return [
         ],
     ],
     "charttemplate" => [
-        "controller" => "index/controller/ChartTemplate.php",
+        "controller" => "prism/controller/ChartTemplate.php",
         "method"     => [
             "get" => [
                 "cp"     => ["chart_type" => ["option", 1, ["histogram", "piechart", "linechart", "table"]]],
@@ -58,7 +67,7 @@ return [
         ],
     ],
     "chartinstance" => [
-        "controller" => "index/controller/ChartInstance.php",
+        "controller" => "prism/controller/ChartInstance.php",
         "method"     => [
             "get" => [
                 "cp"     => [
@@ -70,7 +79,7 @@ return [
         ],
     ],
     "report"        => [
-        "controller" => "index/controller/Report.php",
+        "controller" => "prism/controller/Report.php",
         "method"     => [
             "put"    => [
                 "cp"     => [
@@ -91,14 +100,14 @@ return [
         ],
     ],
     "dashboard"     => [
-        "controller" => "index/controller/DashBoard.php",
+        "controller" => "prism/controller/DashBoard.php",
         "method"     => [
             "put"    => [
                 "cp"     => ["dash_name" => ["string", 1], "dash_info" => ["json", 1], "report_ids" => ["string", 0], "dash_brief" => ["string", 0], "share_link" => ["url", 0]],
                 "action" => "addDashBoard"
             ],
             "post"   => [
-                "cp"     => ["dash_id" => ["string", 1],"dash_name" => ["string", 1], "dash_info" => ["json", 1], "report_ids" => ["string", 0], "dash_brief" => ["string", 0], "share_link" => ["url", 0]],
+                "cp"     => ["dash_id" => ["string", 1], "dash_name" => ["string", 1], "dash_info" => ["json", 1], "report_ids" => ["string", 0], "dash_brief" => ["string", 0], "share_link" => ["url", 0]],
                 "action" => "updateDashBoard"
             ],
             "delete" => [

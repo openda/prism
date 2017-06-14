@@ -101,8 +101,6 @@ class Validate {
                 if (!preg_match($pattern, $value)) {
                     return PrismCode::ERR_REQUEST_PARAM;
                 }
-            } else {
-                return PrismCode::ERR_REQUEST_PARAM;
             }
         }
 

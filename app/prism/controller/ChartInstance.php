@@ -4,13 +4,13 @@
  * User: wangxk1991@gmail.com
  * Date: 2017/5/29
  * Time: 下午9:20
- * Desc:
+ * Desc: 图表实例资源（虚拟资源）
  */
 
-namespace app\index\controller;
+namespace app\prism\controller;
 
 
-use app\index\BaseController;
+use app\prism\BaseController;
 
 class ChartInstance extends BaseController {
     public function getChartInstance($db_link_id, $chart_type, $chart_info) {

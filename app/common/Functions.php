@@ -21,7 +21,7 @@ class Functions {
      * @return int|string
      */
     public static function GenIDS($idType, $other = '') {
-        $chartMap     = [
+        $chartMap      = [
             'table'     => 1,
             'histogram' => 2,
             'piechart'  => 3,
@@ -66,5 +66,61 @@ class Functions {
      */
     public static function validate($value, $type, $pattern = '', $errno = '') {
         return Validate::validate($value, $type, $pattern, $errno);
+    }
+
+
+    /**
+     * @param $encryptStr string 待加密的字符串
+     * @param $key string 加密关键字
+     *
+     * @return string
+     *
+     * @desc 自定义加密算法
+     */
+    public static function encrypt($encryptStr, $key) {
+        if (empty($encryptStr) || empty($key)) {
+            return "";
+        }
+        $dict       = array('1', '2', '3', '4', '5', '6', '7', '8', '9',
+                            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                            '-', '=', '*'
+        );
+        $key        = current(unpack('L', sha1($key, 1)));
+        $encryptStr ^= $key;
+        $t          = str_split(sprintf('%036b', $encryptStr), 6);
+        foreach ($t as &$v) {
+            $v = $dict[bindec($v)];
+        }
+
+        return join($t);
+    }
+
+    /**
+     * @param $decryptStr string  待解密的串
+     * @param $key string 解密关键字
+     *
+     * @return string
+     *
+     * @desc 自定义解密算法
+     */
+    public static function decrypt($decryptStr, $key) {
+        if (empty($decryptStr) || empty($key)) {
+            return '';
+        }
+
+        $dict = array('1', '2', '3', '4', '5', '6', '7', '8', '9',
+                      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                      'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                      '-', '=', '*'
+        );
+        $dict = array_flip($dict);
+        foreach (str_split($decryptStr) as $c) {
+            $r[] = sprintf('%06b', $dict[$c]);
+        }
+        $id  = bindec(join($r));
+        $key = current(unpack('L', sha1($key, 1)));
+
+        return $id ^ $key;
     }
 }

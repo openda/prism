@@ -7,12 +7,12 @@
  * Desc: 数据库链接资源
  */
 
-namespace app\index\controller;
+namespace app\prism\controller;
 
 
 use app\common\AppCode;
 use app\common\Functions;
-use app\index\BaseController;
+use app\prism\BaseController;
 use prism\Config;
 use prism\Model;
 use prism\Session;
@@ -72,15 +72,16 @@ class DBLink extends BaseController {
         //获取session中的用户信息
         $userInfo = Session::get('user_info');
         $now      = date("Y-m-d H:i:s");
-        unset($linkInfo['password']);
-        $dbLink              = Model::load('sqlite')->table('dblink');
-        $data['db_id']       = Functions::GenIDS(3, $db_type);
-        $data['user_id']     = $userInfo['user_id'];
-        $data['db_type']     = $db_type;
-        $data['link_info']   = json_encode($linkInfo, true);
-        $data['create_time'] = $now;
-        $data['update_time'] = $now;
-        $data['status']      = 1;
+        //对用户数据库连接密码进行加密
+        $linkInfo['password'] = Functions::encrypt($linkInfo['password'], $this->encryptStr);
+        $dbLink               = Model::load('sqlite')->table('dblink');
+        $data['db_id']        = Functions::GenIDS(3, $db_type);
+        $data['user_id']      = $userInfo['user_id'];
+        $data['db_type']      = $db_type;
+        $data['link_info']    = json_encode($linkInfo, true);
+        $data['create_time']  = $now;
+        $data['update_time']  = $now;
+        $data['status']       = 1;
 
         if (!$dbLink->save($data)) {
             return AppCode::DB_LINK_SAVE_FAILED;

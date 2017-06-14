@@ -7,7 +7,7 @@
  * Desc: 图表模板（虚拟资源）
  */
 
-namespace app\index;
+namespace app\prism;
 
 
 use prism\Config;

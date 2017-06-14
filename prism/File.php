@@ -10,8 +10,10 @@
 
 namespace prism;
 
+use app\common\AppCode;
 use const prism\common\PRISM_MSG;
 use prism\common\PrismCode;
+use prism\core\exception\ErrorException;
 
 class File {
     public static function loadConfig($file, $parse = CONF_PARSE) {
@@ -33,7 +35,7 @@ class File {
                 } else {
                     //                    E('_NOT_SUPPORT_' . ':' . $ext);
                     // 没有相应的解析函数解析自定义的配置文件
-                    Response::send(PrismCode::ERR_CONF_PARSE, PRISM_MSG[PrismCode::ERR_CONF_PARSE]);
+                    Response::sendError(PrismCode::ERR_CONF_PARSE, PRISM_MSG[PrismCode::ERR_CONF_PARSE]);
                     exit;
                 }
         }
@@ -74,5 +76,39 @@ class File {
 
         // Everything seemed to work out well, return TRUE
         return (true);
+    }
+
+    /**
+     * @param $file
+     *
+     * @return bool|int|string
+     *
+     * @desc 加载文件并返回文件内容
+     */
+    public static function loadFile($file) {
+        if (is_file($file)) {
+            return file_get_contents($file);
+        }
+
+        return AppCode::ERR_FILE_INEXISTED;
+    }
+
+
+    /**
+     * @param        $file
+     * @param        $content
+     * @param string $type
+     *
+     * @desc 写文件
+     */
+    public static function write($file, $content, $type = 'w') {
+        try {
+            $fileHandle = fopen($file, $type);
+            fwrite($fileHandle, $content);
+            fclose($fileHandle);
+        } catch (ErrorException $e) {
+            Logger::error('ERR_FILE_WRITE', [$file, $e->getMessage()]);
+            Response::sendException(PrismCode::ERR_FILE_WRITE, PRISM_MSG[PrismCode::ERR_FILE_WRITE], $e);
+        }
     }
 }

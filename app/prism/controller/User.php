@@ -7,11 +7,11 @@
  * Desc: user资源
  */
 
-namespace app\index\controller;
+namespace app\prism\controller;
 
 use app\common\AppCode;
 use app\common\Functions;
-use app\index\BaseController;
+use app\prism\BaseController;
 use prism\Logger;
 use prism\Model;
 use prism\Session;
@@ -39,7 +39,7 @@ class User extends BaseController {
         $data['user_name']   = $user_name;
         $data['user_email']  = $email;
         $data['user_phone']  = $phone;
-        $data['user_pwd']    = md5($password);
+        $data['user_pwd']    = Functions::encrypt($password, $this->encryptStr);
         $data['create_time'] = $now;
         $data['update_time'] = $now;
         $data['status']      = 1;
@@ -65,7 +65,7 @@ class User extends BaseController {
         if (empty($userInfo)) {
             return AppCode::APP_USER_INISTED;
         }
-        if (md5($password) != $userInfo["user_pwd"]) {
+        if (Functions::encrypt($password, $this->encryptStr) != $userInfo["user_pwd"]) {
             return AppCode::ERR_USER_PASSWORD;
         }
         $userInfo = $user->where('user_name = ?', array(trim($user_name)))->select("user_name , user_id");
@@ -99,7 +99,7 @@ class User extends BaseController {
             $data['user_phone'] = [":user_phone", $phone];
         }
         if (!empty($password)) {
-            $data['user_pwd'] = [":user_pwd", md5($password)];
+            $data['user_pwd'] = [":user_pwd", Functions::encrypt($password, $this->encryptStr)];
         }
         $data['update_time'] = [":update_time", $now];
 
