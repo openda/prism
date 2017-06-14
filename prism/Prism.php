@@ -73,19 +73,19 @@ return [
         if (is_dir(RUNTIME_PATH)) {
             try {
                 if (!is_dir(LOG_PATH)) {
-                    File::mkdir(LOG_PATH, Prism::RUNTIME_AUTH);
+                    File::makeDir(LOG_PATH, Prism::RUNTIME_AUTH);
 //                    mkdir(LOG_PATH, Prism::RUNTIME_AUTH);
                 }
                 if (!is_dir(TEMP_PATH)) {
-                    File::mkdir(TEMP_PATH, Prism::RUNTIME_AUTH);
+                    File::makeDir(TEMP_PATH, Prism::RUNTIME_AUTH);
 //                    mkdir(TEMP_PATH, Prism::RUNTIME_AUTH);
                 }
                 if (!is_dir(DATA_PATH)) {
-                    File::mkdir(DATA_PATH, Prism::RUNTIME_AUTH);
+                    File::makeDir(DATA_PATH, Prism::RUNTIME_AUTH);
 //                    mkdir(DATA_PATH, Prism::RUNTIME_AUTH);
                 }
                 if (!is_dir(CACHE_PATH)) {
-                    File::mkdir(CACHE_PATH, Prism::RUNTIME_AUTH);
+                    File::makeDir(CACHE_PATH, Prism::RUNTIME_AUTH);
 //                    mkdir(CACHE_PATH, Prism::RUNTIME_AUTH);
                 }
             } catch (ErrorException $e) {
@@ -94,16 +94,16 @@ return [
             }
         } else {
             try {
-                File::mkdir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
+                File::makeDir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
 //                mkdir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
                 // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
                 if (!IS_WIN) {
                     File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
                 }
-                File::mkdir(LOG_PATH, Prism::RUNTIME_AUTH);
-                File::mkdir(TEMP_PATH, Prism::RUNTIME_AUTH);
-                File::mkdir(DATA_PATH, Prism::RUNTIME_AUTH);
-                File::mkdir(CACHE_PATH, Prism::RUNTIME_AUTH);
+                File::makeDir(LOG_PATH, Prism::RUNTIME_AUTH);
+                File::makeDir(TEMP_PATH, Prism::RUNTIME_AUTH);
+                File::makeDir(DATA_PATH, Prism::RUNTIME_AUTH);
+                File::makeDir(CACHE_PATH, Prism::RUNTIME_AUTH);
 
 //                mkdir(LOG_PATH, Prism::RUNTIME_AUTH);
 //                mkdir(TEMP_PATH, Prism::RUNTIME_AUTH);
@@ -127,7 +127,7 @@ return [
         // TODO 优化此处的路径获取方式
         if (!is_dir(APP_PATH)) {
             try {
-                File::mkdir(APP_PATH, Prism::RUNTIME_AUTH);
+                File::makeDir(APP_PATH, Prism::RUNTIME_AUTH);
 //                mkdir(APP_PATH, Prism::RUNTIME_AUTH);
                 // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
                 if (!IS_WIN) {
@@ -146,11 +146,11 @@ return [
             foreach ($apps as $app) {
                 if (!is_dir(APP_PATH . "$app")) {
                     try {
-                        File::mkdir(APP_PATH . "$app", Prism::RUNTIME_AUTH);
-                        File::mkdir(APP_PATH . "$app/controller", Prism::RUNTIME_AUTH);
-                        File::mkdir(APP_PATH . "$app/service", Prism::RUNTIME_AUTH);
-                        File::mkdir(APP_PATH . "$app/model", Prism::RUNTIME_AUTH);
-                        File::mkdir(APP_PATH . "$app/conf", Prism::RUNTIME_AUTH);
+                        File::makeDir(APP_PATH . "$app", Prism::RUNTIME_AUTH);
+                        File::makeDir(APP_PATH . "$app/controller", Prism::RUNTIME_AUTH);
+                        File::makeDir(APP_PATH . "$app/service", Prism::RUNTIME_AUTH);
+                        File::makeDir(APP_PATH . "$app/model", Prism::RUNTIME_AUTH);
+                        File::makeDir(APP_PATH . "$app/conf", Prism::RUNTIME_AUTH);
 
 //                        mkdir(APP_PATH . "$app", Prism::RUNTIME_AUTH);
 //                        mkdir(APP_PATH . "$app/controller", Prism::RUNTIME_AUTH);

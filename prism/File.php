@@ -119,7 +119,7 @@ class File {
      *
      * @desc 创建文件夹
      */
-    public static function mkdir($path, $dirPerm = 0) {
+    public static function makeDir($path, $dirPerm = 0) {
         try {
             system("mkdir $path");
             if ($dirPerm) {
