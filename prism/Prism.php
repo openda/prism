@@ -94,8 +94,8 @@ return [
             }
         } else {
             try {
-                File::makeDir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
-//                mkdir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
+                //注意第一次创建runtime文件夹不要使用File::makeDir函数，会导致报错不准确
+                mkdir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
                 // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
                 if (!IS_WIN) {
                     File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
