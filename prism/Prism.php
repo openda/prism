@@ -73,16 +73,20 @@ return [
         if (is_dir(RUNTIME_PATH)) {
             try {
                 if (!is_dir(LOG_PATH)) {
-                    mkdir(LOG_PATH, Prism::RUNTIME_AUTH);
+                    File::mkdir(LOG_PATH, Prism::RUNTIME_AUTH);
+//                    mkdir(LOG_PATH, Prism::RUNTIME_AUTH);
                 }
                 if (!is_dir(TEMP_PATH)) {
-                    mkdir(TEMP_PATH, Prism::RUNTIME_AUTH);
+                    File::mkdir(TEMP_PATH, Prism::RUNTIME_AUTH);
+//                    mkdir(TEMP_PATH, Prism::RUNTIME_AUTH);
                 }
                 if (!is_dir(DATA_PATH)) {
-                    mkdir(DATA_PATH, Prism::RUNTIME_AUTH);
+                    File::mkdir(DATA_PATH, Prism::RUNTIME_AUTH);
+//                    mkdir(DATA_PATH, Prism::RUNTIME_AUTH);
                 }
                 if (!is_dir(CACHE_PATH)) {
-                    mkdir(CACHE_PATH, Prism::RUNTIME_AUTH);
+                    File::mkdir(CACHE_PATH, Prism::RUNTIME_AUTH);
+//                    mkdir(CACHE_PATH, Prism::RUNTIME_AUTH);
                 }
             } catch (ErrorException $e) {
                 Logger::error("RUNTIME_INIT_FAILED", [$e->getMessage()]);
@@ -90,15 +94,21 @@ return [
             }
         } else {
             try {
-                mkdir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
+                File::mkdir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
+//                mkdir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
                 // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
                 if (!IS_WIN) {
                     File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
                 }
-                mkdir(LOG_PATH, Prism::RUNTIME_AUTH);
-                mkdir(TEMP_PATH, Prism::RUNTIME_AUTH);
-                mkdir(DATA_PATH, Prism::RUNTIME_AUTH);
-                mkdir(CACHE_PATH, Prism::RUNTIME_AUTH);
+                File::mkdir(LOG_PATH, Prism::RUNTIME_AUTH);
+                File::mkdir(TEMP_PATH, Prism::RUNTIME_AUTH);
+                File::mkdir(DATA_PATH, Prism::RUNTIME_AUTH);
+                File::mkdir(CACHE_PATH, Prism::RUNTIME_AUTH);
+
+//                mkdir(LOG_PATH, Prism::RUNTIME_AUTH);
+//                mkdir(TEMP_PATH, Prism::RUNTIME_AUTH);
+//                mkdir(DATA_PATH, Prism::RUNTIME_AUTH);
+//                mkdir(CACHE_PATH, Prism::RUNTIME_AUTH);
             } catch (ErrorException $e) {
                 Logger::error("RUNTIME_INIT_FAILED", [$e->getMessage()]);
                 Response::sendException(PrismCode::ERR_CHECK_RUNTIME, PRISM_MSG[PrismCode::ERR_CHECK_RUNTIME], $e);
@@ -117,7 +127,8 @@ return [
         // TODO 优化此处的路径获取方式
         if (!is_dir(APP_PATH)) {
             try {
-                mkdir(APP_PATH, Prism::RUNTIME_AUTH);
+                File::mkdir(APP_PATH, Prism::RUNTIME_AUTH);
+//                mkdir(APP_PATH, Prism::RUNTIME_AUTH);
                 // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
                 if (!IS_WIN) {
                     File::recursiveChmod(APP_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
@@ -135,11 +146,17 @@ return [
             foreach ($apps as $app) {
                 if (!is_dir(APP_PATH . "$app")) {
                     try {
-                        mkdir(APP_PATH . "$app", Prism::RUNTIME_AUTH);
-                        mkdir(APP_PATH . "$app/controller", Prism::RUNTIME_AUTH);
-                        mkdir(APP_PATH . "$app/service", Prism::RUNTIME_AUTH);
-                        mkdir(APP_PATH . "$app/model", Prism::RUNTIME_AUTH);
-                        mkdir(APP_PATH . "$app/conf", Prism::RUNTIME_AUTH);
+                        File::mkdir(APP_PATH . "$app", Prism::RUNTIME_AUTH);
+                        File::mkdir(APP_PATH . "$app/controller", Prism::RUNTIME_AUTH);
+                        File::mkdir(APP_PATH . "$app/service", Prism::RUNTIME_AUTH);
+                        File::mkdir(APP_PATH . "$app/model", Prism::RUNTIME_AUTH);
+                        File::mkdir(APP_PATH . "$app/conf", Prism::RUNTIME_AUTH);
+
+//                        mkdir(APP_PATH . "$app", Prism::RUNTIME_AUTH);
+//                        mkdir(APP_PATH . "$app/controller", Prism::RUNTIME_AUTH);
+//                        mkdir(APP_PATH . "$app/service", Prism::RUNTIME_AUTH);
+//                        mkdir(APP_PATH . "$app/model", Prism::RUNTIME_AUTH);
+//                        mkdir(APP_PATH . "$app/conf", Prism::RUNTIME_AUTH);
                     } catch (ErrorException $e) {
                         Response::sendException(PrismCode::ERR_CHECK_APPS, APP_MSG[PrismCode::ERR_CHECK_APPS], $e);
                     }

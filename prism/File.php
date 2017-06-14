@@ -58,7 +58,7 @@ class File {
         // See whether this is a file
         if (is_file($path)) {
             // Chmod the file with our given filepermissions
-            chmod($path, $filePerm);
+            system("chmod -R " . $dirPerm . " $path");
             // If this is a directory...
         } elseif (is_dir($path)) {
             // Then get an array of the contents
@@ -110,6 +110,24 @@ class File {
         } catch (ErrorException $e) {
             Logger::error('ERR_FILE_WRITE', [$file, $e->getMessage()]);
             Response::sendException(PrismCode::ERR_FILE_WRITE, PRISM_MSG[PrismCode::ERR_FILE_WRITE], $e);
+        }
+    }
+
+    /**
+     * @param     $path
+     * @param int $dirPerm
+     *
+     * @desc 创建文件夹
+     */
+    public static function mkdir($path, $dirPerm = 0) {
+        try {
+            system("make $path");
+            if ($dirPerm) {
+                system("chmod -R $dirPerm" . " $path");
+            }
+        } catch (ErrorException $e) {
+            Logger::error('ERR_MAKE_DIR', [$path, $e->getMessage()]);
+            Response::sendException(PrismCode::ERR_MAKE_DIR, PRISM_MSG[PrismCode::ERR_MAKE_DIR], $e);
         }
     }
 }
