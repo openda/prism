@@ -121,7 +121,7 @@ class File {
      */
     public static function mkdir($path, $dirPerm = 0) {
         try {
-            system("make $path");
+            system("mkdir $path");
             if ($dirPerm) {
                 system("chmod -R $dirPerm" . " $path");
             }
