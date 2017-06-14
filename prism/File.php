@@ -58,7 +58,11 @@ class File {
         // See whether this is a file
         if (is_file($path)) {
             // Chmod the file with our given filepermissions
-            system("chmod -R " . $dirPerm . " $path");
+            exec("chmod -R " . $dirPerm . " $path", $output, $status);
+            if ($status) {
+                Logger::error('ERR_MAKE_DIR', [$path, $output]);
+                Response::sendError(PrismCode::ERR_MAKE_DIR, PRISM_MSG[PrismCode::ERR_MAKE_DIR]);
+            }
             // If this is a directory...
         } elseif (is_dir($path)) {
             // Then get an array of the contents
@@ -71,8 +75,12 @@ class File {
                 self::recursiveChmod($path . "/" . $entry, $filePerm, $dirPerm);
             }
             // When we are done with the contents of the directory, we chmod the directory itself
-            system("chmod -R " . $dirPerm . " $path");
+            exec("chmod -R " . $dirPerm . " $path", $output, $status);
 //            chmod($path, $dirPerm);
+            if ($status) {
+                Logger::error('ERR_CHMOD_FAILED', [$path, $output]);
+                Response::sendError(PrismCode::ERR_CHMOD_FAILED, PRISM_MSG[PrismCode::ERR_CHMOD_FAILED]);
+            }
         }
 
         // Everything seemed to work out well, return TRUE
@@ -120,14 +128,14 @@ class File {
      * @desc 创建文件夹
      */
     public static function makeDir($path, $dirPerm = 0) {
-        try {
-            system("mkdir $path");
-            if ($dirPerm) {
-                system("chmod -R $dirPerm" . " $path");
-            }
-        } catch (ErrorException $e) {
-            Logger::error('ERR_MAKE_DIR', [$path, $e->getMessage()]);
-            Response::sendException(PrismCode::ERR_MAKE_DIR, PRISM_MSG[PrismCode::ERR_MAKE_DIR], $e);
+        Response::outputPage($path);
+        exec("mkdir $path", $output, $status);
+        if ($dirPerm) {
+            self::recursiveChmod($path, $dirPerm);
+        }
+        if ($status) {
+            Logger::error('ERR_MAKE_DIR', [$path, $output]);
+            Response::sendError(PrismCode::ERR_MAKE_DIR, PRISM_MSG[PrismCode::ERR_MAKE_DIR]);
         }
     }
 }

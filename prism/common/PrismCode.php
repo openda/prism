@@ -31,6 +31,7 @@ class PrismCode {
     const ERR_CHECK_APPS    = 121; //系统检查错误
     const ERR_FILE_WRITE    = 122; //文件写入错误
     const ERR_MAKE_DIR      = 123; //文件夹创建失败
+    const ERR_CHMOD_FAILED  = 124; //权限更新失败
 
     const ERR_CREATE_CONTROLLER = 140;//生成app默认控制器失败
     const ERR_CREATE_ROUTE      = 141;//生成app默认路由失败
@@ -79,7 +80,8 @@ const PRISM_MSG = array(
     PrismCode::ERR_CHECK_RUNTIME => '运行目录检查错误',
     PrismCode::ERR_CHECK_APPS    => 'APP检查错误',
     PrismCode::ERR_FILE_WRITE    => '文件写入错误',
-    PrismCode::ERR_MAKE_DIR    => '文件夹创建失败',
+    PrismCode::ERR_MAKE_DIR      => '文件夹创建失败',
+    PrismCode::ERR_CHMOD_FAILED  => '权限更新失败',
 
     PrismCode::ERR_CONF_PARAM              => '配置参数错误',
     PrismCode::ERR_CONF_NO_APP             => '配置文件中未定义app',
