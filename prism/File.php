@@ -79,7 +79,7 @@ class File {
 //            chmod($path, $dirPerm);
             if ($status) {
                 Logger::error('ERR_CHMOD_FAILED', [$path, $output]);
-                Response::sendError(PrismCode::ERR_CHMOD_FAILED, PRISM_MSG[PrismCode::ERR_CHMOD_FAILED]);
+                Response::sendException(PrismCode::ERR_CHMOD_FAILED, PRISM_MSG[PrismCode::ERR_CHMOD_FAILED], $output);
             }
         }
 
@@ -135,7 +135,7 @@ class File {
         }
         if ($status) {
             Logger::error('ERR_MAKE_DIR', [$path, $output]);
-            Response::sendError(PrismCode::ERR_MAKE_DIR, PRISM_MSG[PrismCode::ERR_MAKE_DIR]);
+            Response::sendException(PrismCode::ERR_MAKE_DIR, PRISM_MSG[PrismCode::ERR_MAKE_DIR], $output);
         }
     }
 }
