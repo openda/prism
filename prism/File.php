@@ -128,14 +128,17 @@ class File {
      * @desc 创建文件夹
      */
     public static function makeDir($path, $dirPerm = 0) {
-        Response::outputPage($path);
-        exec("mkdir $path", $output, $status);
-        if ($dirPerm) {
-            self::recursiveChmod($path, $dirPerm);
+        if (is_dir($path)) {
+            return true;
         }
-        if ($status) {
-            Logger::error('ERR_MAKE_DIR', [$path, $output]);
-            Response::sendException(PrismCode::ERR_MAKE_DIR, PRISM_MSG[PrismCode::ERR_MAKE_DIR], $output);
+        try{
+            if (mkdir($path, $dirPerm, true)) {
+                return true;
+            }
+        }catch(ErrorException $e){
+            Logger::error('ERR_MAKE_DIR', [$path, $e->getMessage()]);
+            Response::sendException(PrismCode::ERR_MAKE_DIR, PRISM_MSG[PrismCode::ERR_MAKE_DIR], $e->getMessage());
         }
+        return false;
     }
 }

@@ -95,11 +95,11 @@ return [
         } else {
             try {
                 //注意第一次创建runtime文件夹不要使用File::makeDir函数，会导致报错不准确
-                mkdir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
+                File::makeDir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
                 // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
-                if (!IS_WIN) {
-                    File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
-                }
+//                if (!IS_WIN) {
+//                    File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
+//                }
                 File::makeDir(LOG_PATH, Prism::RUNTIME_AUTH);
                 File::makeDir(TEMP_PATH, Prism::RUNTIME_AUTH);
                 File::makeDir(DATA_PATH, Prism::RUNTIME_AUTH);
@@ -115,9 +115,9 @@ return [
             }
         }
         // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
-        if (!IS_WIN) {
-            File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
-        }
+//        if (!IS_WIN) {
+//            File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
+//        }
     }
 
     /**
@@ -130,17 +130,17 @@ return [
                 File::makeDir(APP_PATH, Prism::RUNTIME_AUTH);
 //                mkdir(APP_PATH, Prism::RUNTIME_AUTH);
                 // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
-                if (!IS_WIN) {
-                    File::recursiveChmod(APP_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
-                }
+//                if (!IS_WIN) {
+//                    File::recursiveChmod(APP_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
+//                }
             } catch (ErrorException $e) {
                 Response::sendException(PrismCode::ERR_CHECK_APPS, APP_MSG[PrismCode::ERR_CHECK_APPS], $e);
             }
         }
         // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
-        if (!IS_WIN) {
-            File::recursiveChmod(APP_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
-        }
+//        if (!IS_WIN) {
+//            File::recursiveChmod(APP_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
+//        }
         $apps = Config::get('apps');
         if (!empty($apps)) {
             foreach ($apps as $app) {
