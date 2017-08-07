@@ -20,7 +20,7 @@ return [
         "ERR_NO_INIT_"               => "系统未初始化",
         "ERR_FILE_WRITE"             => "文件写入失败，待写入文件：【%s】，失败原因：【%s】",
         "ERR_MAKE_DIR"               => "文件夹创建失败，文件夹路径：【%s】，失败原因：【%s】",
-        "ERR_CHMOD_FAILED"           => "文件权限更新失败，文件路径：【%s】，失败原因：【%s】",
+        "ERR_CHMOD_FAILED"           => "文件（夹）权限更新失败，文件路径：【%s】，失败原因：【%s】",
         "ERR_REQUEST"                => "请求失败，失败原因：【%s】",
         "RUNTIME_INIT_FAILED"        => "运行目录初始化失败,失败原因：【%s】",
         "ERR_REQUEST_ROUTE"          => "请求路由出错，路由详情：【app:%s; class:%s; action:%s】",

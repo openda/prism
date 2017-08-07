@@ -79,7 +79,7 @@ class File {
 //            chmod($path, $dirPerm);
             if ($status) {
                 Logger::error('ERR_CHMOD_FAILED', [$path, $output]);
-                Response::sendError(PrismCode::ERR_CHMOD_FAILED, PRISM_MSG[PrismCode::ERR_CHMOD_FAILED]);
+                Response::sendException(PrismCode::ERR_CHMOD_FAILED, PRISM_MSG[PrismCode::ERR_CHMOD_FAILED], $output);
             }
         }
 
@@ -128,14 +128,17 @@ class File {
      * @desc 创建文件夹
      */
     public static function makeDir($path, $dirPerm = 0) {
-        Response::outputPage($path);
-        exec("mkdir $path", $output, $status);
-        if ($dirPerm) {
-            self::recursiveChmod($path, $dirPerm);
+        if (is_dir($path)) {
+            return true;
         }
-        if ($status) {
-            Logger::error('ERR_MAKE_DIR', [$path, $output]);
-            Response::sendError(PrismCode::ERR_MAKE_DIR, PRISM_MSG[PrismCode::ERR_MAKE_DIR]);
+        try{
+            if (mkdir($path, $dirPerm, true)) {
+                return true;
+            }
+        }catch(ErrorException $e){
+            Logger::error('ERR_MAKE_DIR', [$path, $e->getMessage()]);
+            Response::sendException(PrismCode::ERR_MAKE_DIR, PRISM_MSG[PrismCode::ERR_MAKE_DIR], $e->getMessage());
         }
+        return false;
     }
 }
