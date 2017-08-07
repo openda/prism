@@ -74,19 +74,15 @@ return [
             try {
                 if (!is_dir(LOG_PATH)) {
                     File::makeDir(LOG_PATH, Prism::RUNTIME_AUTH);
-//                    mkdir(LOG_PATH, Prism::RUNTIME_AUTH);
                 }
                 if (!is_dir(TEMP_PATH)) {
                     File::makeDir(TEMP_PATH, Prism::RUNTIME_AUTH);
-//                    mkdir(TEMP_PATH, Prism::RUNTIME_AUTH);
                 }
                 if (!is_dir(DATA_PATH)) {
                     File::makeDir(DATA_PATH, Prism::RUNTIME_AUTH);
-//                    mkdir(DATA_PATH, Prism::RUNTIME_AUTH);
                 }
                 if (!is_dir(CACHE_PATH)) {
                     File::makeDir(CACHE_PATH, Prism::RUNTIME_AUTH);
-//                    mkdir(CACHE_PATH, Prism::RUNTIME_AUTH);
                 }
             } catch (ErrorException $e) {
                 Logger::error("RUNTIME_INIT_FAILED", [$e->getMessage()]);
@@ -95,29 +91,30 @@ return [
         } else {
             try {
                 File::makeDir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
+<<<<<<< Updated upstream
 //                mkdir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
                 // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
                 if (!IS_WIN) {
                     File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
                 }
+=======
+>>>>>>> Stashed changes
                 File::makeDir(LOG_PATH, Prism::RUNTIME_AUTH);
                 File::makeDir(TEMP_PATH, Prism::RUNTIME_AUTH);
                 File::makeDir(DATA_PATH, Prism::RUNTIME_AUTH);
                 File::makeDir(CACHE_PATH, Prism::RUNTIME_AUTH);
-
-//                mkdir(LOG_PATH, Prism::RUNTIME_AUTH);
-//                mkdir(TEMP_PATH, Prism::RUNTIME_AUTH);
-//                mkdir(DATA_PATH, Prism::RUNTIME_AUTH);
-//                mkdir(CACHE_PATH, Prism::RUNTIME_AUTH);
             } catch (ErrorException $e) {
                 Logger::error("RUNTIME_INIT_FAILED", [$e->getMessage()]);
                 Response::sendException(PrismCode::ERR_CHECK_RUNTIME, PRISM_MSG[PrismCode::ERR_CHECK_RUNTIME], $e);
             }
         }
+<<<<<<< Updated upstream
         // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
         if (!IS_WIN) {
             File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
         }
+=======
+>>>>>>> Stashed changes
     }
 
     /**
@@ -137,10 +134,13 @@ return [
                 Response::sendException(PrismCode::ERR_CHECK_APPS, APP_MSG[PrismCode::ERR_CHECK_APPS], $e);
             }
         }
+<<<<<<< Updated upstream
         // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
         if (!IS_WIN) {
             File::recursiveChmod(APP_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
         }
+=======
+>>>>>>> Stashed changes
         $apps = Config::get('apps');
         if (!empty($apps)) {
             foreach ($apps as $app) {
@@ -151,12 +151,6 @@ return [
                         File::makeDir(APP_PATH . "$app/service", Prism::RUNTIME_AUTH);
                         File::makeDir(APP_PATH . "$app/model", Prism::RUNTIME_AUTH);
                         File::makeDir(APP_PATH . "$app/conf", Prism::RUNTIME_AUTH);
-
-//                        mkdir(APP_PATH . "$app", Prism::RUNTIME_AUTH);
-//                        mkdir(APP_PATH . "$app/controller", Prism::RUNTIME_AUTH);
-//                        mkdir(APP_PATH . "$app/service", Prism::RUNTIME_AUTH);
-//                        mkdir(APP_PATH . "$app/model", Prism::RUNTIME_AUTH);
-//                        mkdir(APP_PATH . "$app/conf", Prism::RUNTIME_AUTH);
                     } catch (ErrorException $e) {
                         Response::sendException(PrismCode::ERR_CHECK_APPS, APP_MSG[PrismCode::ERR_CHECK_APPS], $e);
                     }
@@ -208,10 +202,6 @@ return [
                     $routeConfig = $config["$routeTmp"];
                     $class       = $routeConfig["controller"];
                     $namespace   = str_replace("/", "\\", substr($class, 0, -4));
-//                    // 判断请求方式是否出错
-//                    if (!array_key_exists($route->getRequest()->getType(), $routeConfig["method"])) {
-//                        Response::sendError(PrismCode::ERR_REQUEST_METHOD, PRISM_MSG[PrismCode::ERR_REQUEST_METHOD]);
-//                    }
                     $action = empty($routeConfig["method"][$route->getMethod()]['action']) ? $route->getMethod() : $routeConfig["method"][$route->getMethod()]['action'];
                     // 校验请求参数
                     foreach ($routeConfig['method'][$route->getMethod()]['cp'] as $param => $input) {

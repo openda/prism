@@ -26,7 +26,7 @@ class App {
         is_null($request) && $request = Request::instance();
         try {
             //初始化app
-            self::init();
+            $config = self::init();
             // APP检查
             Prism::checkApp();
 
@@ -37,7 +37,6 @@ class App {
                 'resource' => empty($config['default_resource']) ? 'index' : $config['default_resource'],
             ]);
             //路由解析
-
             $route->parse();
             Logger::debug("路由信息：", ["路由：" => $route->getRoute(), "参数" => $route->getInputs()]);
             // 加载路由文件
@@ -46,7 +45,6 @@ class App {
             } else {
                 Response::sendError(PrismCode::ERR_ROUTE_APP_FILE_INEXISTED, PRISM_MSG[PrismCode::ERR_ROUTE_APP_FILE_INEXISTED]);
             }
-//            Logger::debug("加载路由文件：", [Config::get('route')]);
             $config = Config::get();
             // 路由检查，顺带做参数校验
             $routes = Prism::checkRoute($route, $config['route']);

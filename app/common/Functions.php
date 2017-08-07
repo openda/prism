@@ -30,7 +30,7 @@ class Functions {
         $dataSourceMap = [];
         $dashBoardMap  = [];
         $id            = "";
-        $ids           = \prism\Model::load('sqlite')->table('ids');
+        $ids           = \fire\Model::load('sqlite')->table('ids');
         while (true) {
             if ($idType == "1") {
                 $id = "U_" . date("ymd") . rand(100, 999);
@@ -45,7 +45,7 @@ class Functions {
             }
             if (!$ids->where("id = '$id'")->select()) {
                 if (!$ids->save(['id' => $id, 'type' => $other])) {
-                    \prism\Response::sendError(\app\common\AppCode::ERR_GENERATE_UNIQUE_ID, \app\common\APP_MSG[\app\common\AppCode::ERR_GENERATE_UNIQUE_ID]);
+                    \fire\Response::sendError(\app\common\AppCode::ERR_GENERATE_UNIQUE_ID, \app\common\APP_MSG[\app\common\AppCode::ERR_GENERATE_UNIQUE_ID]);
                 } else {
                     break;
                 }

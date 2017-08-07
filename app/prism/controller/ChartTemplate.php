@@ -7,9 +7,10 @@
  * Desc: 图表模板（虚拟资源）
  */
 
-namespace app\prism;
+namespace app\prism\controller;
 
 
+use app\prism\BaseController;
 use prism\Config;
 
 class ChartTemplate extends BaseController {
@@ -20,13 +21,23 @@ class ChartTemplate extends BaseController {
         $chartInfo   = [];
 
         if (empty($chart_type)) {
-            foreach ($chartsInfos as $key => $chartsInfo) {
+            foreach ($chartsInfos['charts'] as $key => $chartsInfo) {
                 $charts[]    = ["name" => $chartsInfo, "type" => $key];
                 $chartInfo[] = $chartsInfo;
             }
         } else {
-            $charts[]    = ["name" => $chartsInfos[$chart_type]["name"], "type" => $chart_type];
-            $chartInfo[] = $chartsInfos["chart_info"];
+            $charts[] = ["name" => $chartsInfos['charts'][$chart_type]["name"], "type" => $chart_type];
+            if (!isset($chartsInfos['charts'][$chart_type]['common']) || $chartsInfos['charts'][$chart_type]['common'] == 1) {
+                $chartInfo['common'] = $chartsInfos["common"];
+            }
+
+            if (!isset($chartsInfos['charts'][$chart_type]['detail']) || $chartsInfos['charts'][$chart_type]['detail'] == 1) {
+                $chartInfo['detail'] = $chartsInfos["detail"];
+            }
+
+            if (!isset($chartsInfos['charts'][$chart_type]['series']) || $chartsInfos['charts'][$chart_type]['series'] == 1) {
+                $chartInfo['series'] = $chartsInfos["series"];
+            }
         }
         $this->result['data'] = ["charts" => $charts, "chart_info" => $chartInfo];
 
