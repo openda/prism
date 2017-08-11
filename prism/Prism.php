@@ -92,21 +92,6 @@ return [
             try {
                 //注意第一次创建runtime文件夹不要使用File::makeDir函数，会导致报错不准确
                 File::makeDir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-//                mkdir(RUNTIME_PATH, Prism::RUNTIME_AUTH);
-                // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
-                if (!IS_WIN) {
-                    File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
-                }
-=======
->>>>>>> Stashed changes
-=======
-                // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
-//                if (!IS_WIN) {
-//                    File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
-//                }
->>>>>>> 3ba4766b5488b0219d32704dd2f274e5d71f54a0
                 File::makeDir(LOG_PATH, Prism::RUNTIME_AUTH);
                 File::makeDir(TEMP_PATH, Prism::RUNTIME_AUTH);
                 File::makeDir(DATA_PATH, Prism::RUNTIME_AUTH);
@@ -116,19 +101,6 @@ return [
                 Response::sendException(PrismCode::ERR_CHECK_RUNTIME, PRISM_MSG[PrismCode::ERR_CHECK_RUNTIME], $e);
             }
         }
-<<<<<<< Updated upstream
-        // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
-<<<<<<< HEAD
-        if (!IS_WIN) {
-            File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
-        }
-=======
->>>>>>> Stashed changes
-=======
-//        if (!IS_WIN) {
-//            File::recursiveChmod(RUNTIME_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
-//        }
->>>>>>> 3ba4766b5488b0219d32704dd2f274e5d71f54a0
     }
 
     /**
@@ -148,19 +120,6 @@ return [
                 Response::sendException(PrismCode::ERR_CHECK_APPS, APP_MSG[PrismCode::ERR_CHECK_APPS], $e);
             }
         }
-<<<<<<< Updated upstream
-        // linux下为了防止umask导致权限设置小于系统设定，故显式设置runtime文件夹的权限
-<<<<<<< HEAD
-        if (!IS_WIN) {
-            File::recursiveChmod(APP_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
-        }
-=======
->>>>>>> Stashed changes
-=======
-//        if (!IS_WIN) {
-//            File::recursiveChmod(APP_PATH, Prism::RUNTIME_AUTH, Prism::RUNTIME_AUTH);
-//        }
->>>>>>> 3ba4766b5488b0219d32704dd2f274e5d71f54a0
         $apps = Config::get('apps');
         if (!empty($apps)) {
             foreach ($apps as $app) {
