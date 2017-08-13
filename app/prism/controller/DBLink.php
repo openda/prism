@@ -15,6 +15,7 @@ use app\common\Functions;
 use app\prism\BaseController;
 use prism\Config;
 use prism\Model;
+use prism\Response;
 use prism\Session;
 
 class DBLink extends BaseController {
@@ -26,9 +27,8 @@ class DBLink extends BaseController {
      */
     public function getDBLink($db_type) {
         $dataSources = Config::get("data_source");
-        $db_type     = strtolower($dataSources['db_type'][$db_type]);
 
-        if (!array_key_exists($db_type, $dataSources)) {
+        if (!array_key_exists(strtolower($db_type), $dataSources)) {
             return AppCode::DATA_SOURCE_INEXISTED;
         }
         foreach ($dataSources[$db_type]['link_info'] as $dataSource) {

@@ -19,7 +19,6 @@ class Error {
      *
      */
     public static function register() {
-        error_reporting(E_ALL);
         set_error_handler([__CLASS__, 'appError']);
         set_exception_handler([__CLASS__, 'appException']);
         register_shutdown_function([__CLASS__, 'appShutdown']);
@@ -31,7 +30,9 @@ class Error {
      * @param  \Exception|\Throwable $e
      */
     public static function appException($e) {
-        Response::sendException(PrismCode::EXCEPTION, PRISM_MSG[PrismCode::EXCEPTION], $e);
+        if (!is_null($error = error_get_last()) && self::isFatal($error['type'])) {
+            Response::sendException(PrismCode::EXCEPTION, PRISM_MSG[PrismCode::EXCEPTION], $e);
+        }
     }
 
     /**
@@ -46,8 +47,10 @@ class Error {
      * @throws ErrorException
      */
     public static function appError($errno, $errstr, $errfile = '', $errline = 0, $errcontext = []) {
-        $exception = new ErrorException($errno, $errstr, $errfile, $errline, $errcontext);
-        Response::sendException(PrismCode::ERROR, PRISM_MSG[PrismCode::ERROR], $exception);
+        if (!is_null($error = error_get_last()) && self::isFatal($error['type'])) {
+            $exception = new ErrorException($errno, $errstr, $errfile, $errline, $errcontext);
+            Response::sendException(PrismCode::ERROR, PRISM_MSG[PrismCode::ERROR], $exception);
+        }
     }
 
     /**

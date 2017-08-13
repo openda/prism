@@ -50,7 +50,7 @@ require_once PRISM_PATH . 'Loader.php';
 \prism\Loader::register();
 
 // 注册错误和异常处理机制
-//\prism\Error::register();
+\prism\Error::register();
 
 //系统开始
 \prism\Prism::run();
