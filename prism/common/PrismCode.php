@@ -65,6 +65,7 @@ class PrismCode {
 
     const ERR_REQUEST_ACTION_TYPE    = 222;//请求方法类型出错
     const ERR_REQUEST_PARAM_VALIDATE = 223;//参数校验出错
+    const ERR_REQUEST_TYPE_INEXIST   = 224;//http请求类型出错
 
     const ERR_PDO_CONNECT = 301; //PDO连接失败
     const ERR_PDO_QUERY   = 302; //PDO查询失败
@@ -118,6 +119,7 @@ const PRISM_MSG = array(
     PrismCode::ERR_REQUEST_PARAM          => '用户请求参数不正确',
     PrismCode::ERR_REQUEST_ACTION_TYPE    => '请求方法类型出错',
     PrismCode::ERR_REQUEST_PARAM_VALIDATE => '参数校验出错',
+    PrismCode::ERR_REQUEST_TYPE_INEXIST   => 'http请求类型出错',
 
     PrismCode::ERR_PDO_CONNECT => 'PDO连接数据库失败',
     PrismCode::ERR_PDO_QUERY   => 'PDO查询失败',

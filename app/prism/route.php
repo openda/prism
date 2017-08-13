@@ -1,4 +1,5 @@
 <?php
+//action 若为空，则默认是请求方式为action
 return [
     "index"         => [
         "controller" => "prism/controller/Index.php",

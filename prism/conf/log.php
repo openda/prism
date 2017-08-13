@@ -25,6 +25,7 @@ return [
         "RUNTIME_INIT_FAILED"        => "运行目录初始化失败,失败原因：【%s】",
         "ERR_REQUEST_ROUTE"          => "请求路由出错，路由详情：【app:%s; class:%s; action:%s】",
         "ERR_APP_RUN"                => "APP运行出错，错误原因：【%s】",
+        "REQUEST_TYPE_INEXIST"       => '请求类型不存在，当前类型：【%s】',
         "REQUEST_PARAM_INEXIST"      => '请求参数缺失，缺失参数：【%s】',
         "ERR_REQUEST_PARAM_VALIDATE" => "请求参数出错，错误参数：【%s】，错误值是：【%s】",
         "ERR_PDO_CONNECT"            => "PDO连接数据库失败，连接信息：【%s】，错误原因：【%s】",
