@@ -91,6 +91,36 @@ class DBLink extends BaseController {
     }
 
     /**
+     * @param $db_type
+     * @param $link_info
+     *
+     * @return array|int|mixed
+     * @desc 测试数据库连接实例是否可用
+     */
+    public function testDBLink($db_type, $link_info) {
+        $methodMap   = [
+            "mysql"  => "connectMysql",
+            "pgsql"  => "connectPgsql",
+            "sqlite" => "connectSqlite",
+        ];
+        $dataSources = Config::get("data_source");
+        if (!array_key_exists(strtolower($db_type), $dataSources)) {
+            return AppCode::DATA_SOURCE_INEXISTED;
+        }
+        $dataSource = $dataSources[$db_type];
+
+        $linkInfo = json_decode($link_info, true);
+        //TODO 判断是数据库连接实例连接数据是否成功
+        $connect = call_user_func($this->$methodMap[$db_type], $dataSource, $linkInfo);
+
+        if ($connect) {
+            return $connect;
+        }
+
+        return $this->result;
+    }
+
+    /**
      * @param $dataSource
      * @param $linkInfo
      *
