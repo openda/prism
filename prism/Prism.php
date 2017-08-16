@@ -181,13 +181,14 @@ return [
                     $routeConfig = $config["$routeTmp"];
                     $class       = $routeConfig["controller"];
                     $namespace   = str_replace("/", "\\", substr($class, 0, -4));
-                    $action = empty($routeConfig["method"][$route->getMethod()]['action']) ? $route->getMethod() : $routeConfig["method"][$route->getMethod()]['action'];
-                    if(!empty($routeConfig['method'][$route->getMethod()])){
+                    $action      = empty($routeConfig["method"][$route->getMethod()]['action']) ? $route->getMethod() : $routeConfig["method"][$route->getMethod()]['action'];
+                    if (!empty($routeConfig['method'][$route->getMethod()])) {
                         // 校验请求参数
                         foreach ($routeConfig['method'][$route->getMethod()]['cp'] as $param => $input) {
                             try {
 
                                 if ($input[1] == 1) {
+                                    Response::outputPage(json_encode($inputs) . strtoupper(trim($input[0])) . json_encode($input[2]), 1);
                                     $validate = Validate::validate($inputs[trim($param)], strtoupper(trim($input[0])), !isset($input[2]) ? '' : $input[2]);
                                     if ($validate != 0) {
                                         Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param]);
@@ -211,7 +212,7 @@ return [
                                 Response::sendException(PrismCode::ERR_REQUEST_PARAM_VALIDATE, PRISM_MSG[PrismCode::ERR_REQUEST_PARAM_VALIDATE], $e);
                             }
                         }
-                    }else{
+                    } else {
                         Logger::error("REQUEST_TYPE_INEXIST", [$route->getMethod()]);
                         Response::sendError(PrismCode::ERR_REQUEST_TYPE_INEXIST, PRISM_MSG[PrismCode::ERR_REQUEST_TYPE_INEXIST]);
                     }

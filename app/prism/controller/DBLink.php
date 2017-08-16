@@ -15,7 +15,6 @@ use app\common\Functions;
 use app\prism\BaseController;
 use prism\Config;
 use prism\Model;
-use prism\Response;
 use prism\Session;
 
 class DBLink extends BaseController {
@@ -25,20 +24,19 @@ class DBLink extends BaseController {
      * @return array|int
      * @desc 获取数据库连接模板
      */
-    public function getDBLink($db_type) {
-        $dataSources = Config::get("data_source");
+    public function getDBLink() {
+        //获取session中的用户信息
+        $userID  = Session::get('user_info')['user_id'];
+        $dbLink  = Model::load('sqlite')->table('dblink');
+        $dbLinks = $dbLink->where('user_id = ? and status =?', array(trim($userID), 1))->select("db_type , db_id");
 
-        if (!array_key_exists(strtolower($db_type), $dataSources)) {
-            return AppCode::DATA_SOURCE_INEXISTED;
-        }
-        foreach ($dataSources[$db_type]['link_info'] as $dataSource) {
-            $tmp['key']   = $dataSource[0];
-            $tmp['value'] = $dataSource[2];
-            $tmp['desc']  = $dataSource[1];
+        $this->result['data'] = [];
 
-            $this->result['data']['template'][] = $tmp;
+        if (!empty($dbLinks)) {
+            foreach ($dbLinks as $dbLink) {
+                $this->result['data'][] = array('db_type' => $dbLink['db_type'], 'db_id' => $dbLink['db_id']);
+            }
         }
-        $this->result['data']['type'] = $db_type;
 
         return $this->result;
     }

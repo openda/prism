@@ -1,7 +1,7 @@
 <?php
 //action 若为空，则默认是请求方式为action
 return [
-    "index"         => [
+    "index"          => [
         "controller" => "prism/controller/Index.php",
         "method"     => [
             "get" => [
@@ -10,7 +10,7 @@ return [
             ]
         ],
     ],
-    "prism"         => [
+    "prism"          => [
         "controller" => "prism/controller/Prism.php",
         "method"     => [
             "put" => [
@@ -19,7 +19,7 @@ return [
             ]
         ],
     ],
-    "user"          => [
+    "user"           => [
         "controller" => "prism/controller/User.php",
         "method"     => [
             "get"  => [
@@ -36,14 +36,14 @@ return [
             ],
         ],
     ],
-    "dblink"        => [
+    "dblink"         => [
         "controller" => "prism/controller/DBLink.php",
         "method"     => [
-            "get" => [
-                "cp"     => ["db_type" => ["string", 1]],
+            "get"  => [
+                "cp"     => [],
                 "action" => "getDBLink"
             ],
-            "put" => [
+            "put"  => [
                 "cp"     => ["db_type" => ["option", 1, ["mysql", "sqlite"]], "link_info" => ["json", 1]],
                 "action" => "addDBLink"
             ],
@@ -53,7 +53,16 @@ return [
             ],
         ],
     ],
-    "userdb"        => [
+    "dblinktemplate" => [
+        "controller" => "prism/controller/DBLinkTemplate.php",
+        "method"     => [
+            "get" => [
+                "cp"     => ["db_type" => ["string", 1]],
+                "action" => "getDBLink"
+            ],
+        ],
+    ],
+    "userdb"         => [
         "controller" => "prism/controller/UserDB.php",
         "method"     => [
             "get" => [
@@ -62,7 +71,7 @@ return [
             ],
         ],
     ],
-    "charttemplate" => [
+    "charttemplate"  => [
         "controller" => "prism/controller/ChartTemplate.php",
         "method"     => [
             "get" => [
@@ -71,7 +80,7 @@ return [
             ],
         ],
     ],
-    "chartinstance" => [
+    "chartinstance"  => [
         "controller" => "prism/controller/ChartInstance.php",
         "method"     => [
             "get" => [
@@ -83,7 +92,7 @@ return [
             ],
         ],
     ],
-    "report"        => [
+    "report"         => [
         "controller" => "prism/controller/Report.php",
         "method"     => [
             "put"    => [
@@ -104,7 +113,7 @@ return [
             ],
         ],
     ],
-    "dashboard"     => [
+    "dashboard"      => [
         "controller" => "prism/controller/DashBoard.php",
         "method"     => [
             "put"    => [
