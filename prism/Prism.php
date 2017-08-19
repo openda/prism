@@ -188,7 +188,6 @@ return [
                             try {
 
                                 if ($input[1] == 1) {
-                                    Response::outputPage(json_encode($inputs) . strtoupper(trim($input[0])) . json_encode($input[2]), 1);
                                     $validate = Validate::validate($inputs[trim($param)], strtoupper(trim($input[0])), !isset($input[2]) ? '' : $input[2]);
                                     if ($validate != 0) {
                                         Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param]);

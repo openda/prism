@@ -58,7 +58,7 @@ return [
         "method"     => [
             "get" => [
                 "cp"     => ["db_type" => ["string", 1]],
-                "action" => "getDBLink"
+                "action" => "getDBLinkTemplate"
             ],
         ],
     ],
