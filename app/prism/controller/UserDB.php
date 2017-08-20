@@ -11,8 +11,10 @@ namespace app\prism\controller;
 
 
 use app\common\AppCode;
+use app\common\Functions;
 use app\prism\BaseController;
 use prism\Model;
+use prism\Response;
 
 class UserDB extends BaseController {
     /**
@@ -36,7 +38,8 @@ class UserDB extends BaseController {
         $linkInfo = json_decode($dbLinkInstance['link_info'], true);
 
         //获取用户数据库连接实例
-        $userDBInstance = Model::load(strtolower($dbType), $linkInfo, 0);
+        $linkInfo['password'] = Functions::encrypt($linkInfo['password'],'D', $this->encryptStr);
+        $userDBInstance       = Model::load(strtolower($dbType), $linkInfo, 0);
 
         if ($userDBInstance->getConnection() !== null) {
             if (empty($db_name) || !isset($db_name)) {

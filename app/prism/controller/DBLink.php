@@ -74,7 +74,7 @@ class DBLink extends BaseController {
         $now = date("Y-m-d H:i:s");
         //对用户数据库连接密码进行加密
 
-        $linkInfo['password'] = Functions::encrypt($linkInfo['password'], $this->encryptStr);
+        $linkInfo['password'] = Functions::encrypt($linkInfo['password'],'E', $this->encryptStr);
         $dbLink               = Model::load('sqlite')->table('dblink');
         $data['db_id']        = Functions::GenIDS(3, $db_type);
         $data['user_id']      = $userInfo['user_id'];

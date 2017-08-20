@@ -35,7 +35,6 @@ class Pgsql extends BaseDB implements BaseModel {
      */
     public function connect($link, $exception) {
         // TODO: Implement connect() method.
-        // TODO: Implement connect() method.
         $dsn       = sprintf($this->dbConf['link_sql'], $link['host'], $link['port'], $link['dbname']);
         $this->pdo = new PPDO($dsn, $link['user'], $link['password'], $exception);
     }
