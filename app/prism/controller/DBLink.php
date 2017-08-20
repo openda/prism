@@ -46,7 +46,7 @@ class DBLink extends BaseController {
      * @return array|int
      * @desc 添加数据库链接实例
      */
-    public function addDBLink($db_type, $link_info, $brief) {
+    public function addDBLink($db_type, $link_info) {
         $methodMap   = [
             "mysql"  => "connectMysql",
             "pgsql"  => "connectPgsql",
@@ -77,7 +77,6 @@ class DBLink extends BaseController {
         $data['user_id']      = $userInfo['user_id'];
         $data['db_type']      = $db_type;
         $data['link_info']    = json_encode($linkInfo, true);
-        $data['brief']        = $brief;
         $data['create_time']  = $now;
         $data['update_time']  = $now;
         $data['status']       = 1;

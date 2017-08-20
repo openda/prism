@@ -44,7 +44,7 @@ return [
                 "action" => "getDBLink"
             ],
             "put"  => [
-                "cp"     => ["db_type" => ["option", 1, ["mysql", "sqlite", "pgsql"]], "link_info" => ["json", 1],"brief" => ["string", 0]],
+                "cp"     => ["db_type" => ["option", 1, ["mysql", "sqlite", "pgsql"]], "link_info" => ["json", 1]],
                 "action" => "addDBLink"
             ],
             "post" => [
