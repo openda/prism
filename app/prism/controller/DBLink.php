@@ -31,12 +31,8 @@ class DBLink extends BaseController {
         $dbLink  = Model::load('sqlite')->table('dblink');
         $dbLinks = $dbLink->where('user_id = ? and status =?', array(trim($userID), 1))->select("db_type , db_id");
 
-        $this->result['data'] = [];
-
         if (!empty($dbLinks)) {
-            foreach ($dbLinks as $dbLink) {
-                $this->result['data'][] = array('db_type' => $dbLink['db_type'], 'db_id' => $dbLink['db_id']);
-            }
+            $this->result['data'][] = array('db_type' => $dbLinks['db_type'], 'db_id' => $dbLinks['db_id']);
         }
 
         return $this->result;
