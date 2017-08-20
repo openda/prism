@@ -2,7 +2,7 @@
   <div class="container">
     <Row :gutter="16">
       <Col span="8">
-      <Form :label-width="80">
+      <Form :label-width="100">
         <Form-item label="数据库配置">
           <Select v-on:on-change="handleDB" placeholder="请选择数据库配置">
             <Option v-for="item in databases" :value="item.no" >{{ item.no }}（{{ item.type }}）</Option>
