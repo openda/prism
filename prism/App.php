@@ -50,7 +50,8 @@ class App {
             $routes = Prism::checkRoute($route, $config['route']);
             Logger::debug("路由检查完毕：", $routes);
             if (!empty($routes['class']) && !empty($routes['action']) && !empty($routes['app'])) {
-                $ret = self::invoke($routes);
+//                Response::outputPage($config['route'][$routes['resource']]['method'][$routes['type']]['cp'], 1);
+                $ret = self::invoke($routes, $config['route'][$routes['resource']]['method'][$routes['type']]['cp']);
                 Logger::debug("执行action：", $ret);
                 if (!is_array($ret) && array_key_exists($ret, APP_MSG)) {
                     Response::send([
@@ -142,12 +143,12 @@ class App {
      *
      * @return mixed
      */
-    public static function invoke($route = []) {
+    public static function invoke($route = [], $cps = []) {
         try {
             $class       = new \ReflectionClass($route['namespace']);
             $constructor = $class->getConstructor();
             if ($constructor) {
-                $args = self::bindParams($constructor, $route['inputs']);
+                $args = self::bindParams($constructor, $route['inputs'], $cps);
             } else {
                 $args = [];
             }
@@ -163,7 +164,7 @@ class App {
 //                    self::bindParams($method, $route['inputs']);
 //                    return $method->invokeArgs($instance, $route['inputs']);
                     $reflectMethod = new \ReflectionMethod($instance, $route['action']);
-                    $args          = self::bindParams($reflectMethod, empty($route['inputs']) ? [] : $route['inputs']);
+                    $args          = self::bindParams($reflectMethod, empty($route['inputs']) ? [] : $route['inputs'], $cps);
 
                     return $reflectMethod->invokeArgs($instance, $args);
                 }
@@ -186,7 +187,7 @@ class App {
      *
      * @return array
      */
-    private static function bindParams($reflect, $vars = []) {
+    private static function bindParams($reflect, $vars = [], $cps) {
         if (empty($vars)) {
             $vars = Request::instance()->getInput();
         }
@@ -220,6 +221,8 @@ class App {
                     $args[] = $vars[$name];
                 } elseif ($param->isDefaultValueAvailable()) {
                     $args[] = $param->getDefaultValue();
+                } elseif (($cps[$name][1] == 0 || empty($cps[$name])) && empty($vars[$name])) {//非必选的参数且参数值为空的时候自动赋空值
+                    $args[] = '';
                 } else {
                     Response::sendException(PrismCode::ERR_REQUEST_PARAM_INEXIST, APP_MSG[PrismCode::ERR_REQUEST_PARAM_INEXIST],
                         new \InvalidArgumentException('method param miss:' . $name));
