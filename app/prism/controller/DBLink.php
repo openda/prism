@@ -32,165 +32,178 @@ class DBLink extends BaseController {
         $dbLinks = $dbLink->where('user_id = ? and status =?', array(trim($userID), 1))->select("db_type , db_id");
 
         if (!empty($dbLinks)) {
-            $this->result['data'][] = array('db_type' => $dbLinks['db_type'], 'db_id' => $dbLinks['db_id']);
-        }
-
-        return $this->result;
-    }
-
-    /**
-     * @param $db_type
-     * @param $link_info
-     * @param $brief
-     *
-     * @return array|int
-     * @desc 添加数据库链接实例
-     */
-    public function addDBLink($db_type, $link_info) {
-        $methodMap   = [
-            "mysql"  => "connectMysql",
-            "pgsql"  => "connectPgsql",
-            "sqlite" => "connectSqlite",
-        ];
-        $dataSources = Config::get("data_source");
-        if (!array_key_exists(strtolower($db_type), $dataSources)) {
-            return AppCode::DATA_SOURCE_INEXISTED;
-        }
-        $dataSource = $dataSources[$db_type];
-
-        $linkInfo = json_decode($link_info, true);
-        //TODO 判断是数据库连接实例连接数据是否成功
-        $connect = call_user_func_array([$this, $methodMap[$db_type]], [$dataSource, $linkInfo]);
-        if ($connect) {
-            return $connect;
-        }
-
-        //获取session中的用户信息
-        $userInfo = Session::get('user_info');
-
-        $now = date("Y-m-d H:i:s");
-        //对用户数据库连接密码进行加密
-
-        $linkInfo['password'] = Functions::encrypt($linkInfo['password'], 'E', $this->encryptStr);
-        $dbLink               = Model::load('sqlite')->table('dblink');
-        $data['db_id']        = Functions::GenIDS(3, $db_type);
-        $data['user_id']      = $userInfo['user_id'];
-        $data['db_type']      = $db_type;
-        $data['link_info']    = json_encode($linkInfo, true);
-        $data['create_time']  = $now;
-        $data['update_time']  = $now;
-        $data['status']       = 1;
-        if (!$dbLink->save($data)) {
-            return AppCode::DB_LINK_SAVE_FAILED;
-        }
-
-        return $this->result;
-    }
-
-    /**
-     * @param $db_type
-     * @param $link_info
-     *
-     * @return array|int|mixed
-     * @desc 测试数据库连接实例是否可用
-     */
-    public function testDBLink($db_type, $link_info) {
-        $methodMap   = [
-            "mysql"  => "connectMysql",
-            "pgsql"  => "connectPgsql",
-            "sqlite" => "connectSqlite",
-        ];
-        $dataSources = Config::get("data_source");
-        if (!array_key_exists(strtolower($db_type), $dataSources)) {
-            return AppCode::DATA_SOURCE_INEXISTED;
-        }
-        $dataSource = $dataSources[$db_type];
-
-        $linkInfo = json_decode($link_info, true);
-        //TODO 判断是数据库连接实例连接数据是否成功
-        $connect = call_user_func($methodMap[$db_type], $dataSource, $linkInfo);
-
-        if ($connect) {
-            return $connect;
-        }
-
-        return $this->result;
-    }
-
-    /**
-     * @param $dataSource
-     * @param $linkInfo
-     *
-     * @desc 检查mysql实例是否正确
-     */
-    private function connectMysql($dataSource, $linkInfo) {
-        $errMap = [
-            'host'   => AppCode::ERR_DBLINK_PARAM_HOST,
-            'port'   => AppCode::ERR_DBLINK_PARAM_PORT,
-            'dbname' => AppCode::ERR_DBLINK_PARAM_DBNAME,
-            'user'   => AppCode::ERR_DBLINK_PARAM_USER,
-        ];
-        foreach ($dataSource['link_info'] as $infos) {
-            if (!(isset($infos[3]) && $infos[3] == 1)) {
-                if (Functions::validate($linkInfo[$infos[0]], $infos[2]) > 0) {
-                    return $errMap[$infos[0]];
+            if (count($dbLinks) == 1) {
+                $this->result['data'][] = array('db_type' => $dbLinks['db_type'], 'db_id' => $dbLinks['db_id']);
+            } else {
+                foreach ($dbLinks as $dbLink) {
+                    $this->result['data'][] = array('db_type' => $dbLink['db_type'], 'db_id' => $dbLink['db_id']);
                 }
             }
-        }
-        if (Model::load('mysql', $linkInfo, 0)->getConnection() == null) {
-            return AppCode::DB_LINK_CONNECT_FAILED;
+
+
         }
 
-        return 0;
+        return $this->result;
     }
 
-    /**
-     * @param $dataSource
-     * @param $linkInfo
-     *
-     * @desc 检查pgsql实例是否正确
-     */
-    private function connectPgsql($dataSource, $linkInfo) {
-        $errMap = [
-            'host'   => AppCode::ERR_DBLINK_PARAM_HOST,
-            'port'   => AppCode::ERR_DBLINK_PARAM_PORT,
-            'dbname' => AppCode::ERR_DBLINK_PARAM_DBNAME,
-            'user'   => AppCode::ERR_DBLINK_PARAM_USER,
-        ];
-        foreach ($dataSource['link_info'] as $infos) {
-            if (!Functions::validate($linkInfo[$infos[0]], $infos[2]) > 0) {
+/**
+ * @param $db_type
+ * @param $link_info
+ * @param $brief
+ *
+ * @return array|int
+ * @desc 添加数据库链接实例
+ */
+public
+function addDBLink($db_type, $link_info) {
+    $methodMap   = [
+        "mysql"  => "connectMysql",
+        "pgsql"  => "connectPgsql",
+        "sqlite" => "connectSqlite",
+    ];
+    $dataSources = Config::get("data_source");
+    if (!array_key_exists(strtolower($db_type), $dataSources)) {
+        return AppCode::DATA_SOURCE_INEXISTED;
+    }
+    $dataSource = $dataSources[$db_type];
+
+    $linkInfo = json_decode($link_info, true);
+    //TODO 判断是数据库连接实例连接数据是否成功
+    $connect = call_user_func_array([$this, $methodMap[$db_type]], [$dataSource, $linkInfo]);
+    if ($connect) {
+        return $connect;
+    }
+
+    //获取session中的用户信息
+    $userInfo = Session::get('user_info');
+
+    $now = date("Y-m-d H:i:s");
+    //对用户数据库连接密码进行加密
+
+    $linkInfo['password'] = Functions::encrypt($linkInfo['password'], 'E', $this->encryptStr);
+    $dbLink               = Model::load('sqlite')->table('dblink');
+    $data['db_id']        = Functions::GenIDS(3, $db_type);
+    $data['user_id']      = $userInfo['user_id'];
+    $data['db_type']      = $db_type;
+    $data['link_info']    = json_encode($linkInfo, true);
+    $data['create_time']  = $now;
+    $data['update_time']  = $now;
+    $data['status']       = 1;
+    if (!$dbLink->save($data)) {
+        return AppCode::DB_LINK_SAVE_FAILED;
+    }
+
+    return $this->result;
+}
+
+/**
+ * @param $db_type
+ * @param $link_info
+ *
+ * @return array|int|mixed
+ * @desc 测试数据库连接实例是否可用
+ */
+public
+function testDBLink($db_type, $link_info) {
+    $methodMap   = [
+        "mysql"  => "connectMysql",
+        "pgsql"  => "connectPgsql",
+        "sqlite" => "connectSqlite",
+    ];
+    $dataSources = Config::get("data_source");
+    if (!array_key_exists(strtolower($db_type), $dataSources)) {
+        return AppCode::DATA_SOURCE_INEXISTED;
+    }
+    $dataSource = $dataSources[$db_type];
+
+    $linkInfo = json_decode($link_info, true);
+    //TODO 判断是数据库连接实例连接数据是否成功
+    $connect = call_user_func($methodMap[$db_type], $dataSource, $linkInfo);
+
+    if ($connect) {
+        return $connect;
+    }
+
+    return $this->result;
+}
+
+/**
+ * @param $dataSource
+ * @param $linkInfo
+ *
+ * @desc 检查mysql实例是否正确
+ */
+private
+function connectMysql($dataSource, $linkInfo) {
+    $errMap = [
+        'host'   => AppCode::ERR_DBLINK_PARAM_HOST,
+        'port'   => AppCode::ERR_DBLINK_PARAM_PORT,
+        'dbname' => AppCode::ERR_DBLINK_PARAM_DBNAME,
+        'user'   => AppCode::ERR_DBLINK_PARAM_USER,
+    ];
+    foreach ($dataSource['link_info'] as $infos) {
+        if (!(isset($infos[3]) && $infos[3] == 1)) {
+            if (Functions::validate($linkInfo[$infos[0]], $infos[2]) > 0) {
                 return $errMap[$infos[0]];
             }
         }
-        if (Model::load('pgsql', $linkInfo, 0)->getConnection() == null) {
-            return AppCode::DB_LINK_CONNECT_FAILED;
-        }
-
-        return 0;
+    }
+    if (Model::load('mysql', $linkInfo, 0)->getConnection() == null) {
+        return AppCode::DB_LINK_CONNECT_FAILED;
     }
 
-    /**
-     * @param $dataSource
-     * @param $linkInfo
-     *
-     * @desc 检查sqlite实例是否正确
-     */
-    private function connectSqlite($dataSource, $linkInfo) {
-        $errMap = [
-            'host'   => AppCode::ERR_DBLINK_PARAM_HOST,
-            'port'   => AppCode::ERR_DBLINK_PARAM_PORT,
-            'dbname' => AppCode::ERR_DBLINK_PARAM_DBNAME,
-            'user'   => AppCode::ERR_DBLINK_PARAM_USER,
-        ];
-        foreach ($dataSource['link_info'] as $infos) {
-            if (!Functions::validate($linkInfo[$infos[0]], $infos[2]) > 0) {
-                return $errMap[$infos[0]];
-            }
-        }
-        if (Model::load('sqlite', $linkInfo, 0)->getConnection() == null) {
-            return AppCode::DB_LINK_CONNECT_FAILED;
-        }
+    return 0;
+}
 
-        return 0;
+/**
+ * @param $dataSource
+ * @param $linkInfo
+ *
+ * @desc 检查pgsql实例是否正确
+ */
+private
+function connectPgsql($dataSource, $linkInfo) {
+    $errMap = [
+        'host'   => AppCode::ERR_DBLINK_PARAM_HOST,
+        'port'   => AppCode::ERR_DBLINK_PARAM_PORT,
+        'dbname' => AppCode::ERR_DBLINK_PARAM_DBNAME,
+        'user'   => AppCode::ERR_DBLINK_PARAM_USER,
+    ];
+    foreach ($dataSource['link_info'] as $infos) {
+        if (!Functions::validate($linkInfo[$infos[0]], $infos[2]) > 0) {
+            return $errMap[$infos[0]];
+        }
     }
+    if (Model::load('pgsql', $linkInfo, 0)->getConnection() == null) {
+        return AppCode::DB_LINK_CONNECT_FAILED;
+    }
+
+    return 0;
+}
+
+/**
+ * @param $dataSource
+ * @param $linkInfo
+ *
+ * @desc 检查sqlite实例是否正确
+ */
+private
+function connectSqlite($dataSource, $linkInfo) {
+    $errMap = [
+        'host'   => AppCode::ERR_DBLINK_PARAM_HOST,
+        'port'   => AppCode::ERR_DBLINK_PARAM_PORT,
+        'dbname' => AppCode::ERR_DBLINK_PARAM_DBNAME,
+        'user'   => AppCode::ERR_DBLINK_PARAM_USER,
+    ];
+    foreach ($dataSource['link_info'] as $infos) {
+        if (!Functions::validate($linkInfo[$infos[0]], $infos[2]) > 0) {
+            return $errMap[$infos[0]];
+        }
+    }
+    if (Model::load('sqlite', $linkInfo, 0)->getConnection() == null) {
+        return AppCode::DB_LINK_CONNECT_FAILED;
+    }
+
+    return 0;
+}
 }
