@@ -35,7 +35,11 @@ class Mysql extends BaseDB implements BaseModel {
      */
     public function connect($link, $exception) {
         // TODO: Implement connect() method.
-        $dsn       = sprintf($this->dbConf['link_sql'], $link['host'], $link['port'], $link['dbname']);
+        if (empty($link['dbname'])) {
+            $dsn = sprintf($this->dbConf['link_sql'][1], $link['host'], $link['port']);
+        } else {
+            $dsn = sprintf($this->dbConf['link_sql'][0], $link['host'], $link['port'], $link['dbname']);
+        }
         $this->pdo = new PPDO($dsn, $link['user'], $link['password'], $exception);
     }
 
@@ -55,6 +59,7 @@ class Mysql extends BaseDB implements BaseModel {
             if ($rets === true) {
                 return [];
             }
+
             return $rets;
         }
 

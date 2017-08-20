@@ -44,11 +44,11 @@ return [
                 "action" => "getDBLink"
             ],
             "put"  => [
-                "cp"     => ["db_type" => ["option", 1, ["mysql", "sqlite"]], "link_info" => ["json", 1]],
+                "cp"     => ["db_type" => ["option", 1, ["mysql", "sqlite", "pgsql"]], "link_info" => ["json", 1]],
                 "action" => "addDBLink"
             ],
             "post" => [
-                "cp"     => ["db_type" => ["option", 1, ["mysql", "sqlite"]], "link_info" => ["json", 1]],
+                "cp"     => ["db_type" => ["option", 1, ["mysql", "sqlite", "pgsql"]], "link_info" => ["json", 1]],
                 "action" => "testDBLink"
             ],
         ],

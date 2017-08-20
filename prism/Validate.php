@@ -89,11 +89,11 @@ class Validate {
                 return PrismCode::ERR_REQUEST_PARAM_JSON;
             }
         } else if ($type == Validate::PARAM_IP) {
-            if (filter_var($value, FILTER_VALIDATE_IP) == false) {
+            if (filter_var($value, FILTER_VALIDATE_IP) === false) {
                 return PrismCode::ERR_REQUEST_PARAM_IP;
             }
         } else if ($type == Validate::PARAM_URL) {
-            if (filter_var($value, FILTER_VALIDATE_URL) == false) {
+            if (filter_var($value, FILTER_VALIDATE_URL) === false) {
                 return PrismCode::ERR_REQUEST_PARAM_URL;
             }
         } else {

@@ -15,6 +15,7 @@ use app\common\Functions;
 use app\prism\BaseController;
 use prism\Config;
 use prism\Model;
+use prism\Response;
 use prism\Session;
 
 class DBLink extends BaseController {
@@ -62,15 +63,17 @@ class DBLink extends BaseController {
 
         $linkInfo = json_decode($link_info, true);
         //TODO 判断是数据库连接实例连接数据是否成功
-        $connect = call_user_func($this->$methodMap[$db_type], $dataSource, $linkInfo);
-
+        $connect = call_user_func_array([$this, $methodMap[$db_type]], [$dataSource, $linkInfo]);
         if ($connect) {
             return $connect;
         }
+
         //获取session中的用户信息
         $userInfo = Session::get('user_info');
-        $now      = date("Y-m-d H:i:s");
+
+        $now = date("Y-m-d H:i:s");
         //对用户数据库连接密码进行加密
+
         $linkInfo['password'] = Functions::encrypt($linkInfo['password'], $this->encryptStr);
         $dbLink               = Model::load('sqlite')->table('dblink');
         $data['db_id']        = Functions::GenIDS(3, $db_type);
@@ -80,7 +83,6 @@ class DBLink extends BaseController {
         $data['create_time']  = $now;
         $data['update_time']  = $now;
         $data['status']       = 1;
-
         if (!$dbLink->save($data)) {
             return AppCode::DB_LINK_SAVE_FAILED;
         }
@@ -109,7 +111,7 @@ class DBLink extends BaseController {
 
         $linkInfo = json_decode($link_info, true);
         //TODO 判断是数据库连接实例连接数据是否成功
-        $connect = call_user_func($this->$methodMap[$db_type], $dataSource, $linkInfo);
+        $connect = call_user_func($methodMap[$db_type], $dataSource, $linkInfo);
 
         if ($connect) {
             return $connect;
@@ -132,8 +134,10 @@ class DBLink extends BaseController {
             'user'   => AppCode::ERR_DBLINK_PARAM_USER,
         ];
         foreach ($dataSource['link_info'] as $infos) {
-            if (!Functions::validate($linkInfo[$infos[0]], $infos[2]) > 0) {
-                return $errMap[$infos[0]];
+            if (!(isset($infos[3]) && $infos[3] == 1)) {
+                if (Functions::validate($linkInfo[$infos[0]], $infos[2]) > 0) {
+                    return $errMap[$infos[0]];
+                }
             }
         }
         if (Model::load('mysql', $linkInfo, 0)->getConnection() == null) {

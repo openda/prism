@@ -27,10 +27,8 @@ class Functions {
             'piechart'  => 3,
             'linechart' => 4,
         ];
-        $dataSourceMap = [];
-        $dashBoardMap  = [];
         $id            = "";
-        $ids           = \fire\Model::load('sqlite')->table('ids');
+        $ids           = \prism\Model::load('sqlite')->table('ids');
         while (true) {
             if ($idType == "1") {
                 $id = "U_" . date("ymd") . rand(100, 999);
@@ -45,7 +43,7 @@ class Functions {
             }
             if (!$ids->where("id = '$id'")->select()) {
                 if (!$ids->save(['id' => $id, 'type' => $other])) {
-                    \fire\Response::sendError(\app\common\AppCode::ERR_GENERATE_UNIQUE_ID, \app\common\APP_MSG[\app\common\AppCode::ERR_GENERATE_UNIQUE_ID]);
+                    \prism\Response::sendError(\app\common\AppCode::ERR_GENERATE_UNIQUE_ID, \app\common\APP_MSG[\app\common\AppCode::ERR_GENERATE_UNIQUE_ID]);
                 } else {
                     break;
                 }
@@ -65,7 +63,7 @@ class Functions {
      * @desc 校验器
      */
     public static function validate($value, $type, $pattern = '', $errno = '') {
-        return Validate::validate($value, $type, $pattern, $errno);
+        return Validate::validate($value, strtoupper($type), $pattern, $errno);
     }
 
 
