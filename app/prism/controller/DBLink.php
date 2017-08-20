@@ -29,14 +29,16 @@ class DBLink extends BaseController {
         //获取session中的用户信息
         $userID  = Session::get('user_info')['user_id'];
         $dbLink  = Model::load('sqlite')->table('dblink');
-        $dbLinks = $dbLink->where('user_id = ? and status =?', array(trim($userID), 1))->select("db_type , db_id");
+        $dbLinks = $dbLink->where('user_id = ? and status =?', array(trim($userID), 1))->select("db_type , db_id , link_info");
 
         if (!empty($dbLinks)) {
             if (count($dbLinks) == 1) {
-                $this->result['data'][] = array('db_type' => $dbLinks['db_type'], 'db_id' => $dbLinks['db_id'], 'brief' => $dbLink['brief']);
+                $linkInfo               = json_decode($dbLinks['link_info'], true);
+                $this->result['data'][] = array('db_type' => $dbLinks['db_type'], 'db_id' => $dbLinks['db_id'], 'brief' => $linkInfo['brief']);
             } else {
                 foreach ($dbLinks as $dbLink) {
-                    $this->result['data'][] = array('db_type' => $dbLink['db_type'], 'db_id' => $dbLink['db_id'], 'brief' => $dbLink['brief']);
+                    $linkInfo               = json_decode($dbLink['link_info'], true);
+                    $this->result['data'][] = array('db_type' => $dbLink['db_type'], 'db_id' => $dbLink['db_id'], 'brief' => $linkInfo['brief']);
                 }
             }
         }
@@ -83,7 +85,7 @@ class DBLink extends BaseController {
         $data['db_id']        = Functions::GenIDS(3, $db_type);
         $data['user_id']      = $userInfo['user_id'];
         $data['db_type']      = $db_type;
-        $data['link_info']    = json_encode($linkInfo, true);
+        $data['link_info']    = json_encode($linkInfo, JSON_UNESCAPED_UNICODE);
         $data['create_time']  = $now;
         $data['update_time']  = $now;
         $data['status']       = 1;

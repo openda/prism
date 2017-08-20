@@ -34,7 +34,6 @@ class UserDB extends BaseController {
             return AppCode::DB_LINK_INSTANCE_INEXISTED;
         }
         $dbType = $dbLinkInstance["db_type"];
-//        $dataSource = Config::get("data_source")[$this->dbTypeMap[$dbLinkInstance["db_type"]]];
         $linkInfo = json_decode($dbLinkInstance['link_info'], true);
 
         //获取用户数据库连接实例
@@ -60,7 +59,7 @@ class UserDB extends BaseController {
                 if (!empty($tbls)) {
                     foreach ($tbls as $tbl) {
                         $tables[] = [
-                            "table_name"      => $tbl['Tables_in_prism'],
+                            "table_name"      => $tbl['Tables_in_'.$db_name],
                             "table_structure" => null,
                         ];
                     }
