@@ -89,6 +89,9 @@ class  Response {
     static function output($content = []) {
         //输出结果
         $content_type = 'application/json';
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
         //        $content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : 'application/json';
         if (strpos($content_type, 'application/json') !== false) {
             header("Content-Type: application/json");

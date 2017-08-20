@@ -27,6 +27,6 @@ return [
     'encrypt_file'=>APP_PATH . '.encrypt',
 
     // 定义前端
-    'fe_name'                 => 'prism_fe',
-    'fe_path'                 => '',
+    'fe_name'                 => 'prism-fe',
+    'fe_path'                 => 'prism-fe',
 ];

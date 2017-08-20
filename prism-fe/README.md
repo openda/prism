@@ -1,6 +1,6 @@
 # prism-fe
 
-> Front end of prism
+> prism`s front end
 
 ## Build Setup
 
