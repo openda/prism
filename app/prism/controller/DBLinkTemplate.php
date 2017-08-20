@@ -34,6 +34,12 @@ class DBLinkTemplate extends BaseController {
 
             $this->result['data']['template'][] = $tmp;
         }
+        $tmp['key']   = "brief";
+        $tmp['value'] = "string";
+        $tmp['desc']  = "备注";
+
+        $this->result['data']['template'][] = $tmp;
+        
         $this->result['data']['type'] = $db_type;
 
         return $this->result;
