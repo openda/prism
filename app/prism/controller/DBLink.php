@@ -45,11 +45,12 @@ class DBLink extends BaseController {
     /**
      * @param $db_type
      * @param $link_info
+     * @param $brief
      *
      * @return array|int
      * @desc 添加数据库链接实例
      */
-    public function addDBLink($db_type, $link_info) {
+    public function addDBLink($db_type, $link_info, $brief) {
         $methodMap   = [
             "mysql"  => "connectMysql",
             "pgsql"  => "connectPgsql",
@@ -74,12 +75,13 @@ class DBLink extends BaseController {
         $now = date("Y-m-d H:i:s");
         //对用户数据库连接密码进行加密
 
-        $linkInfo['password'] = Functions::encrypt($linkInfo['password'],'E', $this->encryptStr);
+        $linkInfo['password'] = Functions::encrypt($linkInfo['password'], 'E', $this->encryptStr);
         $dbLink               = Model::load('sqlite')->table('dblink');
         $data['db_id']        = Functions::GenIDS(3, $db_type);
         $data['user_id']      = $userInfo['user_id'];
         $data['db_type']      = $db_type;
         $data['link_info']    = json_encode($linkInfo, true);
+        $data['brief']        = $brief;
         $data['create_time']  = $now;
         $data['update_time']  = $now;
         $data['status']       = 1;
