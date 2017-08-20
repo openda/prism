@@ -2,10 +2,15 @@
   <div class="container">
     <Row :gutter="16">
       <Col span="8">
-      <Form :label-width="80">
+      <Form :label-width="100">
         <Form-item label="数据库配置">
-          <Select v-on:on-change="handleChange" placeholder="请选择数据库配置">
+          <Select v-on:on-change="handleDB" placeholder="请选择数据库配置">
             <Option v-for="item in databases" :value="item.no" >{{ item.no }}（{{ item.type }}）</Option>
+          </Select>
+        </Form-item>
+        <Form-item v-if="dbReady" label="数据库">
+          <Select  v-model="db_name" v-on:on-change="handleDBName" placeholder="请选择数据库">
+            <Option v-for="db in dbs" :value="db" >{{ db }}</Option>
           </Select>
         </Form-item>
       </Form>
@@ -26,24 +31,47 @@
         databases: [],
         db_id: null,
         db_name: null,
-        table_name: null
+        table_name: null,
+        dbReady: false,
+        dbs: []
       }
     },
     methods: {
-      getCol: function () {
+      getCol: function (type) {
         axios.get(inter.userdb, {
           params: {
             db_link_id: this.db_id,
             db_name: this.db_name,
             table_name: this.table_name
           }
-        }).then(function (res) {
-          console.log(res)
+        }).then((res) => {
+          let data = res.data.data
+          switch (type) {
+            case 'db_name':
+              if (!data) {
+                console.log(data)
+              } else {
+                for (let index = 0; index < data.length; index++) {
+                  this.dbs.push(data[index].db_name)
+                }
+                this.dbReady = true
+              }
+              break
+            case 'db_table':
+              console.log(res)
+              break
+          }
         })
       },
-      handleChange: function (selected) {
+      handleDB: function (selected) {
         this.db_id = selected
-        this.getCol()
+        this.dbReady = false
+        this.dbs = []
+        this.getCol('db_name')
+      },
+      handleDBName: function (selected) {
+        this.db_name = selected
+        this.getCol('db_table')
       }
     },
     mounted: function () {

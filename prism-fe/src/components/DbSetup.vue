@@ -53,6 +53,10 @@
           {
             title: '类型',
             key: 'type'
+          },
+          {
+            title: '备注',
+            key: 'brief'
           }
         ],
         databases: []
@@ -117,7 +121,8 @@
               array.push({
                 index: index + 1,
                 no: data[index].db_id,
-                type: data[index].db_type
+                type: data[index].db_type,
+                brief: data[index].brief
               })
             }
             this.databases = array
