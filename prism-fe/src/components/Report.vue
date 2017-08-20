@@ -7,7 +7,9 @@
           <Select v-on:on-change="handleDB" placeholder="请选择数据库配置">
             <Option v-for="item in databases" :value="item.no" >{{ item.no }}（{{ item.type }}）</Option>
           </Select>
-          <Select v-if="dbReady" v-model="db_name" v-on:on-change="handleDBName" placeholder="请选择数据库">
+        </Form-item>
+        <Form-item v-if="dbReady" label="数据库">
+          <Select  v-model="db_name" v-on:on-change="handleDBName" placeholder="请选择数据库">
             <Option v-for="db in dbs" :value="db" >{{ db }}</Option>
           </Select>
         </Form-item>
@@ -42,14 +44,22 @@
             db_name: this.db_name,
             table_name: this.table_name
           }
-        }).then(function (res) {
+        }).then((res) => {
           let data = res.data.data
           switch (type) {
             case 'db_name':
-              for (let index = 0; index < data.length; index++) {
-                this.dbs.push(data[index].db_name)
+              if (!data) {
+                console.log(data)
+              } else {
+                for (let index = 0; index < data.length; index++) {
+                  this.dbs.push(data[index].db_name)
+                }
+                this.dbReady = true
               }
-              this.dbReady = true
+              break
+            case 'db_table':
+              console.log(res)
+              break
           }
         })
       },
@@ -57,23 +67,12 @@
         this.db_id = selected
         this.dbReady = false
         this.dbs = []
-        axios.get(inter.userdb, {
-          params: {
-            db_link_id: this.db_id,
-            db_name: this.db_name,
-            table_name: this.table_name
-          }
-        }).then(function (res) {
-          let data = res.data.data
-          for (let index = 0; index < data.length; index++) {
-            this.dbs.push(data[index].db_name)
-          }
-          this.dbReady = true
-        })
+        this.getCol('db_name')
+      },
+      handleDBName: function (selected) {
+        this.db_name = selected
+        this.getCol('db_table')
       }
-    },
-    handleDBName: function () {
-      console.log()
     },
     mounted: function () {
       axios.get(inter.dblink)
