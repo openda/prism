@@ -22,9 +22,11 @@ class ChartTemplate extends BaseController {
 
         if (empty($chart_type)) {
             foreach ($chartsInfos['charts'] as $key => $chartsInfo) {
-                $charts[]    = ["name" => $chartsInfo, "type" => $key];
-                $chartInfo[] = $chartsInfo;
+                $charts[]    = ["name" => $chartsInfo['name'], "type" => $key];
             }
+            $chartInfo['common'] = $chartsInfos['common'];
+            $chartInfo['detail'] = $chartsInfos['detail'];
+            $chartInfo['series'] = $chartsInfos['series'];
         } else {
             $charts[] = ["name" => $chartsInfos['charts'][$chart_type]["name"], "type" => $chart_type];
             if (!isset($chartsInfos['charts'][$chart_type]['common']) || $chartsInfos['charts'][$chart_type]['common'] == 1) {
