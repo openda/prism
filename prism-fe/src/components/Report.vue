@@ -35,8 +35,8 @@
           <h1>图表配置</h1>
           <Form :label-width="100">
             <Form-item label="图表类型">
-              <Select v-on:on-change="setChartType" placeholder="请选择图表类型">
-                <Option v-for="item in chartTypeList" :value="item.no" >{{ item.no }}</Option>
+              <Select v-model="chartType" v-on:on-change="getChartTypeInfo" placeholder="请选择图表类型">
+                <Option v-for="item in chartTypeList" :value="item.type" >{{ item.name }}</Option>
               </Select>
             </Form-item>
           </Form>
@@ -70,7 +70,9 @@
         disable: false,
         confirm: false,
         chartTypeList: [],
-        chart_type: null
+        chart_type: null,
+        chartType: null,
+        chartInfo: null
       }
     },
     methods: {
@@ -131,7 +133,15 @@
           }
         })
           .then((res) => {
-            console.log(res)
+            let data = res.data.data
+            switch (type) {
+              case 'chartList':
+                this.chartTypeList = data.charts
+                break
+              case 'detail':
+                this.chartInfo = data.chart_info
+                break
+            }
           })
       },
       handleDB: function (selected) {
@@ -160,6 +170,10 @@
       handleLock: function () {
         this.lock = !this.lock
         this.disable = this.lock
+      },
+      getChartTypeInfo: function (data) {
+        this.chart_type = data
+        this.getChartInfo('detail')
       }
     },
     mounted: function () {
