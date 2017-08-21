@@ -34,7 +34,7 @@
         <Row :gutter="16" v-if="disable">
           <h1>图表配置</h1>
           <Form :label-width="100">
-            <Form-item label="数据库配置">
+            <Form-item label="图表类型">
               <Select v-on:on-change="setChartType" placeholder="请选择图表类型">
                 <Option v-for="item in chartTypeList" :value="item.no" >{{ item.no }}</Option>
               </Select>
@@ -69,7 +69,8 @@
         colList: [],
         disable: false,
         confirm: false,
-        chartTypeList: []
+        chartTypeList: [],
+        chart_type: null
       }
     },
     methods: {
@@ -123,6 +124,16 @@
           }
         })
       },
+      getChartInfo: function (type) {
+        axios.get(inter.charttemplate, {
+          params: {
+            chart_type: this.chart_type
+          }
+        })
+          .then((res) => {
+            console.log(res)
+          })
+      },
       handleDB: function (selected) {
         this.db_id = selected
         this.dbReady = false
@@ -166,10 +177,7 @@
           }
           this.databases = array
         })
-      axios.get(inter.charttemplate)
-        .then((res) => {
-          console.log(res)
-        })
+      this.getChartInfo('chartList')
     }
   }
 </script>
