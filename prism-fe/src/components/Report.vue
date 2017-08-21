@@ -2,28 +2,45 @@
   <div class="container">
     <Row :gutter="16">
       <Col span="8">
-      <Form :label-width="100">
-        <Form-item label="数据库配置">
-          <Select v-on:on-change="handleDB" placeholder="请选择数据库配置">
-            <Option v-for="item in databases" :value="item.no" >{{ item.no }}（{{ item.type }}）</Option>
-          </Select>
-        </Form-item>
-        <Form-item v-if="dbReady" label="数据库">
-          <Select  v-model="db_name" v-on:on-change="handleDBName" placeholder="请选择数据库">
-            <Option v-for="db in dbs" :value="db" >{{ db }}</Option>
-          </Select>
-        </Form-item>
-        <Form-item v-if="tableReady" label="数据表">
-          <Select  v-model="table_name" v-on:on-change="handleTableName" placeholder="请选择数据表">
-            <Option v-for="table in tableList" :value="table" >{{ table }}</Option>
-          </Select>
-        </Form-item>
-        <Form-item v-if="colReady" label="数据列">
-          <Checkbox-group v-model="checkGroup" @on-change="checkChange">
-            <Checkbox v-for="col in colList" :label="col.field"></Checkbox>
-          </Checkbox-group>
-        </Form-item>
-      </Form>
+        <Row :gutter="16">
+        <h1>选择数据源</h1>
+          <Form :label-width="100">
+            <Form-item label="数据库配置">
+              <Select v-on:on-change="handleDB" placeholder="请选择数据库配置" :disabled="disable">
+                <Option v-for="item in databases" :value="item.no" >{{ item.no }}（{{ item.brief }}）</Option>
+              </Select>
+            </Form-item>
+            <Form-item v-if="dbReady" label="数据库">
+              <Select  v-model="db_name" v-on:on-change="handleDBName" placeholder="请选择数据库" :disabled="disable">
+                <Option v-for="db in dbs" :value="db" >{{ db }}</Option>
+              </Select>
+            </Form-item>
+            <Form-item v-if="tableReady" label="数据表">
+              <Select  v-model="table_name" v-on:on-change="handleTableName" placeholder="请选择数据表" :disabled="disable">
+                <Option v-for="table in tableList" :value="table" >{{ table }}</Option>
+              </Select>
+            </Form-item>
+            <Form-item v-if="colReady" label="数据列">
+              <Checkbox-group v-model="checkGroup" @on-change="checkChange" >
+                <Checkbox v-for="col in colList" :label="col.field" :disabled="disable"></Checkbox>
+              </Checkbox-group>
+            </Form-item>
+            <Form-item v-if="confirm">
+              <Button type="info" @click="handleLock" :disabled="disable">确定</Button>
+              <Button type="warning" @click="handleLock" :disabled="!disable">取消</Button>
+            </Form-item>
+          </Form>
+        </Row>
+        <Row :gutter="16" v-if="disable">
+          <h1>图表配置</h1>
+          <Form :label-width="100">
+            <Form-item label="数据库配置">
+              <Select v-on:on-change="setChartType" placeholder="请选择图表类型">
+                <Option v-for="item in chartTypeList" :value="item.no" >{{ item.no }}</Option>
+              </Select>
+            </Form-item>
+          </Form>
+        </Row>
       </Col>
       <Col span="16">
       </Col>
@@ -49,7 +66,10 @@
         tableList: [],
         indeterminate: true,
         checkGroup: [],
-        colList: []
+        colList: [],
+        disable: false,
+        confirm: false,
+        chartTypeList: []
       }
     },
     methods: {
@@ -119,8 +139,16 @@
         this.table_name = selected
         this.getCol('db_struct')
       },
-      checkChange (data) {
-        console.log(this.checkGroup)
+      checkChange: function (data) {
+        if (this.checkGroup.length > 0) {
+          this.confirm = true
+        } else {
+          this.confirm = false
+        }
+      },
+      handleLock: function () {
+        this.lock = !this.lock
+        this.disable = this.lock
       }
     },
     mounted: function () {
@@ -132,10 +160,15 @@
             array.push({
               index: index + 1,
               no: data[index].db_id,
-              type: data[index].db_type
+              type: data[index].db_type,
+              brief: data[index].brief
             })
           }
           this.databases = array
+        })
+      axios.get(inter.charttemplate)
+        .then((res) => {
+          console.log(res)
         })
     }
   }

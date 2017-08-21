@@ -18,7 +18,6 @@
             <span class="err">{{ errorMsg }}</span>
           </Form-item>
         </Form>
-        <Tree v-if="tableReady" :data="treeData" show-checkbox></Tree>
       </Col>
       <Col span="14">
           <h1>已存数据库配置</h1>
