@@ -75,7 +75,7 @@ return [
         "controller" => "prism/controller/ChartTemplate.php",
         "method"     => [
             "get" => [
-                "cp"     => ["chart_type" => ["option", 1, ["histogram", "piechart", "linechart", "table"]]],
+                "cp"     => ["chart_type" => ["option", 0, ["histogram", "piechart", "linechart", "table"]]],
                 "action" => "getChartTemplate"
             ],
         ],
