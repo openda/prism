@@ -13,6 +13,16 @@
             <Option v-for="db in dbs" :value="db" >{{ db }}</Option>
           </Select>
         </Form-item>
+        <Form-item v-if="tableReady" label="数据表">
+          <Select  v-model="table_name" v-on:on-change="handleTableName" placeholder="请选择数据表">
+            <Option v-for="table in tableList" :value="table" >{{ table }}</Option>
+          </Select>
+        </Form-item>
+        <Form-item v-if="colReady" label="数据列">
+          <Checkbox-group v-model="checkGroup" @on-change="checkChange">
+            <Checkbox v-for="col in colList" :label="col.field"></Checkbox>
+          </Checkbox-group>
+        </Form-item>
       </Form>
       </Col>
       <Col span="16">
@@ -33,7 +43,13 @@
         db_name: null,
         table_name: null,
         dbReady: false,
-        dbs: []
+        tableReady: false,
+        colReady: false,
+        dbs: [],
+        tableList: [],
+        indeterminate: true,
+        checkGroup: [],
+        colList: []
       }
     },
     methods: {
@@ -58,7 +74,31 @@
               }
               break
             case 'db_table':
-              console.log(res)
+              if (!data) {
+                console.log(data)
+              } else {
+                for (let index = 0; index < data.length; index++) {
+                  let tables = data[index].tables
+                  for (let count = 0; count < tables.length; count++) {
+                    this.tableList.push(tables[count].table_name)
+                  }
+                }
+                this.tableReady = true
+              }
+              break
+            case 'db_struct':
+              if (!data) {
+                console.log(data)
+              } else {
+                for (let index = 0; index < data.length; index++) {
+                  let table = data[index].tables
+                  let tableStructures = table.table_structure
+                  for (let i = 0; i < tableStructures.length; i++) {
+                    this.colList.push(tableStructures[i])
+                  }
+                }
+                this.colReady = true
+              }
               break
           }
         })
@@ -66,12 +106,21 @@
       handleDB: function (selected) {
         this.db_id = selected
         this.dbReady = false
+        this.tableReady = false
+        this.colReady = false
         this.dbs = []
         this.getCol('db_name')
       },
       handleDBName: function (selected) {
         this.db_name = selected
         this.getCol('db_table')
+      },
+      handleTableName: function (selected) {
+        this.table_name = selected
+        this.getCol('db_struct')
+      },
+      checkChange (data) {
+        console.log(this.checkGroup)
       }
     },
     mounted: function () {
