@@ -10,6 +10,7 @@
 namespace app\prism\controller;
 
 
+use const app\common\APP_MSG;
 use app\common\AppCode;
 use app\prism\BaseController;
 use prism\Response;
@@ -240,8 +241,9 @@ class ChartInstance extends BaseController {
             for ($i = 1; $i < $whereNums + 1; $i++) {
                 $relations[''];
             }
-            while (count($relations) < count($wheres["relation"])) {
-                foreach ($wheres["relation"] as $key => $relation) {
+//            while (count($relations) < count($wheres["relation"])) {
+            foreach ($wheres["relation"] as $key => $relation) {
+                if (count($relation) == 3) {
                     if (strpos($relation[0], "clause_") !== false && strpos($relation[1], "clause_") !== false) {
                         $relations[$key] = $clauses[$relations[0]] . " $relation[2] " . $clauses[$relation[1]];
                     } else if ((strpos($relation[0], "clause_") !== false && strpos($relation[1], "logic_") !== false) && !empty($relations[$relation[1]])) {
@@ -251,12 +253,18 @@ class ChartInstance extends BaseController {
                     } else if ((strpos($relation[1], "logic_") !== false && strpos($relation[0], "logic_") !== false) &&
                         !empty($relations[$relation[0]]) && !empty($relations[$relation[1]])) {
                         $relations[$key] = $relations[$relations[1]] . " $relation[2] " . $relations[$relation[0]];
-                    } else if ((strpos($relation[1], "clause_") !== false && strpos($relation[0], "logic_") !== false)) {
-                        $relations[$key] = $clauses[$relations[1]] . " $relation[2] " . $relations[$relation[0]];
+                    } else{
+                        Response::sendError(AppCode::ERR_USER_SQL_CLAUSE,APP_MSG[AppCode::ERR_USER_SQL_CLAUSE]);
                     }
-                    if (array_key_exists($key, $relations)) {
-                        continue;
+                }
+                elseif (count($relation) == 2) {
+                    if (strpos($relation[0], "clause_") !== false) {
+                        $relations[$key] = " $relation[1] (" . $clauses[$relation[0]] . ")";
                     }
+                    if (strpos($relation[0], "logic_") !== false && !empty($relations[$relation[0]])) {
+                        $relations[$key] = " $relation[1] (" . $relations[$relation[0]] . ")";
+                    }
+                }else{
 
                 }
             }
