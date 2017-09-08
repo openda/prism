@@ -19,7 +19,7 @@ class Validate {
     const PARAM_PHONE  = 'PHONE';
     const PARAM_EMAIL  = 'EMAIL';
     const PARAM_MD532  = 'MD532';
-    const PARAM_OPTION = 'OPTION';
+    const PARAM_ENUM = 'ENUM';
     const PARAM_JSON   = 'JSON';
     const PARAM_IP     = 'IP';
     const PARAM_URL    = 'URL';
@@ -72,12 +72,12 @@ class Validate {
             if (!is_numeric($value) || $value > 100000000000 || $value < 0 || strpos($value, '.')) {
                 return PrismCode::ERR_REQUEST_PARAM_NUMBER;
             }
-        } else if ($type == Validate::PARAM_OPTION) {
+        } else if ($type == Validate::PARAM_ENUM) {
             if (!is_array($pattern)) {
                 return PrismCode::ERR_REQUEST_PARAM;
             }
             if (!in_array($value, $pattern)) {
-                return PrismCode::ERR_REQUEST_PARAM_OPTION;
+                return PrismCode::ERR_REQUEST_PARAM_ENUM;
             }
         } else if ($type == Validate::PARAM_MD532) {
             if (!preg_match("/^[a-z0-9]{32}$/", $value)) {

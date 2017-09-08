@@ -44,11 +44,11 @@ return [
                 "action" => "getDBLink"
             ],
             "put"  => [
-                "cp"     => ["db_type" => ["option", 1, ["mysql", "sqlite", "pgsql"]], "link_info" => ["json", 1]],
+                "cp"     => ["db_type" => ["enum", 1, ["mysql", "sqlite", "pgsql"]], "link_info" => ["json", 1]],
                 "action" => "addDBLink"
             ],
             "post" => [
-                "cp"     => ["db_type" => ["option", 1, ["mysql", "sqlite", "pgsql"]], "link_info" => ["json", 1]],
+                "cp"     => ["db_type" => ["enum", 1, ["mysql", "sqlite", "pgsql"]], "link_info" => ["json", 1]],
                 "action" => "testDBLink"
             ],
         ],
@@ -75,7 +75,7 @@ return [
         "controller" => "prism/controller/ChartTemplate.php",
         "method"     => [
             "get" => [
-                "cp"     => ["chart_type" => ["option", 0, ["histogram", "piechart", "linechart", "table"]]],
+                "cp"     => ["chart_type" => ["enum", 0, ["histogram", "piechart", "linechart", "table"]]],
                 "action" => "getChartTemplate"
             ],
         ],
@@ -85,9 +85,9 @@ return [
         "method"     => [
             "get" => [
                 "cp"     => [
-                    "db_link_id" => ["string", 1],
-                    "chart_type" => ["option", 1, ["histogram", "piechart", "linechart", "table"]],
-                    "chart_info" => ["json", 1]],
+                    "db_link_id" => ["string", 0],
+                    "chart_type" => ["enum", 0, ["histogram", "piechart", "linechart", "table"]],
+                    "chart_info" => ["json", 0]],
                 "action" => "getChartInstance"
             ],
         ],
@@ -98,13 +98,13 @@ return [
             "put"    => [
                 "cp"     => [
                     "db_link_id"  => ["string", 1], "report_info" => ["json", 1], "report_brief" => ["string", 0],
-                    "report_type" => ["option", 1, ["histogram", "piechart", "linechart", "table"]],
+                    "report_type" => ["enum", 1, ["histogram", "piechart", "linechart", "table"]],
                 ],
                 "action" => "addReport"
             ],
             "post"   => [
                 "cp"     => ["report_id"   => ["string", 1], "report_info" => ["json", 0], "report_brief" => ["string", 0], "share_link" => ["url", 0],
-                             "report_type" => ['option', 0, []]],
+                             "report_type" => ['enum', 0, []]],
                 "action" => "updateReport"
             ],
             "delete" => [

@@ -57,7 +57,7 @@ class PrismCode {
     const ERR_REQUEST_PARAM_MD532   = 214;//MD5格式不正确
     const ERR_REQUEST_PARAM_NUMBER  = 215;//NUMBER格式不正确
     const ERR_REQUEST_PARAM_STRING  = 216;//String格式不正确
-    const ERR_REQUEST_PARAM_OPTION  = 217;//OPTION格式不正确
+    const ERR_REQUEST_PARAM_ENUM    = 217;//ENUM格式不正确
     const ERR_REQUEST_PARAM_JSON    = 218;//JSON格式不正确
     const ERR_REQUEST_PARAM_IP      = 219;//IP格式不正确
     const ERR_REQUEST_PARAM_URL     = 220;//URL格式不正确
@@ -114,7 +114,7 @@ const PRISM_MSG = array(
     PrismCode::ERR_REQUEST_PARAM_MD532    => 'MD5格式不正确',
     PrismCode::ERR_REQUEST_PARAM_NUMBER   => '数字格式不正确',
     PrismCode::ERR_REQUEST_PARAM_STRING   => '字符串格式不正确',
-    PrismCode::ERR_REQUEST_PARAM_OPTION   => '选项值格式不正确',
+    PrismCode::ERR_REQUEST_PARAM_ENUM     => '枚举格式不正确',
     PrismCode::ERR_REQUEST_PARAM_JSON     => "JSON串格式不正确",
     PrismCode::ERR_REQUEST_PARAM          => '用户请求参数不正确',
     PrismCode::ERR_REQUEST_ACTION_TYPE    => '请求方法类型出错',
