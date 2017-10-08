@@ -9,7 +9,7 @@
               <Option v-for="type in dbType" :value="type.value" :key="type.key">{{ type.desc }}</Option>
             </Select>
           </Form-item>
-          <Form-item v-for="item in formItems" :label="item.desc">
+          <Form-item v-for="item in formItems" :label="item.desc" :key="item">
             <Input type="text" :name="item.key" :placeholder="item.desc" v-model="formData[item.key]"></Input>
           </Form-item>
           <Form-item>

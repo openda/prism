@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
-    "iview": "^2.0.0",
+    "echarts": "^3.7.2",
+    "iview": "^2.4.0",
     "normalize.css": "^7.0.0",
     "qs": "^6.5.0",
     "url-search-params": "^0.10.0",
