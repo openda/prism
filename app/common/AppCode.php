@@ -39,7 +39,10 @@ class AppCode {
     const ERR_UPDATE_DASHBOARD    = 1119;
     const ERR_DELETE_DASHBOARD    = 1120;
 
-    const ERR_USER_SQL_CLAUSE = 1121;
+    const ERR_USER_SQL_CLAUSE         = 1121;
+    const ERR_USER_SQL_WHERE_RELATION = 1122;
+
+    const ERR_CREATE_DB_DSN = 1131;
 //    const ERR_DBLINK_PARAM_USER   = 1114;
 
 }
@@ -73,5 +76,8 @@ const APP_MSG = [
     AppCode::ERR_UPDATE_DASHBOARD    => "仪表盘更新失败",
     AppCode::ERR_DELETE_DASHBOARD    => "仪表盘删除失败",
 
-    AppCode::ERR_USER_SQL_CLAUSE => "sql clause出错，无法生成正确的sql"
+    AppCode::ERR_USER_SQL_CLAUSE         => "sql clause出错，无法生成正确的sql",
+    AppCode::ERR_USER_SQL_WHERE_RELATION => "sql数组中的where子句中的relation部分出错",
+
+    AppCode::ERR_CREATE_DB_DSN => "生成数据库连接dsn出错",
 ];

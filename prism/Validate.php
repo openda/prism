@@ -19,7 +19,7 @@ class Validate {
     const PARAM_PHONE  = 'PHONE';
     const PARAM_EMAIL  = 'EMAIL';
     const PARAM_MD532  = 'MD532';
-    const PARAM_ENUM = 'ENUM';
+    const PARAM_ENUM   = 'ENUM';
     const PARAM_JSON   = 'JSON';
     const PARAM_IP     = 'IP';
     const PARAM_URL    = 'URL';
