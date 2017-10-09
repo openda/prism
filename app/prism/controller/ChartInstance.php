@@ -18,63 +18,64 @@ use prism\Response;
 
 class ChartInstance extends BaseController {
     public function getChartInstance($chart_info) {
-        $chartInfos = [
-            //目前只支持单库操作
-            "dblink_id"   => "DB_00067221",
-            "expressions" => ["user_name", "real_name"],//列名或者带有函数的列
-            "from"        => ["cy_admin"],//表名
-            "where"       => [
-                "clause_1" => [
-                    "left"     => [
-                        "expressions" => ["id"] //列名或者带有函数的列
-                    ],
-                    "operator" => "=",//运算符：["=","!=","<>",">","<",">=","<=","!<","!>","in",","not-in","like","not-like","between","not-between","is","is-not"]
-                    "right"    => [
-                        "type"        => "expressions",//expressions:代表单列或者多列或者具体数值等；subquery：子查询；
-                        "logic"       => "",//逻辑运算符all，any，exists，not exists，没有则该项不存在
-                        "expressions" => [//如果type是expressions，则该值为数组；如果是subquery，则该值是chart_map的数据结构
-                                          7
-                        ]
-                    ]
-                ],
-                "relation" => [
-                    //运算符：and,or,not；数组元素必须按照逻辑顺序排好序。
-                    //                    "logic_1" => ["clause_1", "clause_2", "and"],
-                    //                    "logic_2" => ["clause_2", "logic_1", "or"],
-                    //                    "logic_3" => ["logic_2", "not"],
-                    //                    "logic_4"=>["clause_1"]
-
-                    //后面可以有多个，如果只有一个分句，则这个数组可以为空或者为logic_4形式一样
-                ]
-            ],
-            //            "group"       => [],//注意：某些数据库支持group by all语法，如果有all关键字，则all关键字包含在expression中
-            //            "having"      => [
-            //                "clause_1" => [
-            //                    "left"     => [
-            //                        "expressions" => ["a", "b", "c"] //列名或者带有函数的列
-            //                    ],
-            //                    "operator" => "",//运算符：["=","!=","<>",">","<",">=","<=","!<","!>","in",","not-in","like","not-like","between","not-between","is","is-not"]
-            //                    "right"    => [
-            //                        "type"        => "expressions",//expressions:代表单列或者多列或者具体数值等；subquery：子查询；
-            //                        "logic"       => "",//逻辑运算符all，any，exists，not exists，没有则该项不存在
-            //                        "expressions" => [//如果type是columns，则该值为数组；如果是subquery，则该值是chart_map的数据结构
-            //
-            //                        ]
-            //                    ]
-            //                ],
-            //                "relation" => [
-            //                    //运算符：and,or,not；数组元素必须按照逻辑顺序排好序。
-            //                    "logic_1" => ["clause_1", "clause_2", "and"],
-            //                    "logic_2" => ["clause_2", "logic_1", "or"],
-            //                    "logic_3" => ["logic_2", "not"],
-            //                    "logic_4"=>["clause_1"]
-            //                    //后面可以有多个，如果只有一个分句，则这个数组可以为空或者为logic_4形式一样
-            //                ]
-            //            ],
-            "order"       => [
-                ["id", "asc"],
-            ]
-        ];
+        $chartInfos = json_decode($chart_info,true);
+//        $chartInfos = [
+//            //目前只支持单库操作
+//            "dblink_id"   => "DB_00067221",
+//            "expressions" => ["user_name", "real_name"],//列名或者带有函数的列
+//            "from"        => ["cy_admin"],//表名
+//            "where"       => [
+//                "clause_1" => [
+//                    "left"     => [
+//                        "expressions" => ["id"] //列名或者带有函数的列
+//                    ],
+//                    "operator" => "=",//运算符：["=","!=","<>",">","<",">=","<=","!<","!>","in",","not-in","like","not-like","between","not-between","is","is-not"]
+//                    "right"    => [
+//                        "type"        => "expressions",//expressions:代表单列或者多列或者具体数值等；subquery：子查询；
+//                        "logic"       => "",//逻辑运算符all，any，exists，not exists，没有则该项不存在
+//                        "expressions" => [//如果type是expressions，则该值为数组；如果是subquery，则该值是chart_map的数据结构
+//                                          7
+//                        ]
+//                    ]
+//                ],
+//                "relation" => [
+//                    //运算符：and,or,not；数组元素必须按照逻辑顺序排好序。
+//                    //                    "logic_1" => ["clause_1", "clause_2", "and"],
+//                    //                    "logic_2" => ["clause_2", "logic_1", "or"],
+//                    //                    "logic_3" => ["logic_2", "not"],
+//                    //                    "logic_4"=>["clause_1"]
+//
+//                    //后面可以有多个，如果只有一个分句，则这个数组可以为空或者为logic_4形式一样
+//                ]
+//            ],
+//                        "group"       => [],//注意：某些数据库支持group by all语法，如果有all关键字，则all关键字包含在expression中
+//                        "having"      => [
+//                            "clause_1" => [
+//                                "left"     => [
+//                                    "expressions" => ["a", "b", "c"] //列名或者带有函数的列
+//                                ],
+//                                "operator" => "",//运算符：["=","!=","<>",">","<",">=","<=","!<","!>","in",","not-in","like","not-like","between","not-between","is","is-not"]
+//                                "right"    => [
+//                                    "type"        => "expressions",//expressions:代表单列或者多列或者具体数值等；subquery：子查询；
+//                                    "logic"       => "",//逻辑运算符all，any，exists，not exists，没有则该项不存在
+//                                    "expressions" => [//如果type是columns，则该值为数组；如果是subquery，则该值是chart_map的数据结构
+//
+//                                    ]
+//                                ]
+//                            ],
+//                            "relation" => [
+//                                //运算符：and,or,not；数组元素必须按照逻辑顺序排好序。
+//                                "logic_1" => ["clause_1", "clause_2", "and"],
+//                                "logic_2" => ["clause_2", "logic_1", "or"],
+//                                "logic_3" => ["logic_2", "not"],
+//                                "logic_4"=>["clause_1"]
+//                                //后面可以有多个，如果只有一个分句，则这个数组可以为空或者为logic_4形式一样
+//                            ]
+//                        ],
+//            "order"       => [
+//                ["id", "asc"],
+//            ]
+//        ];
         if (empty($chartInfos['expressions']) || empty($chartInfos['from'])) {
             return AppCode::ERR_USER_SQL_CLAUSE;
         }

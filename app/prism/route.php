@@ -85,8 +85,8 @@ return [
         "method"     => [
             "get" => [
                 "cp"     => [
-                    "db_link_id" => ["string", 0],
-                    "chart_type" => ["enum", 0, ["histogram", "piechart", "linechart", "table"]],
+//                    "db_link_id" => ["string", 0],
+//                    "chart_type" => ["enum", 0, ["histogram", "piechart", "linechart", "table"]],
                     "chart_info" => ["json", 0]],
                 "action" => "getChartInstance"
             ],
