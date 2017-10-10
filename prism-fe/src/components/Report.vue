@@ -122,24 +122,6 @@
           }
         })
       },
-      getChartInfo: function (type) {
-        axios.get(inter.charttemplate, {
-          params: {
-            chart_type: this.chart_type
-          }
-        })
-          .then((res) => {
-            let data = res.data.data
-            switch (type) {
-              case 'chartList':
-                this.chartTypeList = data.charts
-                break
-              case 'detail':
-                this.chartInfo = data.chart_info
-                break
-            }
-          })
-      },
       handleDB: function (selected) {
         this.db_id = selected
         this.dbReady = false

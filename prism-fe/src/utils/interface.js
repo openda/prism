@@ -10,5 +10,6 @@ export default {
   testDbLink: baseUrl + 'testDBLink',
   dblinktemplate: baseUrl + 'dblinktemplate',
   userdb: baseUrl + 'userdb',
-  charttemplate: baseUrl + 'charttemplate'
+  charttemplate: baseUrl + 'charttemplate',
+  chartinstance: baseUrl + 'chartinstance'
 }
