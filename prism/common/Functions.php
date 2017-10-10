@@ -8,3 +8,24 @@
  */
 
 namespace prism\common;
+
+class Functions {
+    public static function dataType($data = null) {
+//        if(is_numeric($data)){
+//            return "numeric";
+//        }
+//        if(is_bool($data)){
+//            return "bool";
+//        }
+//        if(is_float($data)){
+//            return "float";
+//        }
+//        if(is_numeric($data)){
+//            return "numeric";
+//        }
+//        if(is_numeric($data)){
+//            return "numeric";
+//        }
+        return gettype($data);
+    }
+}

@@ -37,14 +37,13 @@ class Controller {
      */
     public function __construct() {
         $this->result['code'] = AppCode::SUCCESS;
-        $this->result['msg']   = APP_MSG[AppCode::SUCCESS];
+        $this->result['msg']  = APP_MSG[AppCode::SUCCESS];
         // 控制器初始化
         $this->_initialize();
     }
 
     // 初始化
-    public function _initialize() {
-    }
+    public function _initialize() { }
 
     public function __destruct() {
         // TODO: Implement __destruct() method.

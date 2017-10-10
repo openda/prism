@@ -10,8 +10,11 @@
 namespace prism\orm\mysql;
 
 
+use const app\common\APP_MSG;
+use app\common\AppCode;
 use const prism\common\PRISM_MSG;
 use prism\common\PrismCode;
+use prism\Exception;
 use prism\Logger;
 use prism\orm\BaseModel;
 use prism\orm\common\BaseDB;
@@ -35,12 +38,17 @@ class Mysql extends BaseDB implements BaseModel {
      */
     public function connect($link, $exception) {
         // TODO: Implement connect() method.
-        if (empty($link['dbname'])) {
-            $dsn = sprintf($this->dbConf['link_sql'][1], $link['host'], $link['port']);
-        } else {
-            $dsn = sprintf($this->dbConf['link_sql'][0], $link['host'], $link['port'], $link['dbname']);
+        try {
+            if (empty($link['dbname'])) {
+                $dsn = sprintf($this->dbConf['link_sql'][1], $link['host'], $link['port']);
+            } else {
+                $dsn = sprintf($this->dbConf['link_sql'][0], $link['host'], $link['port'], $link['dbname']);
+            }
+            $this->pdo = new PPDO($dsn, $link['user'], $link['password'], $exception);
+        } catch (Exception $e) {
+            Response::sendException(AppCode::ERR_CREATE_DB_DSN, APP_MSG[AppCode::ERR_CREATE_DB_DSN], $e);
+            Logger::error("ERR_CREATE_DB_DSN", [$e]);
         }
-        $this->pdo = new PPDO($dsn, $link['user'], $link['password'], $exception);
     }
 
     /**

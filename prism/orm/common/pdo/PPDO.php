@@ -38,7 +38,7 @@ class PPDO {
 
     public function query($sql = '') {
         try {
-            $fetchAll = $this->pdo->query($sql)->fetchAll();
+            $fetchAll = $this->pdo->query($sql)->fetchAll(\PDO::FETCH_NAMED);
             Logger::info("QUERY_SQL", [$sql, $fetchAll]);
 
             return $fetchAll;
@@ -68,7 +68,7 @@ class PPDO {
             }
             //执行sql语句
             $sth->execute();
-            $fetchAll = $sth->fetchAll();
+            $fetchAll = $sth->fetchAll(\PDO::FETCH_NAMED);
             //注，不能通过fetchAll中获取执行结果，应该是errorCode中来获取
             if ($sth->errorCode() == "00000") {
                 Logger::info("PREPARE_SQL", [$sql, $params, $fetchAll]);

@@ -9,6 +9,7 @@
 
 namespace prism;
 
+use prism\common\Functions;
 use const prism\common\PRISM_MSG;
 use prism\common\PrismCode;
 
@@ -74,12 +75,21 @@ class  Response {
      *
      * 方便测试用的
      */
-    public static function outputPage($data = [], $exit = 0) {
-        $content         = ['data' => $data];
+    public static function outputPage($data = [], $exit = 0, $outputType = "json") {
+        $content         = ['data' => $data, "data_type" => Functions::dataType($data)];
         self::$_output[] = $data;
         //输出结果
         header("Content-Type: application/json");
-        echo self::encodeJson($content);
+        if (strtolower($outputType) == "json") {
+            echo self::encodeJson($content);
+        }
+        if (strtolower($outputType) == "xml") {
+            echo self::encodeXml($content);
+        }
+        if (strtolower($outputType) == "html") {
+            echo self::encodeHtml($content);
+        }
+
         if ($exit) {
             exit();
         }
@@ -105,12 +115,12 @@ class  Response {
         }
     }
 
-//json格式
+    //json格式
     private static function encodeJson($responseData) {
-        return json_encode($responseData);
+        return json_encode($responseData, JSON_UNESCAPED_UNICODE);
     }
 
-//xml格式
+    //xml格式
     private static function encodeXml($responseData) {
         $xml = new \SimpleXMLElement('<?xml version="1.0"?><rest></rest>');
         foreach ($responseData as $key => $value) {
@@ -126,7 +136,7 @@ class  Response {
         return $xml->asXML();
     }
 
-//html格式
+    //html格式
     private static function encodeHtml($responseData) {
         $html = "<table border='1'>";
         foreach ($responseData as $key => $value) {

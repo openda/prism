@@ -32,6 +32,7 @@ return [
         "ERR_PDO_QUERY"              => "PDO查询数据库失败，错误原因：【%s】",
         "ERR_PDO_EXEC"               => "PDO执行SQL语句失败，执行的SQL是：【%s】，错误原因：【%s】",
         "ERR_PDO_CONNECT_TEST"       => "PDO实例连接失败，连接信息：【%s】，错误原因：【%s】",
+        "ERR_CREATE_DB_DSN"          => "生成数据库连接dsn出错，错误原因：【%s】",
     ],
     "WARN"   => [],
     "DEBUG"  => [

@@ -31,7 +31,6 @@
             </Form-item>
           </Form>
         </Row>
-
       </Col>
       <Col span="16">
         <Row :gutter="16">
@@ -130,7 +129,15 @@
           }
         })
           .then((res) => {
-            console.log(res)
+            let data = res.data.data
+            switch (type) {
+              case 'chartList':
+                this.chartTypeList = data.charts
+                break
+              case 'detail':
+                this.chartInfo = data.chart_info
+                break
+            }
           })
       },
       handleDB: function (selected) {
