@@ -12,9 +12,12 @@ namespace prism\orm\mysql;
 
 use const app\common\APP_MSG;
 use app\common\AppCode;
+use app\common\Functions;
 use const prism\common\PRISM_MSG;
 use prism\common\PrismCode;
+use prism\Config;
 use prism\Exception;
+use prism\File;
 use prism\Logger;
 use prism\orm\BaseModel;
 use prism\orm\common\BaseDB;
@@ -44,7 +47,9 @@ class Mysql extends BaseDB implements BaseModel {
             } else {
                 $dsn = sprintf($this->dbConf['link_sql'][0], $link['host'], $link['port'], $link['dbname']);
             }
-            $this->pdo = new PPDO($dsn, $link['user'], $link['password'], $exception);
+            $encryptFile      = Config::get('encrypt_file');
+            $encryptStr = File::loadFile($encryptFile);
+            $this->pdo = new PPDO($dsn, $link['user'], Functions::encrypt($link['password'], 'D', $encryptStr), $exception);
         } catch (Exception $e) {
             Response::sendException(AppCode::ERR_CREATE_DB_DSN, APP_MSG[AppCode::ERR_CREATE_DB_DSN], $e);
             Logger::error("ERR_CREATE_DB_DSN", [$e]);
