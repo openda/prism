@@ -1,9 +1,9 @@
-<template >
+<template>
   <div v-if="result">
     <label>数据预览</label>
     <div>{{ result }}</div>
   </div>
-<template>
+</template>
 
 
 <script>

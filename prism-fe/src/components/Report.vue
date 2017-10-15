@@ -63,7 +63,7 @@
       </Row>
       </Col>
       <Col span="16">
-        <chart-form :isShow="disable" :dataOption="previewOption" ></chart-form>
+        <chart-form :isShow="confirm" :dataOption="previewOption" ></chart-form>
       </Col>
     </Row>
   </div>
@@ -73,6 +73,7 @@
 //  import qs from 'qs'
   import inter from '../utils/interface'
   import DataPreview from './DataPreview.vue'
+  import ChartForm from './ChartForm.vue'
 
   export default {
     data: () => {
@@ -104,7 +105,8 @@
       }
     },
     components: {
-      'data-preview': DataPreview
+      'data-preview': DataPreview,
+      'chart-form': ChartForm
     },
     methods: {
       getCol: function (type) {
@@ -221,6 +223,7 @@
       },
       handleOperateChange: function (ev) {
         console.log(this.dimensionOperate, this.targetOperate)
+        this.checkGroupChange()
       }
     },
     mounted: function () {
