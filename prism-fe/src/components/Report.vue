@@ -29,8 +29,8 @@
               <div v-for="(item, index) in checkTargetGroup">
                 <div>{{ item }}</div>
 
-                  <RadioGroup v-model="targetOperate[item]" @on-change="handleOperateChange">
-                    <Radio v-for="(col,index) in OperateList" :label="col" :key="index" ></Radio>
+                  <RadioGroup v-model="targetOperate[item]" @on-change="handleOperateChange" >
+                    <Radio v-for="(col,index) in OperateList" :label="col" :key="index" :disabled="disable" ></Radio>
                   </RadioGroup>
 
               </div>
@@ -46,7 +46,7 @@
                 <div>{{ item }}</div>
 
                 <RadioGroup v-model="dimensionOperate[item]" @on-change="handleOperateChange">
-                  <Radio v-for="(col,index) in OperateList" :label="col" :key="index" ></Radio>
+                  <Radio v-for="(col,index) in OperateList" :label="col" :key="index" :disabled="disable" ></Radio>
                 </RadioGroup>
 
               </div>
@@ -59,7 +59,7 @@
           </Form>
         </Row>
       <Row :gutter="16">
-        <data-preview :preview_options="previewOption"></data-preview>
+        <data-preview :previewOption="previewOption"></data-preview>
       </Row>
       </Col>
       <Col span="16">

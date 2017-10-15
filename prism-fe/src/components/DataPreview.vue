@@ -1,7 +1,11 @@
 <template>
   <div v-if="result">
     <label>数据预览</label>
-    <div>{{ result }}</div>
+    <div>
+      <pre>
+        {{ result }}
+      </pre>
+    </div>
   </div>
 </template>
 
@@ -16,21 +20,28 @@
         result: null
       }
     },
-    props: ['preview_options'],
+    props: ['previewOption'],
     watch: {
-      preview_options: {
+      previewOption: {
         handler (newValue, oldValue) {
           axios.get(inter.chartinstance + '?chart_info=' + JSON.stringify(newValue))
             .then((res) => {
-              if (res.data) {
-                let head = ''
-                let body = ''
-                let max = (res.data.length > 10) ? 10 : res.data.length
+              let data = res.data.data
+              if (data) {
+                let head = []
+                let body = []
+                let max = (data.length > 10) ? 10 : data.length
                 for (let count = 0; count < max; count++) {
-                  if (count === 0) head += res.data[count].keys().join(' | ') + '<br/>'
-                  body += res.data[count].values().join(' | ') + '<br/>'
+                  let bo = []
+                  for (let key in data[count]) {
+                    if (count === 0) {
+                      head.push(key)
+                    }
+                    bo.push(data[count][key])
+                  }
+                  body.push(bo.join(' | '))
                 }
-                this.result = head + body
+                this.result = head.join(' | ') + '\n' + body.join('\n')
               } else {
                 this.result = '查询有误'
               }
