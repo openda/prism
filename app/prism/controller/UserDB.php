@@ -14,7 +14,6 @@ use app\common\AppCode;
 use app\common\Functions;
 use app\prism\BaseController;
 use prism\Model;
-use prism\Response;
 
 class UserDB extends BaseController {
     /**

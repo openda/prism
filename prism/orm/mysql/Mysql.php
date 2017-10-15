@@ -47,9 +47,7 @@ class Mysql extends BaseDB implements BaseModel {
             } else {
                 $dsn = sprintf($this->dbConf['link_sql'][0], $link['host'], $link['port'], $link['dbname']);
             }
-            $encryptFile      = Config::get('encrypt_file');
-            $encryptStr = File::loadFile($encryptFile);
-            $this->pdo = new PPDO($dsn, $link['user'], Functions::encrypt($link['password'], 'D', $encryptStr), $exception);
+            $this->pdo = new PPDO($dsn, $link['user'], $link['password'], $exception);
         } catch (Exception $e) {
             Response::sendException(AppCode::ERR_CREATE_DB_DSN, APP_MSG[AppCode::ERR_CREATE_DB_DSN], $e);
             Logger::error("ERR_CREATE_DB_DSN", [$e]);
