@@ -33,6 +33,7 @@ class DBLink extends BaseController {
 
         if (!empty($dbLinks)) {
             if (count($dbLinks) == 1) {
+                $dbLinks                = $dbLinks[0];
                 $linkInfo               = json_decode($dbLinks['link_info'], true);
                 $this->result['data'][] = array('db_type' => $dbLinks['db_type'], 'db_id' => $dbLinks['db_id'], 'brief' => $linkInfo['brief']);
             } else {
