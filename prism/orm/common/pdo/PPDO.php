@@ -43,7 +43,7 @@ class PPDO {
 
             return $fetchAll;
         } catch (\PDOException $e) {
-            Logger::error("ERR_PDO_QUERY", $e->getMessage());
+            Logger::error("ERR_PDO_QUERY", [$sql, $e->getMessage()]);
             Response::sendException(PrismCode::ERR_PDO_QUERY, PRISM_MSG[PrismCode::ERR_PDO_QUERY], $e);
         }
 
@@ -75,9 +75,9 @@ class PPDO {
                 if (empty($fetchAll)) {
                     return true;
                 }
-//                if (count($fetchAll) == 1) {
-//                    return $fetchAll[0];
-//                }
+                if (count($fetchAll) == 1) {
+                    return $fetchAll[0];
+                }
 //
                 return $fetchAll;
             }
