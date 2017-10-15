@@ -45,8 +45,6 @@
             .then((res) => {
               console.log(res)
             })
-
-          console.log(newValue)
           let options = {
             title: {
               text: newValue.title || ''
