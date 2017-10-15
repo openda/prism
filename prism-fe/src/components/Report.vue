@@ -20,10 +20,37 @@
                 <Option v-for="(table,index) in tableList" :value="table" :key="index" >{{ table }}</Option>
               </Select>
             </Form-item>
-            <Form-item v-if="colReady" label="数据列">
-              <Checkbox-group v-model="checkGroup" @on-change="checkChange" >
+            <Form-item v-if="colReady" label="选择指标列">
+              <Checkbox-group v-model="checkTargetGroup" @on-change="checkTargetChange" >
                 <Checkbox v-for="(col,index) in colList" :label="col.field" :key="index" :disabled="disable"></Checkbox>
               </Checkbox-group>
+            </Form-item>
+            <Form-item v-if="colReady" label="选择指标列操作">
+              <div v-for="(item, index) in checkTargetGroup">
+                <div>{{ item }}</div>
+
+                  <RadioGroup v-model="targetOperate[item]" @on-change="handleOperateChange">
+                    <Radio v-for="(col,index) in OperateList" :label="col" :key="index" ></Radio>
+                  </RadioGroup>
+
+              </div>
+
+            </Form-item>
+            <Form-item v-if="colReady" label="选择维度列">
+              <Checkbox-group v-model="checkDimensionGroup" @on-change="checkDimensionChange" >
+                <Checkbox v-for="(col,index) in colList" :label="col.field" :key="index" :disabled="disable"></Checkbox>
+              </Checkbox-group>
+            </Form-item>
+            <Form-item v-if="colReady" label="选择维度列操作">
+              <div v-for="(item, index) in checkDimensionGroup">
+                <div>{{ item }}</div>
+
+                <RadioGroup v-model="dimensionOperate[item]" @on-change="handleOperateChange">
+                  <Radio v-for="(col,index) in OperateList" :label="col" :key="index" ></Radio>
+                </RadioGroup>
+
+              </div>
+
             </Form-item>
             <Form-item v-if="confirm">
               <Button type="info" @click="handleLock" :disabled="disable">确定</Button>
@@ -31,11 +58,12 @@
             </Form-item>
           </Form>
         </Row>
+      <Row :gutter="16">
+        <data-preview :preview_options="previewOption"></data-preview>
+      </Row>
       </Col>
       <Col span="16">
-        <Row :gutter="16">
-          <chart-form :isShow="!disable" :tableCols="userData"></chart-form>
-        </Row>
+        <chart-form :isShow="disable" :dataOption="previewOption" ></chart-form>
       </Col>
     </Row>
   </div>
@@ -44,7 +72,7 @@
   import axios from 'axios'
 //  import qs from 'qs'
   import inter from '../utils/interface'
-  import ChartForm from './ChartForm.vue'
+  import DataPreview from './DataPreview.vue'
 
   export default {
     data: () => {
@@ -65,11 +93,18 @@
         confirm: false,
         chartTypeList: [],
         chart_type: null,
-        userData: []
+        userData: [],
+        checkTargetGroup: [],
+        checkDimensionGroup: [],
+        previewOption: null,
+        OperateList: ['AVG', 'COUNT', 'MAX', 'MIN', 'SUM'],
+        checkTargetGroupOperate: null,
+        targetOperate: {},
+        dimensionOperate: {}
       }
     },
     components: {
-      'chart-form': ChartForm
+      'data-preview': DataPreview
     },
     methods: {
       getCol: function (type) {
@@ -117,6 +152,7 @@
                   }
                 }
                 this.colReady = true
+                this.confirm = true
               }
               break
           }
@@ -138,12 +174,39 @@
         this.table_name = selected
         this.getCol('db_struct')
       },
-      checkChange: function (data) {
-        if (this.checkGroup.length > 0) {
-          this.confirm = true
-        } else {
-          this.confirm = false
+      checkDimensionChange: function () {
+        this.checkGroupChange()
+      },
+      checkTargetChange: function () {
+        this.checkGroupChange()
+      },
+      checkGroupChange: function () {
+        let checkTargetExpressions = []
+        let checkDimensionExpressions = []
+        for (let i = 0; i < this.checkTargetGroup.length; i++) {
+          if (this.targetOperate[this.checkTargetGroup[i]]) {
+            checkTargetExpressions[i] = this.targetOperate[this.checkTargetGroup[i]] + '(' + this.checkTargetGroup[i] + ')'
+          } else {
+            checkTargetExpressions[i] = this.checkTargetGroup[i]
+          }
         }
+        for (let i = 0; i < this.checkDimensionGroup.length; i++) {
+          if (this.dimensionOperate[this.checkDimensionGroup[i]]) {
+            checkDimensionExpressions[i] = this.dimensionOperate[this.checkDimensionGroup[i]] + '(' + this.checkDimensionGroup[i] + ')'
+          } else {
+            checkDimensionExpressions[i] = this.checkDimensionGroup[i]
+          }
+        }
+        let expressions = checkTargetExpressions.concat(checkDimensionExpressions)
+        let option = {
+          dblink_id: this.db_id,
+          from: [this.db_name + '.' + this.table_name],
+          expressions: expressions
+        }
+        if (checkDimensionExpressions.length > 0) {
+          option['group'] = checkDimensionExpressions
+        }
+        this.previewOption = option
       },
       handleLock: function () {
         this.lock = !this.lock
@@ -155,6 +218,9 @@
           let col = this.checkGroup[i]
           this.userData.push(prefix + ' | ' + col)
         }
+      },
+      handleOperateChange: function (ev) {
+        console.log(this.dimensionOperate, this.targetOperate)
       }
     },
     mounted: function () {
