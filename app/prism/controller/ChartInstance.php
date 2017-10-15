@@ -12,13 +12,14 @@ namespace app\prism\controller;
 
 use const app\common\APP_MSG;
 use app\common\AppCode;
+use app\common\Functions;
 use app\prism\BaseController;
 use prism\Model;
 use prism\Response;
 
 class ChartInstance extends BaseController {
     public function getChartInstance($chart_info) {
-        $chartInfos = json_decode($chart_info,true);
+        $chartInfos = json_decode($chart_info, true);
 //        $chartInfos = [
 //            //目前只支持单库操作
 //            "dblink_id"   => "DB_00067221",
@@ -83,7 +84,9 @@ class ChartInstance extends BaseController {
         $dbLink   = Model::load('sqlite')->table('dblink');
         $linkInfo = $dbLink->where('db_id = ? and status =?', array(trim($chartInfos['dblink_id']), 1))->select("db_type , db_id , link_info");
         if (!empty($linkInfo)) {
-            $DBL = Model::load($linkInfo['db_type'], json_decode($linkInfo['link_info'], true));
+            $jsonLinkInfo = json_decode($linkInfo['link_info'], true);
+            $jsonLinkInfo['password'] = Functions::encrypt($jsonLinkInfo['password'], 'D', $this->encryptStr);
+            $DBL                      = Model::load($linkInfo['db_type'], $jsonLinkInfo, true);
             if ($DBL->getConnection() == null) {
                 return AppCode::DB_LINK_CONNECT_FAILED;
             } else {

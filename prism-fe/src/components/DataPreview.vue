@@ -3,7 +3,8 @@
     <label>数据预览</label>
     <div>{{ result }}</div>
   </div>
-</template>
+<template>
+
 
 <script>
   import axios from 'axios'
