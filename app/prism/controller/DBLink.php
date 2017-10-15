@@ -30,10 +30,8 @@ class DBLink extends BaseController {
         $userID  = Session::get('user_info')['user_id'];
         $dbLink  = Model::load('sqlite')->table('dblink');
         $dbLinks = $dbLink->where('user_id = ? and status =?', array(trim($userID), 1))->select("db_type , db_id , link_info");
-
         if (!empty($dbLinks)) {
-            if (count($dbLinks) == 1) {
-                $dbLinks                = $dbLinks[0];
+            if (array_key_exists('db_type', $dbLinks)) {
                 $linkInfo               = json_decode($dbLinks['link_info'], true);
                 $this->result['data'][] = array('db_type' => $dbLinks['db_type'], 'db_id' => $dbLinks['db_id'], 'brief' => $linkInfo['brief']);
             } else {

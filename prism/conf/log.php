@@ -29,7 +29,7 @@ return [
         "REQUEST_PARAM_INEXIST"      => '请求参数缺失，缺失参数：【%s】',
         "ERR_REQUEST_PARAM_VALIDATE" => "请求参数出错，错误参数：【%s】，错误值是：【%s】",
         "ERR_PDO_CONNECT"            => "PDO连接数据库失败，连接信息：【%s】，错误原因：【%s】",
-        "ERR_PDO_QUERY"              => "PDO查询数据库失败，错误原因：【%s】",
+        "ERR_PDO_QUERY"              => "PDO查询数据库失败，执行的SQL是：【%s】，错误原因：【%s】",
         "ERR_PDO_EXEC"               => "PDO执行SQL语句失败，执行的SQL是：【%s】，错误原因：【%s】",
         "ERR_PDO_CONNECT_TEST"       => "PDO实例连接失败，连接信息：【%s】，错误原因：【%s】",
         "ERR_CREATE_DB_DSN"          => "生成数据库连接dsn出错，错误原因：【%s】",
