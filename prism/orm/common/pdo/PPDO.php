@@ -75,10 +75,10 @@ class PPDO {
                 if (empty($fetchAll)) {
                     return true;
                 }
-                if (count($fetchAll) == 1) {
-                    return $fetchAll[0];
-                }
-
+//                if (count($fetchAll) == 1) {
+//                    return $fetchAll[0];
+//                }
+//
                 return $fetchAll;
             }
         } catch (\PDOException $e) {
