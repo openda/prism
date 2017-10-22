@@ -87,7 +87,7 @@ return [
                 "cp"     => [
 //                    "db_link_id" => ["string", 0],
 //                    "chart_type" => ["enum", 0, ["histogram", "piechart", "linechart", "table"]],
-                    "chart_info" => ["json", 0]],
+"chart_info" => ["json", 0]],
                 "action" => "getChartInstance"
             ],
         ],
@@ -98,7 +98,7 @@ return [
             "put"    => [
                 "cp"     => [
                     "db_link_id"  => ["string", 1], "report_info" => ["json", 1], "report_brief" => ["string", 0],
-                    "report_type" => ["enum", 1, ["histogram", "piechart", "linechart", "table"]],
+                    "report_type" => ["enum", 1, ["histogram", "piechart", "linechart", "table"]], "data_options" => ["json", 1]
                 ],
                 "action" => "addReport"
             ],

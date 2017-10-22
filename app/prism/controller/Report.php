@@ -28,7 +28,7 @@ class Report extends BaseController {
      * @return array
      * @desc 添加一个报表
      */
-    public function addReport($db_link_id, $report_type, $report_info, $report_brief, $share_link) {
+    public function addReport($db_link_id, $report_type, $report_info, $data_options, $report_brief, $share_link) {
         $now      = date("Y-m-d H:i:s");
         $userInfo = Session::get('user_info');
 
@@ -39,6 +39,7 @@ class Report extends BaseController {
         $data['user_id']      = $userInfo['user_id'];
         $data['report_type']  = $report_type;
         $data['report_info']  = $report_info;
+        $data['data_options'] = $data_options;
         $data['create_time']  = $now;
         $data['update_time']  = $now;
         $data['status']       = 1;
