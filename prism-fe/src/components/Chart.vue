@@ -16,6 +16,9 @@
     watch: {
       chart_options: {
         handler (newValue, oldValue) {
+          if (!newValue.type) {
+            return
+          }
           if (!this.chartObj) {
             this.chartObj = echarts.init(this.$refs.chart)
           }
@@ -42,8 +45,7 @@
             }
             options.series.push(serie)
           }
-          console.log(options)
-          this.chartObj.setOption(options)
+          this.chartObj.setOption(options, {notMerge: true})
         },
         deep: true
       }

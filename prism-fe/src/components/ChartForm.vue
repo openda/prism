@@ -93,7 +93,9 @@
           })
       },
       handleSave: function () {
-        console.log(this.previewOption)
+        let params = {
+
+        }
       }
     }
   }
