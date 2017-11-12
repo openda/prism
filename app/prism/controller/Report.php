@@ -28,22 +28,22 @@ class Report extends BaseController {
      * @return array
      * @desc 添加一个报表
      */
-    public function addReport($db_link_id, $report_type, $report_info, $data_options, $report_brief, $share_link) {
+    public function addReport($db_link_id, $chart_type, $chart_info, $data_options, $report_brief) {
         $now      = date("Y-m-d H:i:s");
         $userInfo = Session::get('user_info');
 
         $Report = Model::load('sqlite')->table('report');
 
-        $data['report_id']    = Functions::GenIDS(2, $report_type);
+        $data['report_id']    = Functions::GenIDS(2, $chart_type);
         $data['db_linkid']    = $db_link_id;
         $data['user_id']      = $userInfo['user_id'];
-        $data['report_type']  = $report_type;
-        $data['report_info']  = $report_info;
+        $data['report_type']  = $chart_type;
+        $data['report_info']  = $chart_info;
         $data['data_options'] = $data_options;
         $data['create_time']  = $now;
         $data['update_time']  = $now;
         $data['status']       = 1;
-        $data['share_link']   = $share_link;
+//        $data['share_link']   = $share_link;
         $data['report_brief'] = $report_brief;
 
         $Report->save($data);
