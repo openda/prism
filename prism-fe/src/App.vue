@@ -10,7 +10,7 @@
     left: 20px;
   }
   .layout-logo img{
-      height: 30px;
+    height: 30px;
     vertical-align: top;
   }
   .layout-nav{

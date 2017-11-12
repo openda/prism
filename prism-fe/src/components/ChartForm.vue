@@ -10,6 +10,9 @@
         <Form-item label="横轴名称">
           <Input type="text" v-model="chart_instance.xAxis.name" placeholder="请输入横轴名称"></Input>
         </Form-item>
+        <Form-item label="报表简介">
+          <Input type="text" v-model="chart_instance.brief" placeholder="请输入报表简介"></Input>
+        </Form-item>
         </Col>
         <Col span="12">
         <Form-item label="图表类型">
@@ -38,6 +41,7 @@
 
 <script>
   import axios from 'axios'
+  import qs from 'qs'
   import inter from '../utils/interface'
   import Chart from './Chart.vue'
 
@@ -55,7 +59,8 @@
             type: 'value'
           },
           type: '',
-          data: {}
+          data: {},
+          brief: '无'
         },
         chart_options: null
       }
@@ -66,6 +71,9 @@
     },
     methods: {
       handlePreview: function () {
+        if (this.chart_instance.type === '') {
+          return
+        }
         axios.get(inter.chartinstance + '?chart_info=' + JSON.stringify(this.dataOption))
           .then((res) => {
             let data = res.data.data
@@ -93,9 +101,18 @@
           })
       },
       handleSave: function () {
+        console.log(this.dataOption)
         let params = {
-
+          db_link_id: this.dataOption.dblink_id,
+          chart_type: 1,
+          chart_info: JSON.stringify(this.chart_instance),
+          report_brief: this.chart_instance.brief
         }
+        axios.put(inter.report, qs.stringify(params)).then(
+          (res) => {
+            console.log(res)
+          }
+        )
       }
     }
   }
