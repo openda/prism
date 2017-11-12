@@ -22,8 +22,8 @@ class Report extends BaseController {
 
     public function getReports() {
         $Report = Model::load('sqlite')->table('report');
-        
-        $this->result['data'] = $Report->where("user_id = ?",Session::get('user_info')['user_id'])->select();
+
+        $this->result['data'] = $Report->where("user_id = ? and status=1",Session::get('user_info')['user_id'])->select();
 
         return $this->result;
     }
