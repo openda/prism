@@ -20,6 +20,14 @@ class Report extends BaseController {
     const REPORT_STATUS_VALID   = 1;
     const REPORT_STATUS_INVALID = 2;
 
+    public function getReports() {
+        $Report = Model::load('sqlite')->table('report');
+        
+        $this->result['data'] = $Report->where("user_id = ?",Session::get('user_info')['user_id'])->select();
+
+        return $this->result;
+    }
+
     /**
      * @param $db_link_id
      * @param $report_type
@@ -115,4 +123,6 @@ class Report extends BaseController {
 
         return $this->result;
     }
+
+
 }
