@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
+import Dashboard from '@/components/Dashboard'
 import DbSetup from '@/components/DbSetup'
 import Report from '@/components/Report.vue'
 
@@ -10,7 +10,11 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: Hello
+      component: Dashboard
+    },
+    {
+      path: '/dashboard',
+      component: Dashboard
     },
     {
       path: '/report',

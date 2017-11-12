@@ -41,7 +41,6 @@
 
 <script>
   import axios from 'axios'
-  import qs from 'qs'
   import inter from '../utils/interface'
   import Chart from './Chart.vue'
 
@@ -101,16 +100,20 @@
           })
       },
       handleSave: function () {
-        console.log(this.dataOption)
-        let params = {
-          db_link_id: this.dataOption.dblink_id,
-          chart_type: 1,
-          chart_info: JSON.stringify(this.chart_instance),
-          report_brief: this.chart_instance.brief
-        }
-        axios.put(inter.report, qs.stringify(params)).then(
+        let instance = JSON.parse(JSON.stringify(this.chart_instance))
+        delete instance['xAxis']['data']
+        delete instance['yAxis']['data']
+        let search = '?' + 'db_link_id=' + this.dataOption.dblink_id + '&chart_type=histogram' + '&chart_info=' + JSON.stringify(instance) + '&report_brief=' + this.chart_instance.brief + '&data_options=' + JSON.stringify(this.dataOption)
+        axios.put(inter.report + search).then(
           (res) => {
-            console.log(res)
+            if (res.data.code === 0) {
+              if (res.data.msg === 'success') {
+                alert('保存成功！')
+              } else {
+                alert(res.data.msg)
+              }
+              window.location.reload()
+            }
           }
         )
       }
