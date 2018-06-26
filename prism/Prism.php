@@ -181,43 +181,46 @@ return [
                     $routeConfig = $config["$routeTmp"];
                     $class       = $routeConfig["controller"];
                     $namespace   = str_replace("/", "\\", substr($class, 0, -4));
-                    $action      = empty($routeConfig["method"][$route->getMethod()]['action']) ? $route->getMethod() : $routeConfig["method"][$route->getMethod()]['action'];
-                    if (!empty($routeConfig['method'][$route->getMethod()])) {
-                        // 校验请求参数
-                        foreach ($routeConfig['method'][$route->getMethod()]['cp'] as $param => $input) {
-                            try {
-
-                                if ($input[1] == 1) {
-                                    $validate = Validate::validate($inputs[trim($param)], strtoupper(trim($input[0])), !isset($input[2]) ? '' : $input[2]);
-                                    if ($validate != 0) {
-                                        Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param]);
-                                        Response::sendError($validate, PRISM_MSG[$validate]);
-                                    }
-                                    //过滤参数中的空格
-                                    $inputs[$param] = trim($inputs[$param]);
-                                }
-                                if ($input[1] == 0 && (!empty($inputs[$param]) || isset($inputs[$param]))) {
-                                    $validate = Validate::validate($inputs[trim($param)], strtoupper(trim($input[0])), !isset($input[2]) ? '' : $input[2]);
-                                    if ($validate != 0) {
-                                        Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param, $inputs[$param]]);
-                                        Response::sendError($validate, PRISM_MSG[$validate]);
-                                    }
-                                    //过滤参数中的空格
-                                    $inputs[$param] = trim($inputs[$param]);
-                                }
-
-                            } catch (ErrorException $e) {
-                                Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$e->getMessage()]);
-                                Response::sendException(PrismCode::ERR_REQUEST_PARAM_VALIDATE, PRISM_MSG[PrismCode::ERR_REQUEST_PARAM_VALIDATE], $e);
-                            }
-                        }
-                    } else {
-                        Logger::error("REQUEST_TYPE_INEXIST", [$route->getMethod()]);
-                        Response::sendError(PrismCode::ERR_REQUEST_TYPE_INEXIST, PRISM_MSG[PrismCode::ERR_REQUEST_TYPE_INEXIST]);
+                    $actions     = empty($routeConfig["method"][$route->getMethod()]) ? $route->getMethod() : $routeConfig["method"][$route->getMethod()];
+                    if (empty($actions)) {
+                        Logger::error("ERR_ROUTE_FILE");
+                        Response::sendError(PrismCode::ERR_ROUTE_FILE, PRISM_MSG[PrismCode::ERR_ROUTE_FILE]);
                     }
+                    if (!key_exists($routeInfo["action"], $actions)) {
+                        Logger::error("ERR_ROUTE_ACTION_INEXIST");
+                        Response::sendError(PrismCode::ERR_ROUTE_ACTION_INEXIST, PRISM_MSG[PrismCode::ERR_ROUTE_ACTION_INEXIST]);
+                    }
+                    // 校验请求参数
+                    foreach ($actions[$routeInfo['action']] as $param => $input) {
+                        try {
+
+                            if ($input[1] == 1) {
+                                $validate = Validate::validate($inputs[trim($param)], strtoupper(trim($input[0])), !isset($input[2]) ? '' : $input[2]);
+                                if ($validate != 0) {
+                                    Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param]);
+                                    Response::sendError($validate, PRISM_MSG[$validate]);
+                                }
+                                //过滤参数中的空格
+                                $inputs[$param] = trim($inputs[$param]);
+                            }
+                            if ($input[1] == 0 && (!empty($inputs[$param]) || isset($inputs[$param]))) {
+                                $validate = Validate::validate($inputs[trim($param)], strtoupper(trim($input[0])), !isset($input[2]) ? '' : $input[2]);
+                                if ($validate != 0) {
+                                    Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$param, $inputs[$param]]);
+                                    Response::sendError($validate, PRISM_MSG[$validate]);
+                                }
+                                //过滤参数中的空格
+                                $inputs[$param] = trim($inputs[$param]);
+                            }
+
+                        } catch (ErrorException $e) {
+                            Logger::error("ERR_REQUEST_PARAM_VALIDATE", [$e->getMessage()]);
+                            Response::sendException(PrismCode::ERR_REQUEST_PARAM_VALIDATE, PRISM_MSG[PrismCode::ERR_REQUEST_PARAM_VALIDATE], $e);
+                        }
+                    }
+
                 }
             }
-            $routeInfo['action']    = $action;
             $routeInfo['class']     = $class;
             $routeInfo['inputs']    = $inputs;
             $routeInfo['namespace'] = join('\\', [Config::get('app_namespace'), $namespace]);

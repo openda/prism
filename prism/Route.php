@@ -42,8 +42,21 @@ class Route {
                 $uri  = $this->request->getUri();
                 $uris = explode('/', substr($uri, 1, strlen($uri) - 1));
                 if (!empty($uris)) {
+                    if(empty($uris[0]) || trim($uris[0])==""){
+                        Logger::error("ERR_ROUTE_APP", $uris[0]);
+                        Response::sendError(PrismCode::ERR_ROUTE_APP, PRISM_MSG[PrismCode::ERR_ROUTE_APP]);
+                    }
+                    if(empty($uris[1]) || trim($uris[1])==""){
+                        Logger::error("ERR_ROUTE_CONTROLLER", $uris);
+                        Response::sendError(PrismCode::ERR_ROUTE_CONTROLLER, PRISM_MSG[PrismCode::ERR_ROUTE_CONTROLLER]);
+                    }
+                    if(empty($uris[2]) || trim($uris[2])==""){
+                        Logger::error("ERR_ROUTE_ACTION", $uris);
+                        Response::sendError(PrismCode::ERR_ROUTE_ACTION, PRISM_MSG[PrismCode::ERR_ROUTE_ACTION]);
+                    }
                     $this->route['app']      = $uris[0];
                     $this->route['resource'] = $uris[1];
+                    $this->route['action']   = $uris[2];
                     $this->route['type']     = $this->request->getMethod();
                 } else {
                     Logger::error("ERR_REQUEST_ROUTE", $uris);

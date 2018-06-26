@@ -16,6 +16,8 @@ return [
     'default_app'             => 'prism',
     // 默认controller
     'default_resource'        => 'index',
+    // 默认controller
+    'default_action'          => 'show',
     // 默认action
     'default_request_method'  => 'GET',
     //app公共自定义配置
@@ -24,7 +26,7 @@ return [
     ],
 
     //加密文件
-    'encrypt_file'=>APP_PATH . '.encrypt',
+    'encrypt_file'            => APP_PATH . '.encrypt',
 
     // 定义前端
     'fe_name'                 => 'prism-fe',

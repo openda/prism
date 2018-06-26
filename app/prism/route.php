@@ -5,8 +5,7 @@ return [
         "controller" => "prism/controller/Index.php",
         "method"     => [
             "get" => [
-                "cp"     => [],
-                "action" => "show"
+                "show"     => [],
             ]
         ],
     ],

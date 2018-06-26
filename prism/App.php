@@ -35,6 +35,7 @@ class App {
                 'app'      => empty($config['default_app']) ? 'index' : $config['default_app'],
                 'method'   => empty($config['default_request_method']) ? 'get' : $config['default_request_method'],
                 'resource' => empty($config['default_resource']) ? 'index' : $config['default_resource'],
+                'action' => empty($config['default_action']) ? 'index' : $config['default_action'],
             ]);
             //路由解析
             $route->parse();

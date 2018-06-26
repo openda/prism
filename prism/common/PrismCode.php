@@ -48,6 +48,7 @@ class PrismCode {
     const ERR_ROUTE_ACTION             = 205; //操作方法不存在
     const ERR_ROUTE_APP_FILE_INEXISTED = 206; //app路由文件不存在
     const ERR_ROUTE_REFLECTION_FAILED  = 207; //app路由文件不存在
+    const ERR_ROUTE_ACTION_INEXIST     = 208;
 
     const ERR_REQUEST_METHOD        = 209; //请求方式出错
     const ERR_REQUEST_PARAM_INEXIST = 210; //请求参数缺失
@@ -105,6 +106,7 @@ const PRISM_MSG = array(
     PrismCode::ERR_ROUTE_ACTION             => '操作方法不存在',
     PrismCode::ERR_ROUTE_APP_FILE_INEXISTED => 'app路由文件不存在',
     PrismCode::ERR_ROUTE_REFLECTION_FAILED  => "路由反射失败",
+    PrismCode::ERR_ROUTE_ACTION_INEXIST     => "action未定义",
 
     PrismCode::ERR_REQUEST_METHOD         => '请求方式不存在',
     PrismCode::ERR_REQUEST_PARAM_INEXIST  => '请求参数缺失',
