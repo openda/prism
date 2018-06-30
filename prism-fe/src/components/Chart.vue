@@ -16,36 +16,48 @@
     watch: {
       chart_options: {
         handler (newValue, oldValue) {
-          if (!this.chartObj) {
-            this.chartObj = echarts.init(this.$refs.chart)
+          if (!newValue.type) {
+            return
           }
-          let options = {
-            title: {
-              text: newValue.title || ''
-            },
-            xAxis: {
-              type: newValue.xAxis.type,
-              name: newValue.xAxis.name || null,
-              data: newValue.xAxis.data
-            },
-            yAxis: {
-              type: newValue.yAxis.type,
-              name: newValue.yAxis.name || null
-            },
-            series: []
-          }
-          for (let key in newValue.data) {
-            let serie = {
-              id: key,
-              type: newValue.type,
-              data: newValue.data[key]
-            }
-            options.series.push(serie)
-          }
-          console.log(options)
-          this.chartObj.setOption(options)
+          this.renderChart(newValue)
         },
         deep: true
+      }
+    },
+    methods: {
+      renderChart: function (newValue) {
+        if (!this.chartObj) {
+          this.chartObj = echarts.init(this.$refs.chart)
+        }
+        let options = {
+          title: {
+            text: newValue.title || ''
+          },
+          xAxis: {
+            type: newValue.xAxis.type,
+            name: newValue.xAxis.name || null,
+            data: newValue.xAxis.data
+          },
+          yAxis: {
+            type: newValue.yAxis.type,
+            name: newValue.yAxis.name || null
+          },
+          series: []
+        }
+        for (let key in newValue.data) {
+          let serie = {
+            id: key,
+            type: newValue.type,
+            data: newValue.data[key]
+          }
+          options.series.push(serie)
+        }
+        this.chartObj.setOption(options, {notMerge: true})
+      }
+    },
+    mounted: function () {
+      if (this.chart_options) {
+        this.renderChart(this.chart_options)
       }
     }
   }

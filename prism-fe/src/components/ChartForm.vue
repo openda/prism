@@ -10,6 +10,9 @@
         <Form-item label="横轴名称">
           <Input type="text" v-model="chart_instance.xAxis.name" placeholder="请输入横轴名称"></Input>
         </Form-item>
+        <Form-item label="报表简介">
+          <Input type="text" v-model="chart_instance.brief" placeholder="请输入报表简介"></Input>
+        </Form-item>
         </Col>
         <Col span="12">
         <Form-item label="图表类型">
@@ -55,7 +58,8 @@
             type: 'value'
           },
           type: '',
-          data: {}
+          data: {},
+          brief: '无'
         },
         chart_options: null
       }
@@ -66,6 +70,9 @@
     },
     methods: {
       handlePreview: function () {
+        if (this.chart_instance.type === '') {
+          return
+        }
         axios.get(inter.chartinstance + '?chart_info=' + JSON.stringify(this.dataOption))
           .then((res) => {
             let data = res.data.data
@@ -93,7 +100,22 @@
           })
       },
       handleSave: function () {
-        console.log(this.previewOption)
+        let instance = JSON.parse(JSON.stringify(this.chart_instance))
+        delete instance['xAxis']['data']
+        delete instance['yAxis']['data']
+        let search = '?' + 'db_link_id=' + this.dataOption.dblink_id + '&chart_type=histogram' + '&chart_info=' + JSON.stringify(instance) + '&report_brief=' + this.chart_instance.brief + '&data_options=' + JSON.stringify(this.dataOption)
+        axios.put(inter.report + search).then(
+          (res) => {
+            if (res.data.code === 0) {
+              if (res.data.msg === 'success') {
+                alert('保存成功！')
+              } else {
+                alert(res.data.msg)
+              }
+              window.location.reload()
+            }
+          }
+        )
       }
     }
   }

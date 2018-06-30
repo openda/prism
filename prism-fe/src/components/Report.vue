@@ -25,7 +25,7 @@
                 <Checkbox v-for="(col,index) in colList" :label="col.field" :key="index" :disabled="disable"></Checkbox>
               </Checkbox-group>
             </Form-item>
-            <Form-item v-if="colReady" label="选择指标列操作">
+            <Form-item v-if="colReady" label="指标列操作">
               <div v-for="(item, index) in checkTargetGroup">
                 <div>{{ item }}</div>
 
@@ -41,7 +41,7 @@
                 <Checkbox v-for="(col,index) in colList" :label="col.field" :key="index" :disabled="disable"></Checkbox>
               </Checkbox-group>
             </Form-item>
-            <Form-item v-if="colReady" label="选择维度列操作">
+            <Form-item v-if="colReady" label="维度列操作">
               <div v-for="(item, index) in checkDimensionGroup">
                 <div>{{ item }}</div>
 
@@ -59,7 +59,9 @@
           </Form>
         </Row>
       <Row :gutter="16">
-        <data-preview :previewOption="previewOption"></data-preview>
+        <Col span="24">
+          <data-preview :previewOption="previewOption"></data-preview>
+        </Col>
       </Row>
       </Col>
       <Col span="16">
